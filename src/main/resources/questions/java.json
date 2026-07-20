@@ -1,0 +1,2053 @@
+[
+  {
+    "id": "java-oops",
+    "category": "java",
+    "difficulty": "beginner",
+    "tags": [
+      "oop",
+      "principles"
+    ],
+    "question": "What are the four OOP principles?",
+    "answer": "<ul><li><strong>Encapsulation</strong> — bundle data + methods, hide internals behind access modifiers.</li><li><strong>Abstraction</strong> — expose what an object does, hide how (interfaces/abstract classes).</li><li><strong>Inheritance</strong> — reuse via an is-a relationship (<code class=\"inline\">extends</code>).</li><li><strong>Polymorphism</strong> — one interface, many implementations (overriding/overloading).</li></ul>",
+    "tip": "Remember the acronym A-PIE (Abstraction, Polymorphism, Inheritance, Encapsulation).",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-overload-override",
+    "category": "java",
+    "difficulty": "beginner",
+    "tags": [
+      "polymorphism",
+      "overloading",
+      "overriding"
+    ],
+    "question": "Method overloading vs overriding.",
+    "answer": "<p><strong>Overloading</strong> — same method name, different parameters, in the <em>same</em> class (compile-time polymorphism).</p><p><strong>Overriding</strong> — a subclass redefines a parent method with the same signature (runtime polymorphism); mark it <code class=\"inline\">@Override</code>.</p>",
+    "tip": "Overloading = compile-time, overriding = runtime.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-abstract-interface",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "interface",
+      "abstract-class"
+    ],
+    "question": "Interface vs abstract class.",
+    "answer": "<p><strong>Interface</strong> — a contract; a class can implement many. Since Java 8 it can have <code class=\"inline\">default</code>/<code class=\"inline\">static</code> methods but no instance state.</p><p><strong>Abstract class</strong> — a partial base with state and constructors; single inheritance only. Use it to share code among related classes.</p>",
+    "tip": "Interface = 'can do' capability; abstract class = 'is a' base with shared code.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-equals-hashcode",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "equals",
+      "hashcode",
+      "collections"
+    ],
+    "question": "Why override equals() and hashCode() together?",
+    "answer": "<p>Hash-based collections (<code class=\"inline\">HashMap</code>, <code class=\"inline\">HashSet</code>) use <code class=\"inline\">hashCode()</code> to find the bucket and <code class=\"inline\">equals()</code> to confirm the match. If you override one but not the other, objects that are 'equal' can land in different buckets, breaking lookups.</p>",
+    "tip": "Contract: equal objects must have equal hash codes (not vice versa).",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-collections",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "collections",
+      "list",
+      "map"
+    ],
+    "question": "ArrayList vs LinkedList vs HashMap vs HashSet.",
+    "answer": "<ul><li><strong>ArrayList</strong> — dynamic array; fast random access, slower mid-list inserts.</li><li><strong>LinkedList</strong> — doubly linked; fast inserts/removes, slow random access.</li><li><strong>HashMap</strong> — key/value, O(1) average lookup, unordered.</li><li><strong>HashSet</strong> — unique elements, backed by a HashMap.</li></ul>",
+    "tip": "Default to ArrayList and HashMap unless you have a specific reason not to.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-checked-unchecked",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "exceptions"
+    ],
+    "question": "Checked vs unchecked exceptions.",
+    "answer": "<p><strong>Checked</strong> (<code class=\"inline\">IOException</code>) — must be declared or caught; the compiler enforces handling.</p><p><strong>Unchecked</strong> (<code class=\"inline\">RuntimeException</code>, <code class=\"inline\">NullPointerException</code>) — programming errors, not enforced by the compiler.</p>",
+    "tip": "Don't swallow exceptions with an empty catch block — log or rethrow.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-string-immutable",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "string",
+      "immutability"
+    ],
+    "question": "Why are Strings immutable, and String vs StringBuilder?",
+    "answer": "<p>Immutability enables the <strong>String pool</strong> (interning), thread-safety, and safe use as map keys. Concatenating Strings in a loop creates many objects.</p><p>Use <strong>StringBuilder</strong> for heavy concatenation — it mutates one buffer.</p>",
+    "tip": "String concatenation in a loop is a classic performance red flag — use StringBuilder.",
+    "code": "StringBuilder sb = new StringBuilder();\nfor (String s : items) sb.append(s);",
+    "lang": "java"
+  },
+  {
+    "id": "java-final",
+    "category": "java",
+    "difficulty": "beginner",
+    "tags": [
+      "final",
+      "keywords"
+    ],
+    "question": "What does the final keyword do?",
+    "answer": "<ul><li><strong>final variable</strong> — assigned once (a constant).</li><li><strong>final method</strong> — cannot be overridden.</li><li><strong>final class</strong> — cannot be extended (e.g. String).</li></ul>",
+    "tip": "final on a reference means the reference can't change, but the object can still mutate.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-static",
+    "category": "java",
+    "difficulty": "beginner",
+    "tags": [
+      "static",
+      "keywords"
+    ],
+    "question": "What does static mean?",
+    "answer": "<p>A <code class=\"inline\">static</code> member belongs to the <strong>class</strong>, not an instance — shared across all objects and accessible without creating one. Used for constants, utility methods, and counters.</p>",
+    "tip": "static methods can't access instance (non-static) fields.",
+    "code": "public static int square(int n) { return n * n; }",
+    "lang": "java"
+  },
+  {
+    "id": "java-streams",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "streams",
+      "functional",
+      "java8"
+    ],
+    "question": "What are Java 8 Streams?",
+    "answer": "<p>A declarative API for processing collections via a pipeline of operations — <code class=\"inline\">filter</code>, <code class=\"inline\">map</code>, <code class=\"inline\">reduce</code>, <code class=\"inline\">collect</code>. Streams are lazy and can run in parallel, making data transformation concise and readable.</p>",
+    "tip": "Streams don't mutate the source — they produce a new result.",
+    "code": "List<String> names = users.stream()\n  .filter(u -> u.isActive())\n  .map(User::getName)\n  .collect(Collectors.toList());",
+    "lang": "java"
+  },
+  {
+    "id": "java-optional",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "optional",
+      "null-safety"
+    ],
+    "question": "What is Optional and why use it?",
+    "answer": "<p><code class=\"inline\">Optional&lt;T&gt;</code> is a container that may or may not hold a value — a clearer alternative to returning <code class=\"inline\">null</code>. It forces callers to handle the empty case, reducing <code class=\"inline\">NullPointerException</code>s.</p>",
+    "tip": "Use Optional as a return type, not as a method parameter or field.",
+    "code": "return repo.findById(id)\n  .map(User::getName)\n  .orElse(\"Unknown\");",
+    "lang": "java"
+  },
+  {
+    "id": "java-threads",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "concurrency",
+      "threads"
+    ],
+    "question": "How do you create and manage threads in Java?",
+    "answer": "<p>Implement <code class=\"inline\">Runnable</code> (preferred) or extend <code class=\"inline\">Thread</code>. In practice use an <strong>ExecutorService</strong> / thread pool instead of raw threads, and share state safely with <code class=\"inline\">synchronized</code>, locks, or concurrent collections.</p>",
+    "tip": "Prefer ExecutorService over new Thread() — pooling avoids the cost of thread churn.",
+    "code": "ExecutorService pool = Executors.newFixedThreadPool(4);\npool.submit(() -> doWork());",
+    "lang": "java"
+  },
+  {
+    "id": "java-jvm",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "jvm",
+      "memory",
+      "gc"
+    ],
+    "question": "JDK vs JRE vs JVM, and how does GC work?",
+    "answer": "<p><strong>JVM</strong> runs bytecode. <strong>JRE</strong> = JVM + libraries (to run apps). <strong>JDK</strong> = JRE + compiler/tools (to build apps).</p><p><strong>Garbage collection</strong> automatically frees objects no longer reachable from roots, mostly in the young generation (frequent, cheap) vs old generation (rare, costly).</p>",
+    "tip": "You can't force GC — System.gc() is only a suggestion.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-pass-by-value",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "parameters",
+      "references",
+      "memory"
+    ],
+    "question": "Is Java pass-by-value or pass-by-reference?",
+    "answer": "<p>Java is <strong>always pass-by-value</strong>. For objects, the value that gets copied is the <em>reference</em> (the address), not the object. So a method can mutate the object your variable points at, but reassigning the parameter inside the method never affects the caller's variable.</p>",
+    "tip": "Say it precisely: 'Java passes references by value.' Claiming Java is pass-by-reference is a classic interview trap.",
+    "code": "void rename(User u) { u.setName(\"Bob\"); }   // caller sees \"Bob\"\nvoid replace(User u) { u = new User(\"Bob\"); } // caller sees nothing",
+    "lang": "java",
+    "deep": "<h4>What actually gets copied</h4><p>When you call a method, Java copies each argument onto the new stack frame. For an <code class=\"inline\">int</code>, the number is copied. For an object, the <strong>reference</strong> (a pointer-like value) is copied — now two references point at the <em>same</em> heap object.</p><h4>Why mutation works but reassignment doesn't</h4><pre><code>void rename(User u) {   // u is a COPY of the caller's reference\n  u.setName(\"Bob\");     // follows the copy to the SAME object -> caller sees it\n}\n\nvoid replace(User u) {\n  u = new User(\"Bob\");  // re-points only the LOCAL copy -> caller unaffected\n}</code></pre><h4>The classic swap that doesn't work</h4><pre><code>void swap(String a, String b) { String t = a; a = b; b = t; }\n// Caller's variables are unchanged — only the copies were swapped.</code></pre><h4>How to say it in an interview</h4><p>“Java is strictly pass-by-value. For reference types the value copied is the reference itself, so the method can mutate the shared object but cannot re-point the caller's variable. That's why a swap method can't work in Java.”</p>"
+  },
+  {
+    "id": "java-equals-vs-identity",
+    "category": "java",
+    "difficulty": "beginner",
+    "tags": [
+      "equals",
+      "operators",
+      "string"
+    ],
+    "question": "== vs equals().",
+    "answer": "<p><code class=\"inline\">==</code> compares <strong>identity</strong> — for primitives the value, for objects whether both references point to the same instance.</p><p><code class=\"inline\">equals()</code> compares <strong>logical equality</strong> as defined by the class. <code class=\"inline\">Object.equals()</code> defaults to <code class=\"inline\">==</code>, so you must override it for value semantics.</p>",
+    "tip": "Never compare Strings with == — it works by accident for literals (pool) and fails for runtime-built strings.",
+    "code": "String a = new String(\"hi\"), b = new String(\"hi\");\na == b;        // false — different objects\na.equals(b);   // true  — same characters",
+    "lang": "java"
+  },
+  {
+    "id": "java-this-super",
+    "category": "java",
+    "difficulty": "beginner",
+    "tags": [
+      "keywords",
+      "constructors",
+      "inheritance"
+    ],
+    "question": "What do this and super do?",
+    "answer": "<ul><li><code class=\"inline\">this</code> — the current instance. Used to disambiguate a field from a parameter, or to call another constructor via <code class=\"inline\">this(...)</code>.</li><li><code class=\"inline\">super</code> — the parent. <code class=\"inline\">super.method()</code> calls the parent's version; <code class=\"inline\">super(...)</code> calls the parent constructor.</li></ul>",
+    "tip": "this(...) and super(...) must be the FIRST statement in a constructor, and you can't use both in one.",
+    "code": "class Dog extends Animal {\n  Dog(String name) { super(name); }\n  Dog() { this(\"Rex\"); }\n}",
+    "lang": "java"
+  },
+  {
+    "id": "java-constructor-basics",
+    "category": "java",
+    "difficulty": "beginner",
+    "tags": [
+      "constructors",
+      "oop"
+    ],
+    "question": "What is a constructor, and what's the default constructor?",
+    "answer": "<p>A constructor initializes a new object. It has the class's name, no return type, and runs when you call <code class=\"inline\">new</code>.</p><p>If you write <strong>no</strong> constructor, the compiler inserts a no-arg <strong>default constructor</strong>. The moment you declare any constructor, that free one disappears.</p>",
+    "tip": "Adding a parameterized constructor silently removes the no-arg one — a common source of 'constructor not found' errors in frameworks that need it.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-init-order",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "constructors",
+      "static",
+      "initialization"
+    ],
+    "question": "What is the class initialization order?",
+    "answer": "<p>On first use of the class: <strong>static</strong> fields and static blocks run once, in source order. Then for each <code class=\"inline\">new</code>: instance fields and instance init blocks run in source order, then the constructor body.</p><p>With inheritance the parent is fully initialized before the child.</p>",
+    "tip": "Order: static (once, parent→child) → instance fields/blocks → constructor. Parent always finishes before child starts.",
+    "code": "static { }        // 1. once, on class load\n{ }               // 2. before every constructor body\nMyClass() { }     // 3.",
+    "lang": "java",
+    "deep": "<h4>The precise sequence</h4><ol><li><strong>Class load</strong> (first use): parent static fields + static blocks, then child static fields + static blocks — each in source order, once per classloader.</li><li><strong>Every <code class=\"inline\">new</code></strong>: the constructor implicitly calls <code class=\"inline\">super(...)</code> first, so the parent's instance fields → instance blocks → constructor body all complete, <em>then</em> the child's instance fields → instance blocks → constructor body run.</li></ol><h4>The overridable-method-in-constructor trap</h4><pre><code>class Parent {\n  Parent() { init(); }          // calls the OVERRIDDEN version\n  void init() {}\n}\nclass Child extends Parent {\n  private String name = \"set\";\n  @Override void init() { System.out.println(name); } // prints null!\n}</code></pre><p>The parent constructor runs <em>before</em> the child's fields are assigned, so <code class=\"inline\">name</code> is still <code class=\"inline\">null</code>. <strong>Never call an overridable method from a constructor.</strong></p><h4>How to say it in an interview</h4><p>“Statics run once at class load, parent before child. Per instance, the parent is fully constructed first, then the child's fields and init blocks, then its constructor body. That's exactly why calling an overridable method from a constructor sees uninitialized subclass fields.”</p>"
+  },
+  {
+    "id": "java-static-instance-block",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "static",
+      "initialization"
+    ],
+    "question": "Static block vs instance initializer block.",
+    "answer": "<p>A <strong>static block</strong> <code class=\"inline\">static { }</code> runs <strong>once</strong> when the class is loaded — used to set up static state.</p><p>An <strong>instance block</strong> <code class=\"inline\">{ }</code> runs before <em>every</em> constructor body — useful to share setup across overloaded constructors (though calling <code class=\"inline\">this(...)</code> is usually clearer).</p>",
+    "tip": "Instance blocks are rare in real code; prefer constructor chaining with this(...) for readability.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-access-modifiers",
+    "category": "java",
+    "difficulty": "beginner",
+    "tags": [
+      "access-modifiers",
+      "encapsulation"
+    ],
+    "question": "Explain the four access modifiers.",
+    "answer": "<ul><li><strong>private</strong> — same class only.</li><li><strong>default</strong> (no keyword) — same package.</li><li><strong>protected</strong> — same package <em>plus</em> subclasses anywhere.</li><li><strong>public</strong> — everywhere.</li></ul>",
+    "tip": "Default to private and widen only when needed — that's encapsulation in practice.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-static-nested-inner",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "inner-class",
+      "nested-class",
+      "memory"
+    ],
+    "question": "Static nested class vs inner class.",
+    "answer": "<p>A <strong>static nested</strong> class is just a top-level class scoped inside another — no link to an outer instance.</p><p>An <strong>inner</strong> (non-static) class holds an implicit reference to its enclosing instance, so it can read the outer fields — but that reference can keep the outer object alive and leak memory.</p>",
+    "tip": "Prefer static nested classes. A non-static inner class held by a long-lived object is a classic memory leak.",
+    "code": "class Outer {\n  static class Nested { }        // no outer reference\n  class Inner { }                // holds Outer.this\n}\nOuter.Nested n = new Outer.Nested();\nOuter.Inner i = new Outer().new Inner();",
+    "lang": "java"
+  },
+  {
+    "id": "java-anonymous-class",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "anonymous-class",
+      "lambda"
+    ],
+    "question": "What is an anonymous inner class, and when do lambdas replace it?",
+    "answer": "<p>An anonymous class is a one-off unnamed implementation declared and instantiated inline — traditionally used for listeners and callbacks.</p><p>Since Java 8, a <strong>lambda</strong> replaces it whenever the target is a <strong>functional interface</strong> (exactly one abstract method). Anonymous classes are still needed for multiple methods or to hold state.</p>",
+    "tip": "In an anonymous class 'this' is the anonymous instance; in a lambda 'this' is the enclosing instance.",
+    "code": "Runnable a = new Runnable() { public void run() { work(); } };\nRunnable b = () -> work();   // same thing, Java 8+",
+    "lang": "java"
+  },
+  {
+    "id": "java-enum",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "enum",
+      "type-safety"
+    ],
+    "question": "What is an enum and what can it do?",
+    "answer": "<p>An <code class=\"inline\">enum</code> is a type-safe fixed set of constants. Unlike <code class=\"inline\">int</code> constants it can't hold an invalid value.</p><p>Enums are real classes: they can have fields, constructors, methods, implement interfaces, and even give each constant its own behaviour.</p>",
+    "tip": "Enum constants are singletons created by the JVM — which makes an enum the simplest correct singleton.",
+    "code": "enum Status {\n  ACTIVE(\"A\"), CLOSED(\"C\");\n  private final String code;\n  Status(String code) { this.code = code; }\n  String code() { return code; }\n}",
+    "lang": "java"
+  },
+  {
+    "id": "java-enum-switch-values",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "enum",
+      "switch",
+      "collections"
+    ],
+    "question": "How do you use enums with switch, EnumMap and values()?",
+    "answer": "<p><code class=\"inline\">switch</code> on an enum needs only the bare constant name. <code class=\"inline\">values()</code> returns all constants, <code class=\"inline\">valueOf(String)</code> parses one (throwing if unknown), and <code class=\"inline\">ordinal()</code> gives the index.</p><p><strong>EnumMap</strong>/<strong>EnumSet</strong> are array-backed and far faster than HashMap/HashSet for enum keys.</p>",
+    "tip": "Never persist ordinal() — reordering constants silently corrupts stored data. Persist name() instead.",
+    "code": "switch (status) {\n  case ACTIVE -> start();\n  case CLOSED -> stop();\n}\nMap<Status, Integer> counts = new EnumMap<>(Status.class);",
+    "lang": "java"
+  },
+  {
+    "id": "java-varargs",
+    "category": "java",
+    "difficulty": "beginner",
+    "tags": [
+      "varargs",
+      "methods"
+    ],
+    "question": "What are varargs?",
+    "answer": "<p><code class=\"inline\">Type... name</code> lets a method take any number of arguments; inside, it's just an array. Only <strong>one</strong> varargs parameter is allowed and it must be <strong>last</strong>.</p>",
+    "tip": "Varargs create an array on every call — avoid them on hot paths.",
+    "code": "int sum(int... nums) {\n  int t = 0;\n  for (int n : nums) t += n;\n  return t;\n}\nsum(); sum(1, 2, 3);",
+    "lang": "java"
+  },
+  {
+    "id": "java-autoboxing",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "autoboxing",
+      "wrappers",
+      "npe"
+    ],
+    "question": "What is autoboxing and what are its pitfalls?",
+    "answer": "<p>Autoboxing converts a primitive to its wrapper automatically (<code class=\"inline\">int</code> ↔ <code class=\"inline\">Integer</code>). Convenient, but it hides three traps: <strong>NullPointerException</strong> when unboxing null, <strong>performance</strong> cost in loops, and broken <code class=\"inline\">==</code> comparisons.</p>",
+    "tip": "A null Integer unboxed into an int throws NPE — one of the sneakiest bugs in Java code.",
+    "code": "Map<String, Integer> m = new HashMap<>();\nint v = m.get(\"missing\");   // NPE — null unboxed to int",
+    "lang": "java",
+    "deep": "<h4>Trap 1 — the silent NPE</h4><pre><code>Integer count = map.get(\"missing\"); // null\nint c = count;                      // NullPointerException</code></pre><p>The unboxing call is <code class=\"inline\">count.intValue()</code> — invoked on null. The stack trace points at a line with no visible method call, which makes it confusing.</p><h4>Trap 2 — the Integer cache and ==</h4><pre><code>Integer a = 127, b = 127;\na == b;              // true  — cached (-128..127)\n\nInteger c = 128, d = 128;\nc == d;              // false — different objects!</code></pre><p>The JVM caches boxed <code class=\"inline\">Integer</code> values from -128 to 127, so <code class=\"inline\">==</code> works below 128 and breaks above it. <strong>Always use <code class=\"inline\">equals()</code></strong> on wrappers.</p><h4>Trap 3 — performance</h4><pre><code>Long sum = 0L;                       // boxed!\nfor (long i = 0; i &lt; 1_000_000; i++) sum += i; // ~1M Long objects</code></pre><p>Use the primitive <code class=\"inline\">long</code>, or <code class=\"inline\">IntStream</code>/<code class=\"inline\">LongStream</code> rather than <code class=\"inline\">Stream&lt;Integer&gt;</code>.</p><h4>How to say it in an interview</h4><p>“Autoboxing is compiler sugar for <code class=\"inline\">valueOf</code>/<code class=\"inline\">intValue</code>. It bites in three ways: unboxing null throws NPE, <code class=\"inline\">==</code> on wrappers only appears to work because of the -128..127 cache, and boxing in loops allocates heavily. So I use primitives on hot paths and <code class=\"inline\">equals()</code> for wrapper comparison.”</p>"
+  },
+  {
+    "id": "java-integer-cache",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "autoboxing",
+      "wrappers",
+      "gotcha"
+    ],
+    "question": "Why does Integer a = 127, b = 127; a == b give true but 128 give false?",
+    "answer": "<p><code class=\"inline\">Integer.valueOf()</code> caches instances for <strong>-128 to 127</strong>, so both references point to the same cached object. Above 127 each box is a new object, so <code class=\"inline\">==</code> (identity) is false.</p>",
+    "tip": "This is the single most popular Java 'gotcha' question — the answer is the Integer cache, and the lesson is always use equals().",
+    "code": "Integer a = 127, b = 127;  // a == b  -> true\nInteger c = 128, d = 128;  // c == d  -> false\nc.equals(d);               // true — always use this",
+    "lang": "java"
+  },
+  {
+    "id": "java-primitives-wrappers",
+    "category": "java",
+    "difficulty": "beginner",
+    "tags": [
+      "primitives",
+      "wrappers",
+      "types"
+    ],
+    "question": "What are Java's primitive types, and why do wrappers exist?",
+    "answer": "<p>Eight primitives: <code class=\"inline\">byte</code>, <code class=\"inline\">short</code>, <code class=\"inline\">int</code>, <code class=\"inline\">long</code>, <code class=\"inline\">float</code>, <code class=\"inline\">double</code>, <code class=\"inline\">char</code>, <code class=\"inline\">boolean</code>. They hold raw values, live on the stack, and can't be null.</p><p><strong>Wrappers</strong> (<code class=\"inline\">Integer</code>, <code class=\"inline\">Long</code>, …) are objects, so they can be null and can be used in generics and collections — which can't hold primitives.</p>",
+    "tip": "You can't write List<int> — that's exactly why wrappers exist.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-string-switch-ternary-npe",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "npe",
+      "gotcha",
+      "ternary"
+    ],
+    "question": "How can a ternary expression throw a NullPointerException?",
+    "answer": "<p>If the two branches have different types, the compiler applies <strong>binary numeric promotion</strong> and unboxes them. A null wrapper in the chosen branch is then unboxed → NPE, even though you never wrote a dereference.</p>",
+    "tip": "Mixing a wrapper and a primitive in a ternary silently unboxes both — keep the branch types identical.",
+    "code": "Integer x = null;\nInteger y = true ? x : 0;   // NPE — x is unboxed because 0 is an int",
+    "lang": "java"
+  },
+  {
+    "id": "java-immutable-class",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "immutability",
+      "design",
+      "thread-safety"
+    ],
+    "question": "How do you write a truly immutable class?",
+    "answer": "<ol><li>Make the class <code class=\"inline\">final</code> (no subclass can add mutability).</li><li>Make all fields <code class=\"inline\">private final</code>.</li><li>No setters; set everything in the constructor.</li><li><strong>Defensively copy</strong> mutable inputs in, and mutable fields out.</li></ol><p>Immutable objects are automatically thread-safe and safe as map keys.</p>",
+    "tip": "Step 4 is the one candidates forget — storing a caller's List directly lets them mutate your 'immutable' object.",
+    "code": "public final class Trip {\n  private final List<String> stops;\n  public Trip(List<String> stops) {\n    this.stops = List.copyOf(stops);        // copy in\n  }\n  public List<String> getStops() {\n    return Collections.unmodifiableList(stops); // copy/guard out\n  }\n}",
+    "lang": "java",
+    "deep": "<h4>Why final on the class matters</h4><p>If the class isn't final, a subclass can override methods to return varying values, breaking the immutability guarantee callers depend on.</p><h4>The defensive-copy hole</h4><pre><code>// BROKEN\npublic Trip(List&lt;String&gt; stops) { this.stops = stops; }\n\nList&lt;String&gt; mine = new ArrayList&lt;&gt;(List.of(\"A\"));\nTrip t = new Trip(mine);\nmine.add(\"B\");   // the \"immutable\" Trip just changed!</code></pre><p>The same applies on the way out — returning the internal list lets a caller do <code class=\"inline\">trip.getStops().add(\"C\")</code>.</p><h4>final field ≠ immutable object</h4><pre><code>private final List&lt;String&gt; stops = new ArrayList&lt;&gt;();\nstops.add(\"X\");   // legal! final only fixes the reference</code></pre><h4>Records do most of this for you</h4><pre><code>public record Point(int x, int y) { }</code></pre><p>Records give you final fields, no setters, and value-based <code class=\"inline\">equals</code>/<code class=\"inline\">hashCode</code> — but they still <strong>don't deep-copy</strong> mutable components, so do it in a compact constructor.</p><h4>Why it's worth it</h4><ul><li><strong>Thread-safe with zero synchronization</strong> — state can't change, so no races.</li><li><strong>Safe map keys</strong> — the hash can never go stale.</li><li>Free to cache and share (that's why String is immutable).</li></ul><h4>How to say it in an interview</h4><p>“Final class, private final fields, no setters, and defensive copies both in and out. The subtle part is that <code class=\"inline\">final</code> only freezes the reference — a final <code class=\"inline\">List</code> field is still mutable, so I copy it with <code class=\"inline\">List.copyOf</code>.”</p>"
+  },
+  {
+    "id": "java-record",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "record",
+      "java14",
+      "immutability"
+    ],
+    "question": "What is a record (Java 14+)?",
+    "answer": "<p>A <code class=\"inline\">record</code> is a concise immutable data carrier. The compiler generates the private final fields, a canonical constructor, accessors, and value-based <code class=\"inline\">equals</code>/<code class=\"inline\">hashCode</code>/<code class=\"inline\">toString</code>.</p><p>Records are implicitly final and can't extend a class — they're for data, not hierarchies.</p>",
+    "tip": "Records replace the classic 'POJO with 60 lines of boilerplate' — perfect for DTOs and value objects.",
+    "code": "public record Point(int x, int y) { }\n\n// validation via a compact constructor\npublic record Range(int lo, int hi) {\n  public Range {\n    if (lo > hi) throw new IllegalArgumentException();\n  }\n}",
+    "lang": "java"
+  },
+  {
+    "id": "java-sealed",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "sealed",
+      "java17",
+      "inheritance"
+    ],
+    "question": "What are sealed classes (Java 17)?",
+    "answer": "<p><code class=\"inline\">sealed</code> restricts <em>which</em> classes may extend a type via a <code class=\"inline\">permits</code> clause. Each subclass must then be <code class=\"inline\">final</code>, <code class=\"inline\">sealed</code>, or <code class=\"inline\">non-sealed</code>.</p><p>It gives you a closed hierarchy the compiler understands — so a <code class=\"inline\">switch</code> over it can be checked for exhaustiveness with no <code class=\"inline\">default</code>.</p>",
+    "tip": "sealed + records + pattern matching = algebraic data types in Java. That combination is the modern-Java answer interviewers look for.",
+    "code": "public sealed interface Shape permits Circle, Square { }\npublic record Circle(double r) implements Shape { }\npublic record Square(double s) implements Shape { }",
+    "lang": "java"
+  },
+  {
+    "id": "java-var",
+    "category": "java",
+    "difficulty": "beginner",
+    "tags": [
+      "var",
+      "java10",
+      "types"
+    ],
+    "question": "What is var (Java 10)?",
+    "answer": "<p><code class=\"inline\">var</code> is <strong>local-variable type inference</strong> — the compiler infers the type from the initializer. Java stays statically typed; the variable's type is fixed at compile time, it's just not written out.</p><p>Only for local variables with an initializer — never fields, parameters, or return types.</p>",
+    "tip": "var is compile-time inference, not a dynamic type like JavaScript's var — an important distinction to state.",
+    "code": "var users = new ArrayList<User>();   // ArrayList<User>\nvar name = \"Ann\";                    // String\n// var x;      // error — no initializer",
+    "lang": "java"
+  },
+  {
+    "id": "java-string-pool",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "string",
+      "memory",
+      "pool"
+    ],
+    "question": "What is the String pool, and what does intern() do?",
+    "answer": "<p>The <strong>String pool</strong> is a JVM-managed cache of unique string literals (on the heap since Java 7). Two identical literals share one object, saving memory.</p><p><code class=\"inline\">new String(\"hi\")</code> deliberately bypasses the pool and allocates a fresh object. <code class=\"inline\">intern()</code> puts a runtime-built string into the pool (or returns the pooled one).</p>",
+    "tip": "This is why == works for literals and fails for new String() — never rely on it.",
+    "code": "String a = \"hi\";\nString b = \"hi\";              // same pooled object\nString c = new String(\"hi\"); // new object on the heap\na == b;            // true\na == c;            // false\na == c.intern();   // true",
+    "lang": "java"
+  },
+  {
+    "id": "java-stringbuilder-vs-buffer",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "string",
+      "stringbuilder",
+      "thread-safety"
+    ],
+    "question": "StringBuilder vs StringBuffer.",
+    "answer": "<p>Both are mutable character buffers with identical APIs. <strong>StringBuffer</strong> is synchronized (thread-safe, slower); <strong>StringBuilder</strong> is not (faster).</p><p>Use <strong>StringBuilder</strong> — buffers are almost always local variables, so the synchronization buys nothing.</p>",
+    "tip": "StringBuffer is essentially legacy. If a builder is shared across threads, your design has a bigger problem than the buffer.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-string-methods",
+    "category": "java",
+    "difficulty": "beginner",
+    "tags": [
+      "string",
+      "api"
+    ],
+    "question": "Which String methods come up most in interviews?",
+    "answer": "<ul><li><code class=\"inline\">length()</code>, <code class=\"inline\">charAt(i)</code>, <code class=\"inline\">substring(a, b)</code> — end index is exclusive.</li><li><code class=\"inline\">equals()</code> / <code class=\"inline\">equalsIgnoreCase()</code>, <code class=\"inline\">compareTo()</code> (lexicographic).</li><li><code class=\"inline\">contains()</code>, <code class=\"inline\">indexOf()</code>, <code class=\"inline\">startsWith()</code>, <code class=\"inline\">split()</code>, <code class=\"inline\">join()</code>, <code class=\"inline\">replace()</code>, <code class=\"inline\">trim()</code>/<code class=\"inline\">strip()</code>.</li><li>Java 11+: <code class=\"inline\">isBlank()</code>, <code class=\"inline\">lines()</code>, <code class=\"inline\">repeat(n)</code>.</li></ul>",
+    "tip": "Every one of these returns a NEW String — 's.trim();' on its own line does nothing.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-text-block",
+    "category": "java",
+    "difficulty": "beginner",
+    "tags": [
+      "string",
+      "java15",
+      "text-block"
+    ],
+    "question": "What are text blocks (Java 15)?",
+    "answer": "<p>A multi-line string literal delimited by <code class=\"inline\">\"\"\"</code>. Incidental leading whitespace is stripped automatically and quotes need no escaping — ideal for embedded JSON, SQL, or HTML.</p>",
+    "tip": "The closing delimiter's indentation decides how much leading whitespace is stripped.",
+    "code": "String json = \"\"\"\n    { \"name\": \"Ann\", \"age\": 30 }\n    \"\"\";",
+    "lang": "java"
+  },
+  {
+    "id": "java-object-methods",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "object",
+      "equals",
+      "hashcode",
+      "tostring"
+    ],
+    "question": "What methods does every object inherit from Object?",
+    "answer": "<ul><li><code class=\"inline\">equals()</code>, <code class=\"inline\">hashCode()</code> — logical equality (override together).</li><li><code class=\"inline\">toString()</code> — override it for readable logs.</li><li><code class=\"inline\">getClass()</code> — runtime type.</li><li><code class=\"inline\">clone()</code> — protected, shallow copy.</li><li><code class=\"inline\">wait()</code>, <code class=\"inline\">notify()</code>, <code class=\"inline\">notifyAll()</code> — legacy thread coordination.</li><li><code class=\"inline\">finalize()</code> — deprecated, never use.</li></ul>",
+    "tip": "The default toString() prints ClassName@hashcode — useless in logs. Override it or use a record.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-equals-contract",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "equals",
+      "contract",
+      "oop"
+    ],
+    "question": "What is the equals() contract?",
+    "answer": "<p><code class=\"inline\">equals()</code> must be: <strong>reflexive</strong> (x.equals(x)), <strong>symmetric</strong> (x.equals(y) ⇔ y.equals(x)), <strong>transitive</strong>, <strong>consistent</strong> across calls, and <code class=\"inline\">x.equals(null)</code> must be <code class=\"inline\">false</code>.</p><p>Break any of these and hash-based collections misbehave in ways that are very hard to debug.</p>",
+    "tip": "Symmetry is what breaks when a subclass adds a field to equals() — the classic reason to favour composition over inheritance for value types.",
+    "code": "@Override public boolean equals(Object o) {\n  if (this == o) return true;\n  if (!(o instanceof User u)) return false;\n  return Objects.equals(id, u.id);\n}\n@Override public int hashCode() { return Objects.hash(id); }",
+    "lang": "java",
+    "deep": "<h4>The five rules</h4><table><thead><tr><th>Rule</th><th>Meaning</th></tr></thead><tbody><tr><td>Reflexive</td><td><code class=\"inline\">x.equals(x)</code> is true</td></tr><tr><td>Symmetric</td><td><code class=\"inline\">x.equals(y)</code> ⇔ <code class=\"inline\">y.equals(x)</code></td></tr><tr><td>Transitive</td><td>x=y and y=z ⇒ x=z</td></tr><tr><td>Consistent</td><td>same result every call while state is unchanged</td></tr><tr><td>Null</td><td><code class=\"inline\">x.equals(null)</code> is false, never NPE</td></tr></tbody></table><h4>The inheritance trap (broken symmetry)</h4><pre><code>class Point { int x, y; }                 // equals compares x,y\nclass ColorPoint extends Point { Color c; } // equals compares x,y,c\n\nPoint p = new Point(1,1);\nColorPoint cp = new ColorPoint(1,1,RED);\np.equals(cp);   // true  — Point only checks x,y\ncp.equals(p);   // false — ColorPoint also checks color\n</code></pre><p>Symmetry is broken, so a <code class=\"inline\">List.contains()</code> result now depends on argument order. There is <strong>no way</strong> to extend an instantiable class with a value field and preserve the contract — use <strong>composition</strong> instead.</p><h4>getClass() vs instanceof</h4><p><code class=\"inline\">instanceof</code> lets subclasses be equal to the parent (can break symmetry); <code class=\"inline\">getClass() !=</code> is strict (breaks the Liskov substitution principle for proxies/Hibernate). For final classes and records the question is moot.</p><h4>The mutable-key trap (consistency)</h4><pre><code>Set&lt;User&gt; set = new HashSet&lt;&gt;();\nset.add(user);\nuser.setId(99);       // hash changed — wrong bucket\nset.contains(user);   // false! the object is lost in the set</code></pre><h4>How to say it in an interview</h4><p>“Reflexive, symmetric, transitive, consistent, and false for null. The one I watch for in code review is symmetry — a subclass adding a field to <code class=\"inline\">equals</code> breaks it, which is why value types should be final or use composition. And I never mutate a field that's part of the hash while the object is in a HashSet.”</p>"
+  },
+  {
+    "id": "java-hashcode-contract",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "hashcode",
+      "contract",
+      "collections"
+    ],
+    "question": "What is the hashCode() contract, and what makes a good hash?",
+    "answer": "<p>Rules: equal objects <strong>must</strong> return equal hash codes; unequal objects <em>may</em> collide (but shouldn't often); the value must be consistent while the object's state is unchanged.</p><p>A good hash spreads values evenly. <code class=\"inline\">Objects.hash(...)</code> is fine for most classes.</p>",
+    "tip": "Returning a constant from hashCode() is legal but turns every HashMap into a linked list — O(1) becomes O(n).",
+    "code": "@Override public int hashCode() {\n  return Objects.hash(firstName, lastName);\n}",
+    "lang": "java"
+  },
+  {
+    "id": "java-comparable-comparator",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "comparable",
+      "comparator",
+      "sorting"
+    ],
+    "question": "Comparable vs Comparator.",
+    "answer": "<p><strong>Comparable</strong> — the class defines its own <em>natural</em> order via <code class=\"inline\">compareTo()</code>. One ordering per class.</p><p><strong>Comparator</strong> — an external ordering passed to the sort. Any number of them, and you can order classes you don't own.</p>",
+    "tip": "Use Comparable for the one obvious order (e.g. by id) and Comparators for everything else.",
+    "code": "users.sort(Comparator\n    .comparing(User::getLastName)\n    .thenComparing(User::getFirstName)\n    .reversed());",
+    "lang": "java",
+    "deep": "<h4>Side by side</h4><table><thead><tr><th></th><th>Comparable</th><th>Comparator</th></tr></thead><tbody><tr><td>Package</td><td><code class=\"inline\">java.lang</code></td><td><code class=\"inline\">java.util</code></td></tr><tr><td>Method</td><td><code class=\"inline\">compareTo(T o)</code></td><td><code class=\"inline\">compare(T a, T b)</code></td></tr><tr><td>Lives</td><td>inside the class</td><td>outside it</td></tr><tr><td>Count</td><td>one natural order</td><td>as many as you like</td></tr><tr><td>Third-party class</td><td>can't add it</td><td>works fine</td></tr></tbody></table><h4>The contract</h4><p>Return <strong>negative</strong> if this &lt; other, <strong>zero</strong> if equal, <strong>positive</strong> if greater. It must be transitive and antisymmetric, and ideally <em>consistent with equals</em> — if it isn't, <code class=\"inline\">TreeSet</code>/<code class=\"inline\">TreeMap</code> will behave oddly, because they use <code class=\"inline\">compareTo</code>, not <code class=\"inline\">equals</code>, to decide duplicates.</p><h4>Never subtract to compare</h4><pre><code>// BROKEN — overflows for large/negative ints\nreturn a.getValue() - b.getValue();\n\n// Correct\nreturn Integer.compare(a.getValue(), b.getValue());</code></pre><h4>Modern chaining</h4><pre><code>Comparator&lt;User&gt; byName =\n    Comparator.comparing(User::getLastName)\n              .thenComparing(User::getFirstName)\n              .reversed();\n\n// nulls last\nComparator.nullsLast(Comparator.comparing(User::getName));</code></pre><h4>How to say it in an interview</h4><p>“Comparable is the class's own natural ordering; Comparator is an external, swappable one — and the only option for classes I don't control. I build them with <code class=\"inline\">Comparator.comparing().thenComparing()</code> and use <code class=\"inline\">Integer.compare</code> rather than subtraction, which overflows.”</p>"
+  },
+  {
+    "id": "java-shallow-deep-copy",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "clone",
+      "copy",
+      "memory"
+    ],
+    "question": "Shallow copy vs deep copy, and why is clone() discouraged?",
+    "answer": "<p>A <strong>shallow copy</strong> duplicates the object but shares the referenced objects. A <strong>deep copy</strong> recursively duplicates them too, so the copies are fully independent.</p><p><code class=\"inline\">Object.clone()</code> is shallow, protected, needs the marker interface <code class=\"inline\">Cloneable</code>, and skips constructors — so prefer a <strong>copy constructor</strong> or a static factory.</p>",
+    "tip": "Prefer a copy constructor over clone(). Josh Bloch (who wrote the API) calls Cloneable 'a highly atypical use of interfaces' and advises against it.",
+    "code": "// Preferred over clone()\npublic User(User other) {\n  this.name = other.name;\n  this.roles = new ArrayList<>(other.roles); // deep\n}",
+    "lang": "java"
+  },
+  {
+    "id": "java-serialization",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "serialization",
+      "io",
+      "security"
+    ],
+    "question": "What is serialization, and what does transient do?",
+    "answer": "<p>Serialization converts an object graph into a byte stream (via <code class=\"inline\">Serializable</code>) for storage or transfer; deserialization rebuilds it — <em>without</em> calling the constructor.</p><p><code class=\"inline\">transient</code> marks a field to be skipped (passwords, caches, non-serializable handles); it comes back as the default value.</p>",
+    "tip": "Deserializing untrusted bytes is a well-known remote-code-execution vector — modern systems use JSON instead.",
+    "code": "class Session implements Serializable {\n  private static final long serialVersionUID = 1L;\n  private String user;\n  private transient String password;  // not written\n}",
+    "lang": "java"
+  },
+  {
+    "id": "java-serialversionuid",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "serialization",
+      "versioning"
+    ],
+    "question": "What is serialVersionUID?",
+    "answer": "<p>A version stamp for a <code class=\"inline\">Serializable</code> class. On deserialization the JVM compares the stream's id with the class's; a mismatch throws <code class=\"inline\">InvalidClassException</code>.</p><p>If you don't declare it, the JVM computes one from the class structure — so <em>any</em> change (even adding a method) breaks compatibility with old data.</p>",
+    "tip": "Always declare serialVersionUID explicitly on Serializable classes — the auto-generated one is fragile.",
+    "code": "private static final long serialVersionUID = 1L;",
+    "lang": "java"
+  },
+  {
+    "id": "java-tostring",
+    "category": "java",
+    "difficulty": "beginner",
+    "tags": [
+      "tostring",
+      "object",
+      "debugging"
+    ],
+    "question": "Why override toString()?",
+    "answer": "<p>The default prints <code class=\"inline\">ClassName@1b6d3586</code> — the hex hash, which tells you nothing. An overridden <code class=\"inline\">toString()</code> shows the object's meaningful state in logs, debuggers, and error messages.</p>",
+    "tip": "Never put secrets (passwords, tokens, card numbers) in toString() — they end up in log files.",
+    "code": "@Override public String toString() {\n  return \"User{id=\" + id + \", name='\" + name + \"'}\";\n}",
+    "lang": "java"
+  },
+  {
+    "id": "java-instanceof-pattern",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "instanceof",
+      "pattern-matching",
+      "java16"
+    ],
+    "question": "What is pattern matching for instanceof (Java 16)?",
+    "answer": "<p>It binds a typed variable as part of the check, removing the redundant cast that always followed <code class=\"inline\">instanceof</code>. The binding is scoped to where the check is guaranteed true.</p>",
+    "tip": "The compiler is smart about scope: in 'if (!(o instanceof String s)) return;' the variable s is usable after the if-block.",
+    "code": "// old\nif (o instanceof String) { String s = (String) o; use(s); }\n\n// Java 16+\nif (o instanceof String s) { use(s); }",
+    "lang": "java"
+  },
+  {
+    "id": "java-switch-expression",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "switch",
+      "java14"
+    ],
+    "question": "What are switch expressions (Java 14)?",
+    "answer": "<p><code class=\"inline\">switch</code> can now <strong>return a value</strong> using arrow labels — no fall-through, no <code class=\"inline\">break</code>, and the compiler enforces exhaustiveness. Use <code class=\"inline\">yield</code> to return from a block body.</p>",
+    "tip": "Arrow-form switch fixes the #1 classic switch bug: forgetting break and falling through.",
+    "code": "int days = switch (month) {\n  case FEB -> 28;\n  case APR, JUN, SEP, NOV -> 30;\n  default -> 31;\n};",
+    "lang": "java"
+  },
+  {
+    "id": "java-switch-pattern",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "switch",
+      "pattern-matching",
+      "java21",
+      "sealed"
+    ],
+    "question": "What is pattern matching for switch (Java 21)?",
+    "answer": "<p><code class=\"inline\">switch</code> can match on <strong>type patterns</strong>, with optional <code class=\"inline\">when</code> guards and record deconstruction. Combined with <code class=\"inline\">sealed</code> types, the compiler verifies you handled every case — no <code class=\"inline\">default</code> needed.</p>",
+    "tip": "This is the modern replacement for the visitor pattern and long if/else-if instanceof chains.",
+    "code": "String describe(Shape s) {\n  return switch (s) {\n    case Circle c when c.r() > 10 -> \"big circle\";\n    case Circle c -> \"circle\";\n    case Square(double side) -> \"square \" + side;\n  };\n}",
+    "lang": "java"
+  },
+  {
+    "id": "java-string-format",
+    "category": "java",
+    "difficulty": "beginner",
+    "tags": [
+      "string",
+      "formatting"
+    ],
+    "question": "How do you format strings in Java?",
+    "answer": "<ul><li><code class=\"inline\">String.format(\"%s is %d\", name, age)</code> — printf-style.</li><li><code class=\"inline\">\"...\".formatted(args)</code> — Java 15+, reads better in a chain.</li><li><code class=\"inline\">String.join(\", \", list)</code> — joining.</li></ul><p>Common specifiers: <code class=\"inline\">%s</code> string, <code class=\"inline\">%d</code> integer, <code class=\"inline\">%.2f</code> 2-decimal float, <code class=\"inline\">%n</code> newline.</p>",
+    "tip": "In logging use placeholders — log.info(\"user {}\", id) — so the string is only built if that level is enabled.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-bigdecimal",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "bigdecimal",
+      "double",
+      "precision"
+    ],
+    "question": "Why is 0.1 + 0.2 != 0.3, and when do you use BigDecimal?",
+    "answer": "<p><code class=\"inline\">double</code>/<code class=\"inline\">float</code> are binary (IEEE-754) and cannot represent decimal fractions like 0.1 exactly, so errors accumulate.</p><p>Use <strong>BigDecimal</strong> for money and any exact decimal arithmetic — constructed from a <strong>String</strong>, and compared with <code class=\"inline\">compareTo()</code>.</p>",
+    "tip": "new BigDecimal(0.1) carries the double's error in — always use new BigDecimal(\"0.1\").",
+    "code": "0.1 + 0.2 == 0.3;                       // false!\nnew BigDecimal(\"0.1\").add(new BigDecimal(\"0.2\"))\n    .compareTo(new BigDecimal(\"0.3\")); // 0 — equal",
+    "lang": "java",
+    "deep": "<h4>Why the error exists</h4><p>0.1 in binary is a repeating fraction, just as 1/3 is in decimal. A <code class=\"inline\">double</code> stores the nearest 64-bit approximation, so <code class=\"inline\">0.1 + 0.2</code> lands on 0.30000000000000004. This has nothing to do with Java — every IEEE-754 language does it.</p><h4>Never use double for money</h4><pre><code>double total = 0;\nfor (int i = 0; i &lt; 10; i++) total += 0.1;\ntotal == 1.0;   // false -> 0.9999999999999999</code></pre><p>Across millions of transactions those cents become real, audited discrepancies.</p><h4>The String constructor rule</h4><pre><code>new BigDecimal(0.1);     // 0.1000000000000000055511151231257827…\nnew BigDecimal(\"0.1\");   // exactly 0.1  ✔\nBigDecimal.valueOf(0.1); // also fine — uses Double.toString</code></pre><h4>equals() vs compareTo()</h4><pre><code>new BigDecimal(\"2.0\").equals(new BigDecimal(\"2.00\"));    // false — scale differs!\nnew BigDecimal(\"2.0\").compareTo(new BigDecimal(\"2.00\")); // 0 — equal ✔</code></pre><p><code class=\"inline\">equals</code> compares value <em>and</em> scale. <strong>Always compare with <code class=\"inline\">compareTo() == 0</code>.</strong></p><h4>Other essentials</h4><ul><li>BigDecimal is <strong>immutable</strong> — <code class=\"inline\">a.add(b)</code> returns a new value; ignoring the result is a common bug.</li><li>Division needs a scale and rounding mode, or non-terminating results throw <code class=\"inline\">ArithmeticException</code>: <code class=\"inline\">a.divide(b, 2, RoundingMode.HALF_UP)</code>.</li><li>Alternative for money: store minor units (cents) as a <code class=\"inline\">long</code>.</li></ul><h4>How to say it in an interview</h4><p>“Doubles are binary approximations, so decimal fractions drift — never use them for money. I use BigDecimal built from a String, compare with <code class=\"inline\">compareTo</code> rather than <code class=\"inline\">equals</code> because equals also compares scale, and always pass a rounding mode to divide.”</p>"
+  },
+  {
+    "id": "java-math-integer-overflow",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "math",
+      "overflow",
+      "gotcha"
+    ],
+    "question": "What happens on integer overflow in Java?",
+    "answer": "<p>It <strong>wraps around silently</strong> — no exception. <code class=\"inline\">Integer.MAX_VALUE + 1</code> becomes <code class=\"inline\">Integer.MIN_VALUE</code>.</p><p>Use <code class=\"inline\">Math.addExact()</code> / <code class=\"inline\">multiplyExact()</code> to throw <code class=\"inline\">ArithmeticException</code> instead, or use <code class=\"inline\">long</code>.</p>",
+    "tip": "The famous binary-search bug was '(low + high) / 2' overflowing — use 'low + (high - low) / 2'.",
+    "code": "Integer.MAX_VALUE + 1;              // -2147483648\nMath.addExact(Integer.MAX_VALUE, 1); // ArithmeticException",
+    "lang": "java"
+  },
+  {
+    "id": "java-collections-hierarchy",
+    "category": "java",
+    "difficulty": "beginner",
+    "tags": [
+      "collections",
+      "hierarchy"
+    ],
+    "question": "Describe the Collections framework hierarchy.",
+    "answer": "<p><code class=\"inline\">Iterable</code> → <code class=\"inline\">Collection</code> → <strong>List</strong> (ordered, duplicates), <strong>Set</strong> (unique), <strong>Queue</strong>/<strong>Deque</strong> (ends).</p><p><strong>Map</strong> sits <em>outside</em> Collection — it stores key/value pairs, not elements.</p>",
+    "tip": "Map is NOT a Collection — a very common trip-up. It's part of the framework but a separate root interface.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-hashmap-internals",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "hashmap",
+      "internals",
+      "collections"
+    ],
+    "question": "How does HashMap work internally?",
+    "answer": "<p>An array of <strong>buckets</strong>. <code class=\"inline\">put</code> takes the key's <code class=\"inline\">hashCode()</code>, spreads it, and maps it to an index. Collisions chain in a linked list — which becomes a <strong>red-black tree</strong> past 8 entries in one bucket (Java 8+), keeping worst case at O(log n).</p><p>At <strong>load factor</strong> 0.75 the array doubles and everything is rehashed.</p>",
+    "tip": "Average O(1), worst case O(log n) since Java 8 (it was O(n) before treeification).",
+    "code": "Map<String, User> m = new HashMap<>(32);  // presize to avoid resizes",
+    "lang": "java",
+    "deep": "<h4>The structure</h4><p>A <code class=\"inline\">HashMap</code> is a <code class=\"inline\">Node[] table</code>. Each Node holds <code class=\"inline\">hash</code>, <code class=\"inline\">key</code>, <code class=\"inline\">value</code>, <code class=\"inline\">next</code>.</p><h4>put(k, v) step by step</h4><ol><li>Compute <code class=\"inline\">h = key.hashCode()</code>, then <strong>spread</strong> it: <code class=\"inline\">h ^ (h >>> 16)</code> — this mixes high bits down, because the index only uses the low ones.</li><li>Index = <code class=\"inline\">(n - 1) &amp; hash</code> — a fast modulo that works <em>because capacity is always a power of two</em>.</li><li>Empty bucket → store the node. Occupied → walk the chain comparing <code class=\"inline\">hash</code> then <code class=\"inline\">equals()</code>; replace on match, else append.</li><li>Chain length &gt; 8 <em>and</em> table ≥ 64 → <strong>treeify</strong> that bucket into a red-black tree.</li><li><code class=\"inline\">size &gt; capacity * 0.75</code> → <strong>resize</strong>: double the table and redistribute.</li></ol><h4>Why load factor 0.75</h4><p>It's the empirical sweet spot: lower wastes memory, higher causes collisions. Resizing is O(n), so presize when you know the size: <code class=\"inline\">new HashMap&lt;&gt;(expected / 0.75 + 1)</code>.</p><h4>Why treeification (Java 8)</h4><p>Before Java 8 a bucket was always a linked list, so an attacker sending keys with identical hashes could force O(n) lookups — a <strong>hash-collision DoS</strong>. Trees cap it at O(log n).</p><h4>The bad-key trap</h4><pre><code>// Mutating a key after insertion:\nkey.setId(99);        // hash changes\nmap.get(key);         // null — it's in the OLD bucket\n\n// Constant hashCode: every entry in one bucket -> O(log n) at best</code></pre><h4>HashMap is not thread-safe</h4><p>Concurrent <code class=\"inline\">put</code> during a resize could produce an <strong>infinite loop</strong> in Java 7 (circular chain); Java 8 fixed the loop but data loss remains. Use <code class=\"inline\">ConcurrentHashMap</code>.</p><h4>How to say it in an interview</h4><p>“It's a bucket array indexed by a spread hash. Collisions chain, and since Java 8 a chain over 8 becomes a red-black tree, so worst case is O(log n) instead of O(n). It resizes at 75% load, which is O(n) — so I presize when I know the count, use immutable keys, and reach for ConcurrentHashMap when threads are involved.”</p>"
+  },
+  {
+    "id": "java-hashmap-vs-hashtable",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "hashmap",
+      "hashtable",
+      "concurrency"
+    ],
+    "question": "HashMap vs Hashtable vs ConcurrentHashMap.",
+    "answer": "<ul><li><strong>HashMap</strong> — not synchronized, allows one null key + null values. The default choice.</li><li><strong>Hashtable</strong> — legacy, synchronizes every method on the whole map, no nulls. Don't use.</li><li><strong>ConcurrentHashMap</strong> — thread-safe with fine-grained locking, no nulls, high concurrent throughput.</li></ul>",
+    "tip": "Need a thread-safe map? ConcurrentHashMap — never Hashtable or Collections.synchronizedMap().",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-concurrenthashmap",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "concurrenthashmap",
+      "concurrency",
+      "collections"
+    ],
+    "question": "How does ConcurrentHashMap achieve thread-safety without locking everything?",
+    "answer": "<p>Since Java 8 it locks only the <strong>individual bucket</strong> (via <code class=\"inline\">synchronized</code> on the head node) and uses lock-free <strong>CAS</strong> for empty-bucket inserts. Reads are non-blocking — the table is <code class=\"inline\">volatile</code>.</p><p>So many threads write different buckets concurrently, while <code class=\"inline\">Hashtable</code> would serialize them all.</p>",
+    "tip": "Compound actions still need atomic methods: use computeIfAbsent() / merge(), not get-then-put.",
+    "code": "// NOT atomic — race between get and put\nif (map.get(k) == null) map.put(k, v);\n\n// atomic\nmap.computeIfAbsent(k, key -> v);\nmap.merge(k, 1, Integer::sum);   // counter",
+    "lang": "java"
+  },
+  {
+    "id": "java-map-implementations",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "map",
+      "treemap",
+      "linkedhashmap"
+    ],
+    "question": "HashMap vs LinkedHashMap vs TreeMap.",
+    "answer": "<ul><li><strong>HashMap</strong> — no order guarantee, O(1). Default.</li><li><strong>LinkedHashMap</strong> — keeps insertion (or access) order via a linked list, O(1). Access-order mode makes an LRU cache trivial.</li><li><strong>TreeMap</strong> — sorted by key (Comparable/Comparator), O(log n), and offers navigation like <code class=\"inline\">firstKey()</code>/<code class=\"inline\">headMap()</code>.</li></ul>",
+    "tip": "LinkedHashMap with accessOrder=true and removeEldestEntry() is a 5-line LRU cache — a favourite follow-up question.",
+    "code": "// LRU cache in a few lines\nnew LinkedHashMap<K,V>(16, 0.75f, true) {\n  protected boolean removeEldestEntry(Map.Entry<K,V> e) {\n    return size() > MAX;\n  }\n};",
+    "lang": "java"
+  },
+  {
+    "id": "java-set-implementations",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "set",
+      "collections"
+    ],
+    "question": "HashSet vs LinkedHashSet vs TreeSet.",
+    "answer": "<p>Each is backed by the matching map: <strong>HashSet</strong> (unordered, O(1)), <strong>LinkedHashSet</strong> (insertion order, O(1)), <strong>TreeSet</strong> (sorted, O(log n)).</p><p>All reject duplicates — decided by <code class=\"inline\">equals</code>/<code class=\"inline\">hashCode</code>, except TreeSet which uses <code class=\"inline\">compareTo</code>.</p>",
+    "tip": "TreeSet decides duplicates with compareTo, NOT equals — an inconsistent compareTo silently drops elements.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-arraylist-internals",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "arraylist",
+      "internals",
+      "performance"
+    ],
+    "question": "How does ArrayList grow internally?",
+    "answer": "<p>It wraps an <code class=\"inline\">Object[]</code>. When full, it allocates a new array at <strong>1.5×</strong> the capacity and copies everything over (<code class=\"inline\">Arrays.copyOf</code>).</p><p>So <code class=\"inline\">add()</code> is <strong>amortized O(1)</strong>; <code class=\"inline\">get(i)</code> is O(1); <code class=\"inline\">add/remove</code> in the middle is O(n) because of the shift.</p>",
+    "tip": "Presize with new ArrayList<>(n) when you know the count — it avoids repeated array copies.",
+    "code": "List<String> l = new ArrayList<>(10_000);  // no resizing",
+    "lang": "java"
+  },
+  {
+    "id": "java-arraylist-vs-array",
+    "category": "java",
+    "difficulty": "beginner",
+    "tags": [
+      "array",
+      "arraylist",
+      "collections"
+    ],
+    "question": "Array vs ArrayList.",
+    "answer": "<p><strong>Array</strong> — fixed length, can hold primitives, covariant, no helper methods.</p><p><strong>ArrayList</strong> — grows dynamically, objects only (autoboxing), generic-safe, rich API.</p>",
+    "tip": "Arrays are covariant (String[] is an Object[]) which allows ArrayStoreException at runtime; generics are invariant and catch it at compile time.",
+    "code": "Object[] arr = new String[2];\narr[0] = 42;   // compiles! ArrayStoreException at runtime",
+    "lang": "java"
+  },
+  {
+    "id": "java-fail-fast",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "iterator",
+      "concurrentmodification",
+      "collections"
+    ],
+    "question": "What is ConcurrentModificationException and how do you avoid it?",
+    "answer": "<p>Most collections are <strong>fail-fast</strong>: the iterator tracks a <code class=\"inline\">modCount</code> and throws <code class=\"inline\">ConcurrentModificationException</code> if the collection is structurally modified while iterating — even on a single thread.</p><p>Fix it with <code class=\"inline\">iterator.remove()</code>, <code class=\"inline\">removeIf()</code>, or by iterating a copy.</p>",
+    "tip": "It's usually NOT about threads — the classic cause is calling list.remove() inside a for-each loop.",
+    "code": "// throws\nfor (String s : list) if (s.isEmpty()) list.remove(s);\n\n// correct\nlist.removeIf(String::isEmpty);",
+    "lang": "java",
+    "deep": "<h4>How fail-fast works</h4><p>Every structural change (add/remove) increments the collection's <code class=\"inline\">modCount</code>. When you start a for-each loop, the iterator snapshots it as <code class=\"inline\">expectedModCount</code>. Every <code class=\"inline\">next()</code> compares the two — a mismatch throws immediately.</p><p>It's a <strong>bug-detection</strong> mechanism, not a guarantee: it's best-effort and can't be relied on for correctness.</p><h4>The single-thread cause</h4><pre><code>for (String s : list) {       // sugar for an Iterator\n  if (s.isEmpty()) list.remove(s);  // modCount++ -> next() throws\n}</code></pre><h4>Three correct fixes</h4><pre><code>// 1. removeIf — cleanest (Java 8+)\nlist.removeIf(String::isEmpty);\n\n// 2. explicit iterator\nIterator&lt;String&gt; it = list.iterator();\nwhile (it.hasNext()) if (it.next().isEmpty()) it.remove();\n\n// 3. iterate a copy\nfor (String s : new ArrayList&lt;&gt;(list)) if (s.isEmpty()) list.remove(s);</code></pre><h4>The one that silently \"works\"</h4><p>Removing the <strong>second-to-last</strong> element doesn't throw — <code class=\"inline\">hasNext()</code> returns false early and the loop just exits, skipping elements. A silent bug is worse than the exception.</p><h4>Fail-safe alternatives</h4><p><code class=\"inline\">ConcurrentHashMap</code> and <code class=\"inline\">CopyOnWriteArrayList</code> are <strong>fail-safe</strong>: they iterate a snapshot, so they never throw — but you may not see concurrent updates.</p><h4>How to say it in an interview</h4><p>“It's the fail-fast iterator's modCount check, and it usually has nothing to do with concurrency — it's removing from a list inside a for-each. I use <code class=\"inline\">removeIf</code>, or <code class=\"inline\">Iterator.remove</code>. The scary variant is removing the second-to-last element, which skips silently instead of throwing.”</p>"
+  },
+  {
+    "id": "java-arrays-aslist",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "arrays",
+      "list",
+      "gotcha"
+    ],
+    "question": "What are the pitfalls of Arrays.asList()?",
+    "answer": "<p>It returns a <strong>fixed-size view backed by the array</strong> — not an independent ArrayList. <code class=\"inline\">add()</code>/<code class=\"inline\">remove()</code> throw <code class=\"inline\">UnsupportedOperationException</code>, and <code class=\"inline\">set()</code> writes through to the array.</p><p>With primitives, <code class=\"inline\">Arrays.asList(intArray)</code> gives a single-element <code class=\"inline\">List&lt;int[]&gt;</code>, not a list of ints.</p>",
+    "tip": "Need a real mutable list? new ArrayList<>(Arrays.asList(...)). Need immutable? List.of(...).",
+    "code": "List<String> l = Arrays.asList(\"a\", \"b\");\nl.set(0, \"z\");   // ok — writes to the array\nl.add(\"c\");      // UnsupportedOperationException\n\nint[] nums = {1, 2, 3};\nArrays.asList(nums).size();   // 1 !",
+    "lang": "java"
+  },
+  {
+    "id": "java-immutable-collections",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "collections",
+      "immutability",
+      "java9"
+    ],
+    "question": "List.of() vs Arrays.asList() vs unmodifiableList().",
+    "answer": "<ul><li><strong>List.of()</strong> (Java 9) — truly immutable, rejects nulls, no backing array to mutate.</li><li><strong>Arrays.asList()</strong> — fixed-size <em>view</em>; set() still works.</li><li><strong>Collections.unmodifiableList(l)</strong> — an unmodifiable <em>wrapper</em>; the original list can still change under it.</li></ul>",
+    "tip": "unmodifiableList is a read-only view, not a copy — mutating the source still changes what callers see. Use List.copyOf() for a real snapshot.",
+    "code": "List.of(\"a\", \"b\");          // immutable\nList.copyOf(source);        // immutable snapshot",
+    "lang": "java"
+  },
+  {
+    "id": "java-queue-deque",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "queue",
+      "deque",
+      "stack"
+    ],
+    "question": "Queue, Deque, and why not Stack?",
+    "answer": "<p><strong>Queue</strong> — FIFO (<code class=\"inline\">offer</code>/<code class=\"inline\">poll</code>/<code class=\"inline\">peek</code>). <strong>Deque</strong> — both ends, so it serves as both a queue and a stack. <strong>PriorityQueue</strong> — heap-ordered, not FIFO.</p><p>The legacy <code class=\"inline\">Stack</code> extends <code class=\"inline\">Vector</code>, so it's synchronized and slow — use <code class=\"inline\">ArrayDeque</code>.</p>",
+    "tip": "Prefer offer/poll/peek (return null/false) over add/remove/element (throw) when empty is a normal case.",
+    "code": "Deque<Integer> stack = new ArrayDeque<>();\nstack.push(1); stack.pop();\n\nDeque<Integer> queue = new ArrayDeque<>();\nqueue.offer(1); queue.poll();",
+    "lang": "java"
+  },
+  {
+    "id": "java-iterator-iterable",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "iterator",
+      "iterable"
+    ],
+    "question": "Iterator vs Iterable, and how does for-each work?",
+    "answer": "<p><strong>Iterable</strong> — 'can be iterated'; it just supplies an <code class=\"inline\">iterator()</code>. <strong>Iterator</strong> — the cursor itself: <code class=\"inline\">hasNext()</code>, <code class=\"inline\">next()</code>, <code class=\"inline\">remove()</code>.</p><p>A for-each loop is pure syntax sugar: the compiler calls <code class=\"inline\">iterator()</code> and loops on <code class=\"inline\">hasNext()</code>/<code class=\"inline\">next()</code>. Implement Iterable and your class works with for-each.</p>",
+    "tip": "Iterator.remove() is the ONLY safe way to remove during iteration.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-generics-why",
+    "category": "java",
+    "difficulty": "beginner",
+    "tags": [
+      "generics",
+      "type-safety"
+    ],
+    "question": "Why do generics exist?",
+    "answer": "<p>They move type errors from <strong>runtime to compile time</strong> and remove casts. Before generics, <code class=\"inline\">List</code> held <code class=\"inline\">Object</code>, so a wrong type only blew up as a <code class=\"inline\">ClassCastException</code> later, far from the bug.</p>",
+    "tip": "Generics = compile-time type safety + no casts. That one line is the whole answer.",
+    "code": "List raw = new ArrayList();\nraw.add(42);\nString s = (String) raw.get(0);   // ClassCastException at runtime\n\nList<String> safe = new ArrayList<>();\nsafe.add(42);                     // compile error — caught early",
+    "lang": "java"
+  },
+  {
+    "id": "java-type-erasure",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "generics",
+      "erasure",
+      "internals"
+    ],
+    "question": "What is type erasure?",
+    "answer": "<p>Generics exist only at <strong>compile time</strong>. The compiler checks types, then <em>erases</em> them — replacing <code class=\"inline\">T</code> with <code class=\"inline\">Object</code> (or the bound) and inserting casts. At runtime a <code class=\"inline\">List&lt;String&gt;</code> is just a <code class=\"inline\">List</code>.</p><p>That's why you can't do <code class=\"inline\">new T()</code>, <code class=\"inline\">o instanceof List&lt;String&gt;</code>, or overload on <code class=\"inline\">List&lt;String&gt;</code> vs <code class=\"inline\">List&lt;Integer&gt;</code>.</p>",
+    "tip": "Erasure exists for backward compatibility — pre-2004 code had to keep running unchanged. C# chose reified generics instead.",
+    "code": "new ArrayList<String>().getClass()\n  == new ArrayList<Integer>().getClass();   // true!",
+    "lang": "java",
+    "deep": "<h4>What the compiler actually emits</h4><pre><code>// You write\nList&lt;String&gt; l = new ArrayList&lt;&gt;();\nString s = l.get(0);\n\n// Bytecode is effectively\nList l = new ArrayList();\nString s = (String) l.get(0);   // compiler-inserted cast</code></pre><p>Unbounded <code class=\"inline\">T</code> erases to <code class=\"inline\">Object</code>; <code class=\"inline\">&lt;T extends Comparable&gt;</code> erases to <code class=\"inline\">Comparable</code>.</p><h4>Why: migration compatibility</h4><p>Generics arrived in Java 5, years into Java's life. Erasure meant generic and legacy raw code could interoperate in one codebase with no runtime change — the pragmatic trade Java made, and the source of every restriction below.</p><h4>What erasure forbids</h4><table><thead><tr><th>Illegal</th><th>Why</th></tr></thead><tbody><tr><td><code class=\"inline\">new T()</code></td><td>T is unknown at runtime</td></tr><tr><td><code class=\"inline\">new T[10]</code></td><td>arrays need a runtime type</td></tr><tr><td><code class=\"inline\">o instanceof List&lt;String&gt;</code></td><td>the parameter is gone</td></tr><tr><td><code class=\"inline\">catch (MyException&lt;T&gt; e)</code></td><td>exceptions are matched at runtime</td></tr><tr><td>static field of type T</td><td>shared across all parameterizations</td></tr><tr><td>overload on <code class=\"inline\">List&lt;String&gt;</code> / <code class=\"inline\">List&lt;Integer&gt;</code></td><td>same erased signature</td></tr></tbody></table><h4>Heap pollution and @SafeVarargs</h4><pre><code>static &lt;T&gt; void bad(List&lt;T&gt;... lists) {   // generic array -> unchecked warning\n  Object[] arr = lists;\n  arr[0] = List.of(42);                  // heap pollution\n}</code></pre><p><code class=\"inline\">@SafeVarargs</code> suppresses the warning when you only read the array.</p><h4>The escape hatch: a type token</h4><pre><code>class Repo&lt;T&gt; {\n  private final Class&lt;T&gt; type;      // pass the class explicitly\n  Repo(Class&lt;T&gt; type) { this.type = type; }\n  T make() throws Exception { return type.getDeclaredConstructor().newInstance(); }\n}</code></pre><h4>How to say it in an interview</h4><p>“Generics are compile-time only — the compiler verifies types, erases them to Object or the bound, and inserts casts. It was done for backward compatibility with pre-generics code. The practical fallout is no <code class=\"inline\">new T()</code>, no generic arrays, no <code class=\"inline\">instanceof</code> on a parameterized type — and if I need the type at runtime I pass a <code class=\"inline\">Class&lt;T&gt;</code> token.”</p>"
+  },
+  {
+    "id": "java-generics-wildcards",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "generics",
+      "wildcards",
+      "pecs"
+    ],
+    "question": "Explain wildcards and PECS.",
+    "answer": "<p><strong>PECS — Producer Extends, Consumer Super.</strong></p><ul><li><code class=\"inline\">? extends T</code> — you <em>read</em> T from it (a producer). You can't add.</li><li><code class=\"inline\">? super T</code> — you <em>write</em> T into it (a consumer). Reads come back as Object.</li><li><code class=\"inline\">?</code> — unbounded; you know nothing but Object.</li></ul>",
+    "tip": "Look at the JDK's own Collections.copy signature: the destination is 'super T' (consumer), the source is 'extends T' (producer). That's PECS in one line.",
+    "code": "// producer — read only\ndouble sum(List<? extends Number> nums) {\n  double t = 0;\n  for (Number n : nums) t += n.doubleValue();\n  return t;\n}\n// consumer — write only\nvoid fill(List<? super Integer> dest) { dest.add(1); }",
+    "lang": "java",
+    "deep": "<h4>The problem wildcards solve: invariance</h4><pre><code>List&lt;Integer&gt; ints = new ArrayList&lt;&gt;();\nList&lt;Number&gt; nums = ints;   // COMPILE ERROR</code></pre><p>Even though Integer <em>is</em> a Number, <code class=\"inline\">List&lt;Integer&gt;</code> is <strong>not</strong> a <code class=\"inline\">List&lt;Number&gt;</code>. If it were, you could <code class=\"inline\">nums.add(3.14)</code> and corrupt the list of Integers. Generics are <strong>invariant</strong> on purpose.</p><h4>? extends T — a producer</h4><pre><code>List&lt;? extends Number&gt; l = List.of(1, 2, 3);\nNumber n = l.get(0);   // ✔ read — it's definitely a Number\nl.add(4);              // ✘ compile error</code></pre><p>The compiler doesn't know the exact type — <code class=\"inline\">List&lt;Integer&gt;</code>? <code class=\"inline\">List&lt;Double&gt;</code>? — so no write is safe. (<code class=\"inline\">add(null)</code> is the only exception.)</p><h4>? super T — a consumer</h4><pre><code>List&lt;? super Integer&gt; l = new ArrayList&lt;Number&gt;();\nl.add(42);             // ✔ Integer fits any supertype list\nObject o = l.get(0);   // only Object comes back</code></pre><h4>Reading the JDK signature</h4><pre><code>public static &lt;T&gt; void copy(List&lt;? super T&gt; dest, List&lt;? extends T&gt; src)\n//                                 consumer            producer</code></pre><pre><code>Stream.forEach(Consumer&lt;? super T&gt; action)          // consumes T\nStream.map(Function&lt;? super T, ? extends R&gt; fn)     // consumes T, produces R</code></pre><h4>When NOT to use a wildcard</h4><p>If a parameter is <strong>both</strong> read and written, use a plain <code class=\"inline\">T</code>. And never use a wildcard as a <strong>return type</strong> — it forces wildcards onto every caller.</p><h4>How to say it in an interview</h4><p>“Generics are invariant, so <code class=\"inline\">List&lt;Integer&gt;</code> isn't a <code class=\"inline\">List&lt;Number&gt;</code>. Wildcards restore flexibility: PECS — if the parameter produces values I read, use <code class=\"inline\">extends</code>; if it consumes values I write, use <code class=\"inline\">super</code>; if it does both, use a plain T. It's exactly why <code class=\"inline\">Collections.copy</code> is declared the way it is.”</p>"
+  },
+  {
+    "id": "java-generic-method-class",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "generics",
+      "methods"
+    ],
+    "question": "How do you write a generic class and a generic method?",
+    "answer": "<p>A <strong>generic class</strong> declares the parameter after the name: <code class=\"inline\">class Box&lt;T&gt;</code>. A <strong>generic method</strong> declares its own before the return type: <code class=\"inline\">&lt;T&gt; T first(List&lt;T&gt; l)</code>.</p><p><strong>Bounded</strong> parameters restrict it: <code class=\"inline\">&lt;T extends Comparable&lt;T&gt;&gt;</code> lets you call compareTo.</p>",
+    "tip": "Convention: T type, E element, K key, V value, R result, N number.",
+    "code": "public <T extends Comparable<T>> T max(List<T> list) {\n  T best = list.get(0);\n  for (T t : list) if (t.compareTo(best) > 0) best = t;\n  return best;\n}",
+    "lang": "java"
+  },
+  {
+    "id": "java-collections-complexity",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "collections",
+      "performance",
+      "big-o"
+    ],
+    "question": "What are the time complexities of the common collections?",
+    "answer": "<ul><li><strong>ArrayList</strong> — get O(1), add(end) amortized O(1), add/remove(middle) O(n), contains O(n).</li><li><strong>LinkedList</strong> — get O(n), add/remove at ends O(1).</li><li><strong>HashMap/HashSet</strong> — get/put O(1) average, O(log n) worst.</li><li><strong>TreeMap/TreeSet</strong> — O(log n) all, sorted.</li><li><strong>ArrayDeque</strong> — O(1) at both ends.</li></ul>",
+    "tip": "LinkedList's O(1) insert is a myth in practice — you pay O(n) to walk to the position first. ArrayList wins almost always.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-copyonwrite",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "concurrency",
+      "collections",
+      "copyonwrite"
+    ],
+    "question": "When would you use CopyOnWriteArrayList?",
+    "answer": "<p>Every write copies the whole backing array, so writes are O(n) but reads are lock-free and iterators never throw <code class=\"inline\">ConcurrentModificationException</code> (they see a snapshot).</p><p>Ideal for <strong>read-heavy, rarely-written</strong> data — listener lists, config. Terrible if writes are frequent.</p>",
+    "tip": "Its iterator is a snapshot, so it won't see later writes — and iterator.remove() throws.",
+    "code": "List<Listener> listeners = new CopyOnWriteArrayList<>();",
+    "lang": "java"
+  },
+  {
+    "id": "java-collections-sort",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "sorting",
+      "collections",
+      "algorithms"
+    ],
+    "question": "Which sorting algorithms does Java use?",
+    "answer": "<p><strong>Objects</strong> (<code class=\"inline\">Collections.sort</code>, <code class=\"inline\">Arrays.sort(Object[])</code>) → <strong>TimSort</strong>: a stable merge/insertion hybrid, O(n log n), near O(n) on partly-sorted data.</p><p><strong>Primitives</strong> (<code class=\"inline\">Arrays.sort(int[])</code>) → <strong>dual-pivot quicksort</strong>: faster, not stable — which doesn't matter, since identical primitives are indistinguishable.</p>",
+    "tip": "Stability is why objects and primitives use different algorithms — a great 'why' answer if asked.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-exception-hierarchy",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "exceptions",
+      "hierarchy"
+    ],
+    "question": "Describe the exception hierarchy. Error vs Exception.",
+    "answer": "<p><code class=\"inline\">Throwable</code> splits into <strong>Error</strong> and <strong>Exception</strong>.</p><ul><li><strong>Error</strong> — serious JVM problems (<code class=\"inline\">OutOfMemoryError</code>, <code class=\"inline\">StackOverflowError</code>). Don't catch them.</li><li><strong>Exception</strong> — application problems. <code class=\"inline\">RuntimeException</code> and its subclasses are unchecked; everything else is checked.</li></ul>",
+    "tip": "Never catch Throwable or Error — you'd swallow OutOfMemoryError and leave the JVM in an unusable state.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-try-with-resources",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "exceptions",
+      "resources",
+      "java7"
+    ],
+    "question": "What is try-with-resources?",
+    "answer": "<p>Any resource declared in <code class=\"inline\">try(...)</code> is closed automatically — in reverse order — as long as it implements <code class=\"inline\">AutoCloseable</code>. It replaces error-prone <code class=\"inline\">finally</code> blocks.</p><p>It also fixes <strong>exception masking</strong>: if both the body and <code class=\"inline\">close()</code> throw, the close exception is attached as <em>suppressed</em> rather than hiding the real one.</p>",
+    "tip": "With a manual finally, an exception from close() replaces the original — try-with-resources keeps both.",
+    "code": "try (var in = new FileInputStream(f);\n     var out = new FileOutputStream(g)) {\n  in.transferTo(out);\n}  // both closed, out first",
+    "lang": "java"
+  },
+  {
+    "id": "java-finally",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "exceptions",
+      "finally",
+      "gotcha"
+    ],
+    "question": "Does finally always run? What if it returns?",
+    "answer": "<p>It runs after try/catch in essentially every case — including when they <code class=\"inline\">return</code>. It's skipped only on <code class=\"inline\">System.exit()</code>, a JVM crash, or an infinite loop/killed thread.</p><p>A <code class=\"inline\">return</code> or <code class=\"inline\">throw</code> inside <code class=\"inline\">finally</code> <strong>discards</strong> the try block's return value or exception — which silently swallows bugs.</p>",
+    "tip": "Never return or throw from a finally block — it destroys the real exception. Some linters flag it as an error.",
+    "code": "int f() {\n  try { return 1; }\n  finally { return 2; }   // returns 2 — the 1 is lost\n}",
+    "lang": "java"
+  },
+  {
+    "id": "java-multi-catch",
+    "category": "java",
+    "difficulty": "beginner",
+    "tags": [
+      "exceptions",
+      "java7"
+    ],
+    "question": "What is multi-catch, and what's the catch ordering rule?",
+    "answer": "<p>Multi-catch handles several types in one block: <code class=\"inline\">catch (IOException | SQLException e)</code>. The variable is implicitly final.</p><p><strong>Ordering rule</strong>: subclasses must be caught before superclasses — putting <code class=\"inline\">Exception</code> first makes later blocks unreachable, a compile error.</p>",
+    "tip": "Catch the most specific exception first — most general last.",
+    "code": "try { risky(); }\ncatch (FileNotFoundException e) { /* specific */ }\ncatch (IOException | SQLException e) { /* multi */ }",
+    "lang": "java"
+  },
+  {
+    "id": "java-custom-exception",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "exceptions",
+      "design"
+    ],
+    "question": "How do you create a custom exception, and checked or unchecked?",
+    "answer": "<p>Extend <code class=\"inline\">RuntimeException</code> for an unchecked one, <code class=\"inline\">Exception</code> for a checked one. Always provide a constructor taking a <code class=\"inline\">cause</code> so the original stack trace survives.</p><p><strong>Rule of thumb</strong>: checked if the caller can plausibly recover; unchecked if it's a programming error or unrecoverable.</p>",
+    "tip": "Modern frameworks (Spring, Hibernate) favour unchecked exceptions — checked ones force try/catch noise up the whole call chain.",
+    "code": "public class OrderNotFoundException extends RuntimeException {\n  public OrderNotFoundException(String msg, Throwable cause) {\n    super(msg, cause);\n  }\n}",
+    "lang": "java"
+  },
+  {
+    "id": "java-exception-chaining",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "exceptions",
+      "debugging"
+    ],
+    "question": "What is exception chaining and why does it matter?",
+    "answer": "<p>Wrapping the original exception as the <strong>cause</strong> when rethrowing at a higher abstraction level. The trace then shows 'Caused by:' all the way down to the root.</p><p>Losing the cause is the fastest way to make a production bug undebuggable.</p>",
+    "tip": "'catch (SQLException e) { throw new DaoException(\"failed\"); }' throws away the root cause — always pass e.",
+    "code": "catch (SQLException e) {\n  throw new DaoException(\"Saving order failed\", e);  // keep the cause\n}",
+    "lang": "java"
+  },
+  {
+    "id": "java-exception-best-practices",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "exceptions",
+      "best-practices"
+    ],
+    "question": "What are exception-handling best practices?",
+    "answer": "<ul><li>Never swallow: an empty <code class=\"inline\">catch</code> hides bugs.</li><li>Catch specific types, not <code class=\"inline\">Exception</code>.</li><li>Always chain the cause when rethrowing.</li><li>Don't use exceptions for control flow — they're expensive (stack capture).</li><li>Clean up with try-with-resources, not <code class=\"inline\">finally</code>.</li><li>Log <em>or</em> rethrow — doing both duplicates noise.</li></ul>",
+    "tip": "'catch (Exception e) { }' is the single worst line in a Java codebase — it makes bugs invisible.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-npe-avoid",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "npe",
+      "null-safety"
+    ],
+    "question": "How do you avoid NullPointerExceptions?",
+    "answer": "<ul><li>Return <code class=\"inline\">Optional</code> or an empty collection — never <code class=\"inline\">null</code>.</li><li>Use <code class=\"inline\">Objects.requireNonNull()</code> to fail fast at the boundary.</li><li>Put the constant first: <code class=\"inline\">\"ACTIVE\".equals(status)</code>.</li><li><code class=\"inline\">Objects.equals(a, b)</code> is null-safe.</li><li>Watch for unboxing a null wrapper.</li></ul>",
+    "tip": "Java 14+ gives 'helpful NullPointerExceptions' that name the exact variable that was null — a great thing to mention.",
+    "code": "this.name = Objects.requireNonNull(name, \"name\");\nif (\"ACTIVE\".equals(status)) { }   // null-safe",
+    "lang": "java"
+  },
+  {
+    "id": "java-lambda",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "lambda",
+      "java8",
+      "functional"
+    ],
+    "question": "What is a lambda expression?",
+    "answer": "<p>An anonymous function you can pass around — shorthand for implementing a <strong>functional interface</strong> (exactly one abstract method).</p><p>Lambdas capture <strong>effectively final</strong> locals only, and <code class=\"inline\">this</code> refers to the enclosing instance (unlike an anonymous class).</p>",
+    "tip": "'Effectively final' = never reassigned after initialization. You don't need the final keyword, just the discipline.",
+    "code": "(a, b) -> a + b\nname -> System.out.println(name)\n() -> 42",
+    "lang": "java"
+  },
+  {
+    "id": "java-functional-interfaces",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "functional",
+      "java8",
+      "lambda"
+    ],
+    "question": "What are the built-in functional interfaces?",
+    "answer": "<ul><li><strong>Function&lt;T,R&gt;</strong> — <code class=\"inline\">apply</code>: T in, R out.</li><li><strong>Predicate&lt;T&gt;</strong> — <code class=\"inline\">test</code>: T in, boolean out.</li><li><strong>Consumer&lt;T&gt;</strong> — <code class=\"inline\">accept</code>: T in, nothing out.</li><li><strong>Supplier&lt;T&gt;</strong> — <code class=\"inline\">get</code>: nothing in, T out.</li><li><strong>BiFunction</strong>, <strong>UnaryOperator</strong>, <strong>BinaryOperator</strong>.</li></ul>",
+    "tip": "@FunctionalInterface isn't required — it just makes the compiler enforce the single-abstract-method rule.",
+    "code": "Function<String,Integer> len = String::length;\nPredicate<String> empty = String::isEmpty;\nSupplier<List<String>> maker = ArrayList::new;\nConsumer<String> print = System.out::println;",
+    "lang": "java"
+  },
+  {
+    "id": "java-method-reference",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "method-reference",
+      "java8",
+      "lambda"
+    ],
+    "question": "What are the four kinds of method reference?",
+    "answer": "<ol><li><strong>Static</strong> — <code class=\"inline\">Integer::parseInt</code></li><li><strong>Bound instance</strong> — <code class=\"inline\">System.out::println</code> (a specific object)</li><li><strong>Unbound instance</strong> — <code class=\"inline\">String::length</code> (the receiver becomes the first argument)</li><li><strong>Constructor</strong> — <code class=\"inline\">ArrayList::new</code></li></ol>",
+    "tip": "Unbound is the confusing one: String::length means s -> s.length(), where s is the stream element.",
+    "code": "list.forEach(System.out::println);   // bound\nlist.stream().map(String::length);   // unbound\nlist.stream().collect(toCollection(TreeSet::new)); // constructor",
+    "lang": "java"
+  },
+  {
+    "id": "java-stream-intermediate-terminal",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "streams",
+      "laziness",
+      "java8"
+    ],
+    "question": "Intermediate vs terminal operations — and why is laziness important?",
+    "answer": "<p><strong>Intermediate</strong> ops (<code class=\"inline\">filter</code>, <code class=\"inline\">map</code>, <code class=\"inline\">sorted</code>) return a Stream and are <strong>lazy</strong> — they build a pipeline and do nothing.</p><p>A <strong>terminal</strong> op (<code class=\"inline\">collect</code>, <code class=\"inline\">forEach</code>, <code class=\"inline\">reduce</code>, <code class=\"inline\">count</code>) triggers execution. Without one, <em>no code runs at all</em>.</p>",
+    "tip": "A stream with no terminal operation is a silent no-op — a real bug that compiles cleanly.",
+    "code": "list.stream().map(this::expensive);  // nothing happens!\nlist.stream().map(this::expensive).toList(); // now it runs",
+    "lang": "java",
+    "deep": "<h4>Laziness means one pass, not many</h4><pre><code>list.stream()\n    .filter(s -&gt; { System.out.println(\"filter \" + s); return s.length() &gt; 2; })\n    .map(s -&gt; { System.out.println(\"map \" + s); return s.toUpperCase(); })\n    .findFirst();</code></pre><p>Output is <code class=\"inline\">filter a, filter abc, map abc</code> — <strong>not</strong> every filter followed by every map. Each element is pushed through the whole pipeline, and <code class=\"inline\">findFirst</code> stops the moment it has an answer. An eager version would filter the entire list first.</p><h4>Short-circuiting</h4><p><code class=\"inline\">findFirst</code>, <code class=\"inline\">anyMatch</code>, <code class=\"inline\">allMatch</code>, <code class=\"inline\">limit</code> stop early — which is what makes infinite streams usable:</p><pre><code>Stream.iterate(1, n -&gt; n * 2).limit(10).toList();  // terminates</code></pre><h4>Streams are single-use</h4><pre><code>Stream&lt;String&gt; s = list.stream();\ns.count();\ns.forEach(...);   // IllegalStateException: stream has already been operated upon</code></pre><h4>Don't mutate the source mid-stream</h4><pre><code>list.stream().filter(...).forEach(x -&gt; list.remove(x)); // ConcurrentModificationException</code></pre><h4>Common terminal operations</h4><table><thead><tr><th>Op</th><th>Returns</th></tr></thead><tbody><tr><td><code class=\"inline\">collect</code> / <code class=\"inline\">toList</code></td><td>a collection</td></tr><tr><td><code class=\"inline\">reduce</code></td><td>a single value</td></tr><tr><td><code class=\"inline\">count</code></td><td>long</td></tr><tr><td><code class=\"inline\">anyMatch</code>/<code class=\"inline\">allMatch</code></td><td>boolean (short-circuits)</td></tr><tr><td><code class=\"inline\">findFirst</code>/<code class=\"inline\">findAny</code></td><td>Optional</td></tr><tr><td><code class=\"inline\">forEach</code></td><td>void</td></tr></tbody></table><h4>How to say it in an interview</h4><p>“Intermediate ops just build a pipeline; nothing executes until a terminal op. That laziness lets the JVM fuse them into a single pass and short-circuit — <code class=\"inline\">findFirst</code> stops at the first hit instead of mapping the whole list. And a stream is single-use: consuming it twice throws IllegalStateException.”</p>"
+  },
+  {
+    "id": "java-map-vs-flatmap",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "streams",
+      "flatmap",
+      "java8"
+    ],
+    "question": "map() vs flatMap().",
+    "answer": "<p><code class=\"inline\">map</code> is <strong>1→1</strong> — each element becomes exactly one element.</p><p><code class=\"inline\">flatMap</code> is <strong>1→many, flattened</strong> — each element becomes a <em>stream</em>, and all of those are concatenated into one. It's how you turn nested structures flat.</p>",
+    "tip": "Nested collection? map gives you Stream<List<T>>; flatMap gives you Stream<T>. That's the whole distinction.",
+    "code": "// map     -> Stream<List<String>>\nusers.stream().map(User::getRoles);\n\n// flatMap -> Stream<String>\nusers.stream().flatMap(u -> u.getRoles().stream()).distinct().toList();",
+    "lang": "java"
+  },
+  {
+    "id": "java-collectors",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "streams",
+      "collectors",
+      "groupingby"
+    ],
+    "question": "Which Collectors do you use most?",
+    "answer": "<ul><li><code class=\"inline\">toList()</code>, <code class=\"inline\">toSet()</code>, <code class=\"inline\">toMap(k, v)</code></li><li><code class=\"inline\">groupingBy(fn)</code> → <code class=\"inline\">Map&lt;K, List&lt;T&gt;&gt;</code>, with an optional downstream collector</li><li><code class=\"inline\">partitioningBy(pred)</code> → <code class=\"inline\">Map&lt;Boolean, List&lt;T&gt;&gt;</code></li><li><code class=\"inline\">joining(\", \")</code>, <code class=\"inline\">counting()</code>, <code class=\"inline\">summingInt()</code>, <code class=\"inline\">averagingDouble()</code></li></ul>",
+    "tip": "toMap() throws IllegalStateException on duplicate keys — pass a merge function to decide the winner.",
+    "code": "Map<Dept, List<User>> byDept =\n  users.stream().collect(groupingBy(User::getDept));\n\nMap<Dept, Long> counts =\n  users.stream().collect(groupingBy(User::getDept, counting()));\n\nMap<String, User> byId =\n  users.stream().collect(toMap(User::getId, u -> u, (a, b) -> a));",
+    "lang": "java",
+    "deep": "<h4>groupingBy with a downstream collector</h4><p>The second argument reshapes each group — this is where groupingBy gets powerful:</p><pre><code>// count per department\ngroupingBy(User::getDept, counting())              // Map&lt;Dept, Long&gt;\n\n// names only, not whole objects\ngroupingBy(User::getDept, mapping(User::getName, toList()))  // Map&lt;Dept, List&lt;String&gt;&gt;\n\n// average salary per department\ngroupingBy(User::getDept, averagingDouble(User::getSalary))\n\n// keep a sorted map\ngroupingBy(User::getDept, TreeMap::new, toList())\n\n// two-level grouping\ngroupingBy(User::getDept, groupingBy(User::getCity))</code></pre><h4>The toMap duplicate-key trap</h4><pre><code>// throws IllegalStateException: Duplicate key\nusers.stream().collect(toMap(User::getDept, u -&gt; u));\n\n// merge function decides the winner\nusers.stream().collect(toMap(User::getDept, u -&gt; u, (a, b) -&gt; a));</code></pre><p>A second trap: <code class=\"inline\">toMap</code> throws NPE if a <em>value</em> is null (HashMap allows it, but toMap's merge logic doesn't).</p><h4>partitioningBy vs groupingBy</h4><p><code class=\"inline\">partitioningBy</code> always returns <strong>both</strong> keys — <code class=\"inline\">true</code> and <code class=\"inline\">false</code> — even if a side is empty. A <code class=\"inline\">groupingBy</code> on a boolean can be missing a key entirely, so partitioningBy is safer for a two-way split.</p><h4>joining</h4><pre><code>users.stream().map(User::getName)\n     .collect(joining(\", \", \"[\", \"]\"));   // [Ann, Bob]</code></pre><h4>teeing (Java 12)</h4><pre><code>// two collectors, one pass\nstream.collect(teeing(counting(), summingInt(User::getAge),\n                      (count, sum) -&gt; sum / count));</code></pre><h4>How to say it in an interview</h4><p>“Beyond toList/toSet, the one I use constantly is <code class=\"inline\">groupingBy</code> with a downstream collector — <code class=\"inline\">groupingBy(User::getDept, counting())</code> gives counts per group in one pass. The trap to know is <code class=\"inline\">toMap</code>: duplicate keys throw IllegalStateException unless you supply a merge function.”</p>"
+  },
+  {
+    "id": "java-stream-reduce",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "streams",
+      "reduce",
+      "java8"
+    ],
+    "question": "How does reduce() work?",
+    "answer": "<p><code class=\"inline\">reduce</code> folds a stream into one value with an associative accumulator. Three forms: <code class=\"inline\">reduce(op)</code> → Optional; <code class=\"inline\">reduce(identity, op)</code> → T; <code class=\"inline\">reduce(identity, acc, combiner)</code> → for parallel/different types.</p>",
+    "tip": "The accumulator must be associative and the identity genuinely neutral, or parallel results go wrong.",
+    "code": "int sum = nums.stream().reduce(0, Integer::sum);\nOptional<String> longest = words.stream()\n    .reduce((a, b) -> a.length() >= b.length() ? a : b);",
+    "lang": "java"
+  },
+  {
+    "id": "java-parallel-stream",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "streams",
+      "parallel",
+      "concurrency"
+    ],
+    "question": "When should you use parallelStream()?",
+    "answer": "<p>It splits work across the shared <strong>ForkJoinPool.commonPool</strong>. Worth it only for <strong>large</strong> datasets, <strong>CPU-bound</strong> work, and <strong>splittable</strong> sources (arrays, ArrayList) with no shared mutable state.</p><p>For small lists or I/O-bound work it's usually <em>slower</em> — coordination costs more than it saves.</p>",
+    "tip": "parallelStream() uses one JVM-wide common pool — a blocking task in it can stall every parallel stream in your app.",
+    "code": "// good — big, CPU-bound\nlist.parallelStream().map(this::heavyMath).toList();\n\n// bad — shared mutable state, race\nList<X> out = new ArrayList<>();\nlist.parallelStream().forEach(out::add);   // broken",
+    "lang": "java"
+  },
+  {
+    "id": "java-optional-pitfalls",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "optional",
+      "null-safety",
+      "best-practices"
+    ],
+    "question": "How should you NOT use Optional?",
+    "answer": "<ul><li>Don't call <code class=\"inline\">get()</code> without checking — that's just an NPE with extra steps.</li><li>Don't use it as a <strong>field</strong> or <strong>parameter</strong> — it isn't Serializable and adds noise.</li><li>Don't return <code class=\"inline\">Optional&lt;List&gt;</code> — return an empty list.</li><li>Don't wrap it in if/else — chain <code class=\"inline\">map</code>/<code class=\"inline\">orElse</code>.</li></ul>",
+    "tip": "Optional was designed for RETURN TYPES only — that's straight from the JDK authors.",
+    "code": "// bad\nif (opt.isPresent()) return opt.get().getName();\nelse return \"Unknown\";\n\n// good\nreturn opt.map(User::getName).orElse(\"Unknown\");",
+    "lang": "java"
+  },
+  {
+    "id": "java-optional-orelse",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "optional",
+      "gotcha"
+    ],
+    "question": "orElse() vs orElseGet() vs orElseThrow().",
+    "answer": "<p><strong>orElse(x)</strong> — <code class=\"inline\">x</code> is evaluated <em>always</em>, even when the Optional has a value.</p><p><strong>orElseGet(supplier)</strong> — lazy; only runs when empty. Use it when the fallback is expensive.</p><p><strong>orElseThrow(supplier)</strong> — throws when empty.</p>",
+    "tip": "orElse(expensiveCall()) runs expensiveCall() even when the value is present — a real performance bug. Use orElseGet.",
+    "code": "opt.orElse(loadFromDb());      // ALWAYS hits the DB\nopt.orElseGet(() -> loadFromDb()); // only when empty\nopt.orElseThrow(() -> new NotFoundException(id));",
+    "lang": "java"
+  },
+  {
+    "id": "java-stream-creation",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "streams",
+      "java8"
+    ],
+    "question": "How do you create a Stream?",
+    "answer": "<ul><li><code class=\"inline\">collection.stream()</code> — the usual way.</li><li><code class=\"inline\">Arrays.stream(arr)</code> / <code class=\"inline\">Stream.of(a, b, c)</code></li><li><code class=\"inline\">IntStream.range(0, n)</code> — primitive, no boxing.</li><li><code class=\"inline\">Stream.iterate</code> / <code class=\"inline\">Stream.generate</code> — infinite, needs <code class=\"inline\">limit()</code>.</li><li><code class=\"inline\">Files.lines(path)</code> — lazy file reading (close it!).</li></ul>",
+    "tip": "Use IntStream/LongStream over Stream<Integer> on hot paths — it avoids boxing every element.",
+    "code": "IntStream.rangeClosed(1, 5).sum();          // 15\nStream.iterate(1, n -> n * 2).limit(10).toList();",
+    "lang": "java"
+  },
+  {
+    "id": "java-stream-vs-loop",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "streams",
+      "best-practices",
+      "performance"
+    ],
+    "question": "Streams or plain loops — which should you use?",
+    "answer": "<p><strong>Streams</strong> win for declarative transform/filter/group pipelines: less code, clearer intent, easy parallelism.</p><p><strong>Loops</strong> win for simple iteration, primitives on hot paths, early exit with side effects, and debugging (you can step through and see the stack).</p>",
+    "tip": "The mature answer is 'it depends, and readability decides' — not 'streams are always better'. Streams have real overhead and worse stack traces.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-thread-lifecycle",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "concurrency",
+      "threads",
+      "lifecycle"
+    ],
+    "question": "What are the thread states?",
+    "answer": "<p><strong>NEW</strong> → <strong>RUNNABLE</strong> (via <code class=\"inline\">start()</code>) → <strong>TERMINATED</strong>. In between it may sit in <strong>BLOCKED</strong> (waiting for a monitor lock), <strong>WAITING</strong> (<code class=\"inline\">wait()</code>, <code class=\"inline\">join()</code>), or <strong>TIMED_WAITING</strong> (<code class=\"inline\">sleep(n)</code>).</p>",
+    "tip": "Calling run() instead of start() executes on the CURRENT thread — no new thread at all. A classic trick question.",
+    "code": "Thread t = new Thread(task);\nt.start();   // new thread\nt.run();     // just a method call!",
+    "lang": "java"
+  },
+  {
+    "id": "java-runnable-callable",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "concurrency",
+      "callable",
+      "future"
+    ],
+    "question": "Runnable vs Callable.",
+    "answer": "<p><strong>Runnable.run()</strong> returns void and can't throw checked exceptions.</p><p><strong>Callable&lt;V&gt;.call()</strong> returns a value and <em>can</em> throw. Submit it to an ExecutorService and you get a <code class=\"inline\">Future&lt;V&gt;</code>.</p>",
+    "tip": "Need a result or a checked exception from a task? Callable. Otherwise Runnable.",
+    "code": "Future<Integer> f = pool.submit(() -> compute());\nInteger result = f.get();   // blocks",
+    "lang": "java"
+  },
+  {
+    "id": "java-synchronized",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "concurrency",
+      "synchronized",
+      "locks"
+    ],
+    "question": "What does synchronized do?",
+    "answer": "<p>It gives <strong>mutual exclusion</strong> (one thread at a time holds the object's monitor) <em>and</em> <strong>visibility</strong> (changes made inside are visible to the next thread that enters).</p><p>On an instance method the lock is <code class=\"inline\">this</code>; on a static method it's the <code class=\"inline\">Class</code> object. It's reentrant.</p>",
+    "tip": "Both guarantees matter — people remember mutual exclusion and forget the memory-visibility half.",
+    "code": "private final Object lock = new Object();\nvoid inc() {\n  synchronized (lock) { count++; }\n}",
+    "lang": "java",
+    "deep": "<h4>Two guarantees, not one</h4><ol><li><strong>Mutual exclusion</strong> — only one thread holds a given monitor at a time.</li><li><strong>Visibility (happens-before)</strong> — releasing a monitor flushes writes to main memory; acquiring it invalidates the cache. Without this, a thread could hold the lock and <em>still</em> read stale data.</li></ol><h4>What object is locked?</h4><pre><code>synchronized void a() {}         // locks 'this'\nstatic synchronized void b() {}  // locks MyClass.class — a DIFFERENT lock!\nsynchronized (lock) {}           // locks the given object</code></pre><p>a() and b() do <strong>not</strong> exclude each other — they use different monitors.</p><h4>Why a private final lock object</h4><pre><code>// risky — anyone can synchronized(myObj) and block you\npublic synchronized void work() {}\n\n// safe — the lock is yours\nprivate final Object lock = new Object();</code></pre><p>Never lock on a <code class=\"inline\">String</code> literal or a boxed <code class=\"inline\">Integer</code> — they're pooled/cached, so unrelated code can share your lock accidentally.</p><h4>Reentrancy</h4><p>A thread already holding a monitor can re-acquire it (the JVM counts depth), so a synchronized method calling another synchronized method on the same object won't self-deadlock.</p><h4>Don't lock more than you must</h4><pre><code>synchronized (lock) {\n  callSlowNetworkApi();   // holding the lock for a network round-trip\n}</code></pre><h4>synchronized vs ReentrantLock</h4><table><thead><tr><th></th><th>synchronized</th><th>ReentrantLock</th></tr></thead><tbody><tr><td>Release</td><td>automatic</td><td>manual (<code class=\"inline\">finally</code>)</td></tr><tr><td>tryLock / timeout</td><td>no</td><td>yes</td></tr><tr><td>Interruptible</td><td>no</td><td>yes</td></tr><tr><td>Fairness</td><td>no</td><td>optional</td></tr></tbody></table><h4>How to say it in an interview</h4><p>“It gives mutual exclusion <em>and</em> visibility — the happens-before edge is the half people forget. I lock on a private final object rather than <code class=\"inline\">this</code> so external code can't interfere, keep the critical section as small as possible, and never do I/O while holding a lock.”</p>"
+  },
+  {
+    "id": "java-volatile",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "concurrency",
+      "volatile",
+      "memory-model"
+    ],
+    "question": "What does volatile do, and when is it not enough?",
+    "answer": "<p><code class=\"inline\">volatile</code> guarantees <strong>visibility</strong> (reads/writes go to main memory, no caching) and prevents instruction reordering — but gives <strong>no atomicity</strong>.</p><p>So <code class=\"inline\">count++</code> is still broken: it's read-modify-write, three operations. Use it for a simple flag; use <code class=\"inline\">AtomicInteger</code> or a lock for compound updates.</p>",
+    "tip": "volatile = visibility only. If more than one thread WRITES, volatile alone is almost never sufficient.",
+    "code": "private volatile boolean running = true;  // correct use\nwhile (running) { work(); }\n\nprivate volatile int count;\ncount++;   // BROKEN — not atomic",
+    "lang": "java",
+    "deep": "<h4>The problem it solves</h4><pre><code>private boolean running = true;   // no volatile\n\n// thread A\nwhile (running) { }   // may loop FOREVER\n\n// thread B\nrunning = false;      // thread A might never see it</code></pre><p>The JIT can cache <code class=\"inline\">running</code> in a register and hoist the read out of the loop, so thread A spins forever. <code class=\"inline\">volatile</code> forbids that.</p><h4>What volatile guarantees</h4><ul><li><strong>Visibility</strong> — a write is immediately visible to every later read.</li><li><strong>Ordering</strong> — no reordering across the volatile access; everything written before a volatile write is visible to a thread that reads it (happens-before).</li></ul><h4>What it does NOT guarantee</h4><pre><code>volatile int count = 0;\ncount++;   // three ops: read, add, write</code></pre><p>Two threads can both read 5, both write 6 — one increment is lost. volatile makes each <em>individual</em> read and write atomic, not the sequence.</p><h4>volatile vs Atomic vs synchronized</h4><table><thead><tr><th></th><th>Visibility</th><th>Atomicity</th><th>Blocking</th></tr></thead><tbody><tr><td>volatile</td><td>yes</td><td>no</td><td>no</td></tr><tr><td>AtomicInteger</td><td>yes</td><td>yes (CAS)</td><td>no</td></tr><tr><td>synchronized</td><td>yes</td><td>yes</td><td>yes</td></tr></tbody></table><h4>Where volatile is exactly right</h4><ul><li>A <strong>stop flag</strong> written by one thread, read by many.</li><li>Safe publication of an <strong>immutable</strong> object: <code class=\"inline\">volatile Config config;</code> then <code class=\"inline\">config = new Config(...)</code>.</li><li>The <code class=\"inline\">instance</code> field in double-checked-locking singletons — <strong>required</strong>, or another thread can see a half-constructed object.</li></ul><h4>How to say it in an interview</h4><p>“volatile is visibility and ordering, not atomicity. It's right for a one-writer stop flag or publishing an immutable object, and it's mandatory in double-checked locking. The moment I need read-modify-write, I use AtomicInteger's CAS or a lock — <code class=\"inline\">volatile count++</code> still loses updates.”</p>"
+  },
+  {
+    "id": "java-atomic",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "concurrency",
+      "atomic",
+      "cas"
+    ],
+    "question": "What are the Atomic classes and how does CAS work?",
+    "answer": "<p><code class=\"inline\">AtomicInteger</code>, <code class=\"inline\">AtomicLong</code>, <code class=\"inline\">AtomicReference</code> give lock-free thread-safe updates using <strong>compare-and-swap</strong> — a single CPU instruction that updates a value only if it still matches the expected one, retrying in a loop otherwise.</p><p>Faster than locks under low-to-moderate contention: no blocking, no context switch.</p>",
+    "tip": "Under very high contention CAS retries burn CPU — LongAdder scales better for hot counters.",
+    "code": "AtomicInteger c = new AtomicInteger();\nc.incrementAndGet();                    // atomic\nc.updateAndGet(v -> v * 2);\nc.compareAndSet(5, 10);                 // only if still 5",
+    "lang": "java"
+  },
+  {
+    "id": "java-deadlock",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "concurrency",
+      "deadlock",
+      "locks"
+    ],
+    "question": "What is a deadlock and how do you prevent it?",
+    "answer": "<p>Two threads each hold a lock the other needs, so both block forever. It needs all four <strong>Coffman conditions</strong>: mutual exclusion, hold-and-wait, no preemption, circular wait.</p><p>Break any one — most practically, impose a <strong>global lock ordering</strong> so a cycle can't form, or use <code class=\"inline\">tryLock(timeout)</code>.</p>",
+    "tip": "Consistent lock ordering is the standard fix — always acquire locks in the same order everywhere.",
+    "code": "// deadlock: thread 1 locks A then B, thread 2 locks B then A\n// fix: both lock in a fixed order (e.g. by account id)\nif (a.id() < b.id()) { lock(a); lock(b); }\nelse                 { lock(b); lock(a); }",
+    "lang": "java",
+    "deep": "<h4>The classic setup</h4><pre><code>// Thread 1\nsynchronized (A) { synchronized (B) { } }\n// Thread 2\nsynchronized (B) { synchronized (A) { } }</code></pre><p>Thread 1 holds A and waits for B; thread 2 holds B and waits for A. Neither can proceed and neither will ever give up its lock. Deadlocks are <strong>timing-dependent</strong> — they typically pass every test and appear in production under load.</p><h4>The four Coffman conditions</h4><p>All four must hold simultaneously. Removing <em>any one</em> makes deadlock impossible:</p><table><thead><tr><th>Condition</th><th>How to break it</th></tr></thead><tbody><tr><td>Mutual exclusion</td><td>use immutable data / concurrent collections</td></tr><tr><td>Hold and wait</td><td>acquire all locks at once, or none</td></tr><tr><td>No preemption</td><td><code class=\"inline\">tryLock(timeout)</code> — give up and retry</td></tr><tr><td>Circular wait</td><td><strong>global lock ordering</strong> ← usually the best fix</td></tr></tbody></table><h4>Fix 1 — lock ordering (the real-world bank transfer)</h4><pre><code>void transfer(Account from, Account to, BigDecimal amt) {\n  Account first  = from.id() &lt; to.id() ? from : to;\n  Account second = from.id() &lt; to.id() ? to : from;\n  synchronized (first) {\n    synchronized (second) { from.debit(amt); to.credit(amt); }\n  }\n}</code></pre><p>Now <code class=\"inline\">transfer(a, b)</code> and <code class=\"inline\">transfer(b, a)</code> grab locks in the same order, so no cycle can form.</p><h4>Fix 2 — tryLock with a timeout</h4><pre><code>if (lockA.tryLock(1, SECONDS)) {\n  try {\n    if (lockB.tryLock(1, SECONDS)) { try { work(); } finally { lockB.unlock(); } }\n  } finally { lockA.unlock(); }\n}</code></pre><h4>Related failures</h4><ul><li><strong>Livelock</strong> — threads keep responding to each other and make no progress (two people stepping aside in a corridor).</li><li><strong>Starvation</strong> — a thread never gets the lock; fix with a fair lock.</li></ul><h4>How to diagnose one</h4><p>Take a thread dump (<code class=\"inline\">jstack &lt;pid&gt;</code> or Ctrl+Break) — the JVM literally prints “Found one Java-level deadlock” and names both threads and locks.</p><h4>How to say it in an interview</h4><p>“Circular wait on two locks. It needs the four Coffman conditions, and the practical fix is breaking circular wait with a global lock ordering — in a bank transfer, always lock the lower account id first. Failing that, <code class=\"inline\">tryLock</code> with a timeout. And <code class=\"inline\">jstack</code> detects them outright.”</p>"
+  },
+  {
+    "id": "java-race-condition",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "concurrency",
+      "race-condition",
+      "atomicity"
+    ],
+    "question": "What is a race condition?",
+    "answer": "<p>When correctness depends on the <em>timing</em> of threads. The classic form is <strong>check-then-act</strong> or <strong>read-modify-write</strong>: <code class=\"inline\">count++</code> looks like one step but is three, so two threads can interleave and lose an update.</p><p>Fix by making the compound action atomic — a lock, an Atomic class, or an atomic map method.</p>",
+    "tip": "Any check-then-act on shared state is a race. Two threads can both pass the check before either acts.",
+    "code": "// race — both threads can pass the check\nif (!map.containsKey(k)) map.put(k, v);\n\n// atomic\nmap.putIfAbsent(k, v);",
+    "lang": "java"
+  },
+  {
+    "id": "java-executorservice",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "concurrency",
+      "executor",
+      "thread-pool"
+    ],
+    "question": "What is ExecutorService and why use a thread pool?",
+    "answer": "<p>It decouples <em>task submission</em> from <em>thread management</em>. Threads are expensive (~1MB stack each), so a pool reuses a fixed set instead of creating one per task — bounding resource use and avoiding churn.</p><p><code class=\"inline\">submit()</code> returns a <code class=\"inline\">Future</code>; shut down with <code class=\"inline\">shutdown()</code> then <code class=\"inline\">awaitTermination()</code>.</p>",
+    "tip": "Executors are non-daemon by default — forget shutdown() and your JVM never exits.",
+    "code": "ExecutorService pool = Executors.newFixedThreadPool(4);\ntry {\n  pool.submit(() -> work());\n} finally {\n  pool.shutdown();\n  pool.awaitTermination(30, TimeUnit.SECONDS);\n}",
+    "lang": "java",
+    "deep": "<h4>Why not just <code class=\"inline\">new Thread()</code>?</h4><ul><li>Each thread costs ~1MB of stack plus OS scheduling overhead.</li><li>Unbounded creation under load → <code class=\"inline\">OutOfMemoryError: unable to create new native thread</code>.</li><li>More threads than cores means context-switch thrashing, not speed.</li></ul><h4>The factory methods</h4><table><thead><tr><th>Factory</th><th>Behaviour</th><th>Risk</th></tr></thead><tbody><tr><td><code class=\"inline\">newFixedThreadPool(n)</code></td><td>n threads, unbounded queue</td><td>queue can OOM</td></tr><tr><td><code class=\"inline\">newCachedThreadPool()</code></td><td>unbounded threads, reused 60s</td><td>thread explosion</td></tr><tr><td><code class=\"inline\">newSingleThreadExecutor()</code></td><td>serial execution</td><td>—</td></tr><tr><td><code class=\"inline\">newVirtualThreadPerTaskExecutor()</code></td><td>Java 21, one virtual thread per task</td><td>—</td></tr></tbody></table><p>Both common factories are unbounded somewhere — for production, construct <code class=\"inline\">ThreadPoolExecutor</code> directly with a <strong>bounded queue</strong> and a rejection policy.</p><pre><code>new ThreadPoolExecutor(4, 8, 60L, SECONDS,\n    new ArrayBlockingQueue&lt;&gt;(100),\n    new ThreadPoolExecutor.CallerRunsPolicy());  // backpressure</code></pre><h4>Sizing the pool</h4><ul><li><strong>CPU-bound</strong>: ~<code class=\"inline\">availableProcessors()</code>.</li><li><strong>I/O-bound</strong>: higher — threads spend most time blocked. (Or use virtual threads.)</li></ul><h4>Shutting down properly</h4><pre><code>pool.shutdown();                     // no new tasks; finish current\nif (!pool.awaitTermination(30, SECONDS))\n  pool.shutdownNow();                // interrupt the stragglers</code></pre><h4>The swallowed-exception trap</h4><pre><code>pool.submit(() -&gt; { throw new RuntimeException(\"boom\"); });\n// Nothing printed! The exception is captured in the Future.\n</code></pre><p>It only surfaces when you call <code class=\"inline\">future.get()</code>, wrapped in <code class=\"inline\">ExecutionException</code>. With <code class=\"inline\">execute()</code> instead of <code class=\"inline\">submit()</code>, it goes to the uncaught handler. This silently hides failures in production.</p><h4>How to say it in an interview</h4><p>“It separates submitting work from managing threads, so I reuse a bounded set instead of paying ~1MB and creation cost per task. In production I build a ThreadPoolExecutor with a bounded queue and CallerRunsPolicy for backpressure, rather than the unbounded Executors factories. And I always remember <code class=\"inline\">submit()</code> swallows exceptions into the Future.”</p>"
+  },
+  {
+    "id": "java-future-completablefuture",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "concurrency",
+      "completablefuture",
+      "async"
+    ],
+    "question": "Future vs CompletableFuture.",
+    "answer": "<p><strong>Future</strong> is passive: the only way to get the result is <code class=\"inline\">get()</code>, which <em>blocks</em>. No chaining, no combining, no callbacks.</p><p><strong>CompletableFuture</strong> (Java 8) is composable — <code class=\"inline\">thenApply</code>, <code class=\"inline\">thenCompose</code>, <code class=\"inline\">thenCombine</code>, <code class=\"inline\">allOf</code>, plus <code class=\"inline\">exceptionally</code> for errors. Fully non-blocking.</p>",
+    "tip": "thenApply is map, thenCompose is flatMap — the same distinction as with streams.",
+    "code": "CompletableFuture.supplyAsync(() -> fetchUser(id))\n  .thenApply(User::getName)\n  .thenCombine(fetchOrders(id), (name, orders) -> render(name, orders))\n  .exceptionally(ex -> \"fallback\")\n  .thenAccept(System.out::println);",
+    "lang": "java"
+  },
+  {
+    "id": "java-wait-notify",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "concurrency",
+      "wait",
+      "notify"
+    ],
+    "question": "How do wait() and notify() work?",
+    "answer": "<p><code class=\"inline\">wait()</code> releases the monitor and parks the thread until another calls <code class=\"inline\">notify()</code>/<code class=\"inline\">notifyAll()</code> on the same object. All three <strong>must</strong> be called while holding that monitor, or you get <code class=\"inline\">IllegalMonitorStateException</code>.</p><p>Always wait in a <code class=\"inline\">while</code> loop, never an <code class=\"inline\">if</code> — <strong>spurious wakeups</strong> are permitted by the spec.</p>",
+    "tip": "wait() in a while loop, and prefer notifyAll() over notify() — notify() can wake the wrong thread and stall the system.",
+    "code": "synchronized (lock) {\n  while (queue.isEmpty()) lock.wait();  // while, not if!\n  process(queue.poll());\n}",
+    "lang": "java"
+  },
+  {
+    "id": "java-sleep-vs-wait",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "concurrency",
+      "wait",
+      "sleep"
+    ],
+    "question": "sleep() vs wait().",
+    "answer": "<table><thead><tr><th></th><th>sleep()</th><th>wait()</th></tr></thead><tbody><tr><td>Defined on</td><td>Thread (static)</td><td>Object</td></tr><tr><td>Releases the lock?</td><td><strong>No</strong></td><td><strong>Yes</strong></td></tr><tr><td>Woken by</td><td>timeout</td><td>notify()/timeout</td></tr><tr><td>Needs a monitor?</td><td>no</td><td>yes</td></tr></tbody></table>",
+    "tip": "The key line: sleep() keeps the lock, wait() gives it up. Sleeping inside a synchronized block blocks everyone else for the whole duration.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-reentrantlock",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "concurrency",
+      "locks",
+      "reentrantlock"
+    ],
+    "question": "ReentrantLock vs synchronized.",
+    "answer": "<p><code class=\"inline\">ReentrantLock</code> adds what <code class=\"inline\">synchronized</code> can't do: <code class=\"inline\">tryLock()</code> (with timeout), interruptible acquisition, <strong>fairness</strong>, and multiple <code class=\"inline\">Condition</code> objects.</p><p>The cost: you must <code class=\"inline\">unlock()</code> in a <code class=\"inline\">finally</code> — forget it and the lock is held forever.</p>",
+    "tip": "Default to synchronized (simpler, can't leak). Reach for ReentrantLock only when you need tryLock, a timeout, or fairness.",
+    "code": "lock.lock();\ntry { work(); }\nfinally { lock.unlock(); }   // MUST be in finally",
+    "lang": "java"
+  },
+  {
+    "id": "java-readwritelock",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "concurrency",
+      "locks"
+    ],
+    "question": "What is a ReadWriteLock?",
+    "answer": "<p>It splits the lock in two: many threads may hold the <strong>read</strong> lock at once, but the <strong>write</strong> lock is exclusive. Great for read-heavy shared state, since readers no longer block each other.</p><p>Java 8's <code class=\"inline\">StampedLock</code> goes further with optimistic reads.</p>",
+    "tip": "Only pays off when reads heavily outnumber writes — otherwise its bookkeeping costs more than a plain lock.",
+    "code": "ReadWriteLock rw = new ReentrantReadWriteLock();\nrw.readLock().lock();   // concurrent\nrw.writeLock().lock();  // exclusive",
+    "lang": "java"
+  },
+  {
+    "id": "java-threadlocal",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "concurrency",
+      "threadlocal",
+      "memory-leak"
+    ],
+    "question": "What is ThreadLocal and what's the danger?",
+    "answer": "<p>It gives each thread its own independent copy of a variable — used for per-request context (user id, transaction, <code class=\"inline\">SimpleDateFormat</code>).</p><p><strong>The danger</strong>: with a thread pool, threads are reused forever, so a value you never remove leaks memory <em>and</em> bleeds into the next request.</p>",
+    "tip": "Always remove() in a finally block when using ThreadLocal with a pool — otherwise you leak, and one user can see another's data.",
+    "code": "static final ThreadLocal<User> CTX = new ThreadLocal<>();\ntry {\n  CTX.set(user);\n  handle();\n} finally {\n  CTX.remove();   // essential with pooled threads\n}",
+    "lang": "java"
+  },
+  {
+    "id": "java-virtual-threads",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "concurrency",
+      "virtual-threads",
+      "java21"
+    ],
+    "question": "What are virtual threads (Java 21)?",
+    "answer": "<p>Lightweight threads managed by the <strong>JVM</strong>, not the OS. Millions can exist; when one blocks on I/O it <em>unmounts</em> from its carrier thread instead of parking an OS thread.</p><p>So the simple blocking, thread-per-request style finally scales — no reactive rewrite needed.</p>",
+    "tip": "Virtual threads help I/O-bound work, not CPU-bound. They don't add cores — they stop you wasting OS threads on waiting.",
+    "code": "try (var exec = Executors.newVirtualThreadPerTaskExecutor()) {\n  for (var task : tasks) exec.submit(task);\n}",
+    "lang": "java",
+    "deep": "<h4>The problem: thread-per-request doesn't scale</h4><p>A platform thread maps 1:1 to an OS thread — ~1MB of stack, expensive context switches. A server caps out around a few thousand. But most of those threads are just <em>blocked on I/O</em>, holding an expensive OS resource to do nothing.</p><p>The old escape was reactive programming (<code class=\"inline\">CompletableFuture</code>, WebFlux): scalable, but the code is inside-out, stack traces are useless, and debuggers barely help.</p><h4>How virtual threads fix it</h4><p>A virtual thread is a Java object on the heap scheduled by the JVM onto a small pool of <strong>carrier</strong> (platform) threads. When it blocks on I/O, the JVM <strong>unmounts</strong> it — copying its stack to the heap — and the carrier thread immediately runs another. When the I/O completes it remounts.</p><p>You write plain blocking code; the JVM gets async efficiency underneath.</p><h4>Platform vs virtual</h4><table><thead><tr><th></th><th>Platform</th><th>Virtual</th></tr></thead><tbody><tr><td>Backed by</td><td>an OS thread</td><td>heap object</td></tr><tr><td>Stack</td><td>~1MB, fixed</td><td>grows on demand</td></tr><tr><td>Practical count</td><td>thousands</td><td>millions</td></tr><tr><td>Creation cost</td><td>high — pool them</td><td>trivial — don't pool</td></tr></tbody></table><h4>The rules that change</h4><ul><li><strong>Don't pool them.</strong> Creating one is cheap; <code class=\"inline\">newVirtualThreadPerTaskExecutor()</code> is the idiom.</li><li><strong>Don't use them for CPU-bound work</strong> — there's nothing to unmount; a fixed pool is still right.</li><li><strong>ThreadLocal still works</strong> but with millions of threads the memory adds up — Java 21 adds <code class=\"inline\">ScopedValue</code>.</li></ul><h4>Pinning — the one real gotcha</h4><pre><code>synchronized (lock) {\n  callBlockingIo();   // PINS the carrier thread — can't unmount!\n}\n// Use a ReentrantLock instead — it unmounts correctly.</code></pre><p>Blocking inside <code class=\"inline\">synchronized</code> pins the virtual thread to its carrier, defeating the point. (Largely fixed in later JDKs, but still the classic advice.)</p><h4>How to say it in an interview</h4><p>“JVM-scheduled threads that unmount from their carrier OS thread when they block, so thread-per-request scales to millions of connections without going reactive. They're for I/O-bound work — CPU-bound still wants a fixed pool. Two rules: don't pool them, and don't block inside <code class=\"inline\">synchronized</code>, which pins the carrier.”</p>"
+  },
+  {
+    "id": "java-concurrent-utils",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "concurrency",
+      "countdownlatch",
+      "semaphore"
+    ],
+    "question": "CountDownLatch, CyclicBarrier, Semaphore — what's the difference?",
+    "answer": "<ul><li><strong>CountDownLatch</strong> — wait for N events; <em>one-shot</em>, can't be reset. 'Wait until startup finishes.'</li><li><strong>CyclicBarrier</strong> — N threads wait for <em>each other</em>; reusable each round.</li><li><strong>Semaphore</strong> — N permits limiting concurrent access. 'At most 10 threads hit this API.'</li></ul>",
+    "tip": "Latch = wait for events, one-shot. Barrier = threads wait for each other, reusable. Semaphore = permit counter.",
+    "code": "CountDownLatch latch = new CountDownLatch(3);\nlatch.countDown();\nlatch.await();\n\nSemaphore sem = new Semaphore(10);\nsem.acquire();\ntry { call(); } finally { sem.release(); }",
+    "lang": "java"
+  },
+  {
+    "id": "java-blockingqueue",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "concurrency",
+      "blockingqueue",
+      "producer-consumer"
+    ],
+    "question": "What is a BlockingQueue?",
+    "answer": "<p>A thread-safe queue where <code class=\"inline\">put()</code> blocks while full and <code class=\"inline\">take()</code> blocks while empty. It implements the whole producer-consumer pattern for you — no <code class=\"inline\">wait</code>/<code class=\"inline\">notify</code> to get wrong.</p><p>A <strong>bounded</strong> one (<code class=\"inline\">ArrayBlockingQueue</code>) also gives you natural backpressure.</p>",
+    "tip": "Prefer a bounded queue. An unbounded LinkedBlockingQueue just relocates your overload problem into an OutOfMemoryError.",
+    "code": "BlockingQueue<Task> q = new ArrayBlockingQueue<>(100);\n// producer\nq.put(task);   // blocks when full\n// consumer\nTask t = q.take();  // blocks when empty",
+    "lang": "java"
+  },
+  {
+    "id": "java-thread-safety-approaches",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "concurrency",
+      "thread-safety",
+      "design"
+    ],
+    "question": "What are the ways to make a class thread-safe?",
+    "answer": "<ol><li><strong>Immutability</strong> — no mutable state, nothing to race. Best option.</li><li><strong>Confinement</strong> — don't share; keep state thread-local or on the stack.</li><li><strong>Synchronization</strong> — guard state with a lock.</li><li><strong>Atomics</strong> — lock-free CAS for single variables.</li><li><strong>Concurrent collections</strong> — let the JDK do it.</li></ol>",
+    "tip": "The best concurrency answer is 'don't share mutable state' — immutability and confinement beat locks every time.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-double-checked-locking",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "concurrency",
+      "singleton",
+      "volatile"
+    ],
+    "question": "What is double-checked locking, and why is volatile required?",
+    "answer": "<p>An optimization that checks for null, and only then locks and checks again — so the lock is paid once, not on every read.</p><p><code class=\"inline\">volatile</code> is <strong>mandatory</strong>: without it, the JVM may reorder the construction so the reference is published <em>before</em> the object is fully built, letting another thread see a half-initialized object.</p>",
+    "tip": "Without volatile this is a famous broken idiom — it appears to work and fails rarely under load. Prefer an enum or holder-class singleton.",
+    "code": "private static volatile Singleton instance;   // volatile!\nstatic Singleton get() {\n  if (instance == null) {\n    synchronized (Singleton.class) {\n      if (instance == null) instance = new Singleton();\n    }\n  }\n  return instance;\n}",
+    "lang": "java"
+  },
+  {
+    "id": "java-stack-vs-heap",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "memory",
+      "jvm",
+      "stack",
+      "heap"
+    ],
+    "question": "Stack vs heap memory.",
+    "answer": "<p><strong>Stack</strong> — one per thread; holds local variables, primitives, and references, in frames pushed/popped per method call. Fast, automatic, small.</p><p><strong>Heap</strong> — shared by all threads; holds every object and its instance fields. Managed by the GC.</p>",
+    "tip": "Deep recursion overflows the STACK (StackOverflowError); too many live objects exhausts the HEAP (OutOfMemoryError).",
+    "code": "void m() {\n  int x = 5;                 // stack\n  User u = new User();       // reference on stack, object on heap\n}",
+    "lang": "java"
+  },
+  {
+    "id": "java-gc-algorithms",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "gc",
+      "jvm",
+      "performance"
+    ],
+    "question": "Which garbage collectors does the JVM offer?",
+    "answer": "<ul><li><strong>Serial</strong> — one thread; tiny heaps/containers.</li><li><strong>Parallel</strong> — multi-threaded, throughput-focused, long pauses.</li><li><strong>G1</strong> — the default since Java 9; region-based, aims at a pause-time target. Good all-rounder.</li><li><strong>ZGC / Shenandoah</strong> — concurrent, sub-millisecond pauses on huge heaps.</li></ul>",
+    "tip": "G1 is the default and the right answer for 'which would you pick'. ZGC when latency matters more than throughput.",
+    "code": "java -XX:+UseG1GC -Xms2g -Xmx2g -jar app.jar",
+    "lang": "bash"
+  },
+  {
+    "id": "java-gc-generational",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "gc",
+      "memory",
+      "jvm"
+    ],
+    "question": "Why is the heap split into generations?",
+    "answer": "<p>Because of the <strong>weak generational hypothesis</strong>: most objects die young.</p><p>New objects go in <strong>Eden</strong>; survivors are copied between <strong>Survivor</strong> spaces, and after enough rounds are <strong>promoted</strong> to the <strong>Old</strong> generation. Minor GCs are frequent and cheap; major GCs are rare and expensive.</p>",
+    "tip": "Minor GC only copies the SURVIVORS, so a young gen where almost everything is garbage costs nearly nothing to collect.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>The hypothesis that drives the design</h4><p>Empirically, the overwhelming majority of objects become garbage almost immediately (loop temporaries, DTOs, boxed values), while the few that survive tend to live a long time. So the JVM collects the young area often and the old area rarely.</p><h4>The layout</h4><table><thead><tr><th>Region</th><th>Holds</th><th>Collected by</th></tr></thead><tbody><tr><td>Eden</td><td>brand-new objects</td><td>Minor GC (often)</td></tr><tr><td>Survivor S0 / S1</td><td>objects that survived a GC</td><td>Minor GC</td></tr><tr><td>Old (Tenured)</td><td>long-lived, promoted objects</td><td>Major GC (rare)</td></tr><tr><td>Metaspace</td><td>class metadata (native memory since Java 8)</td><td>on class unload</td></tr></tbody></table><h4>How a minor GC works</h4><ol><li>Eden fills up → minor GC triggers, application threads pause (stop-the-world).</li><li>Live objects are traced from the <strong>GC roots</strong> and <strong>copied</strong> into the empty survivor space.</li><li>Eden and the old survivor space are then wiped wholesale — <strong>dead objects cost nothing</strong>, since only survivors are touched.</li><li>Each survival increments an age counter; past the tenuring threshold the object is <strong>promoted</strong> to Old.</li></ol><p>This is why allocation in Java is fast: Eden is a bump-the-pointer allocator, and collection is proportional to <em>live</em> data, not garbage.</p><h4>What is a GC root?</h4><p>An object is garbage when it's unreachable from any root: local variables on thread stacks, static fields, JNI references, and active threads. Note this means <strong>reference cycles are collected fine</strong> — Java traces reachability rather than counting references.</p><h4>Where it goes wrong</h4><ul><li><strong>Premature promotion</strong> — a young gen that's too small pushes short-lived objects into Old, causing expensive major GCs.</li><li><strong>Full GC churn</strong> — a genuine leak fills Old; the app spends most of its time in GC and eventually throws <code class=\"inline\">OutOfMemoryError: GC overhead limit exceeded</code>.</li></ul><h4>How to say it in an interview</h4><p>“It exploits the weak generational hypothesis — most objects die young. New objects go in Eden, survivors get copied through the survivor spaces and eventually promoted to Old. Minor GCs are cheap because they only copy live objects, so garbage is genuinely free; major GCs on the old generation are what actually hurt latency.”</p>"
+  },
+  {
+    "id": "java-gc-roots",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "gc",
+      "memory",
+      "jvm"
+    ],
+    "question": "How does the GC decide an object is garbage?",
+    "answer": "<p><strong>Reachability</strong>, not reference counting. The GC traces from <strong>GC roots</strong> — thread stacks, static fields, JNI references, active threads — and anything not reached is collectible.</p><p>That's why <strong>circular references</strong> are collected correctly in Java: two objects pointing at each other but unreachable from a root are still garbage.</p>",
+    "tip": "The circular-reference question is a common trap. Java traces reachability, so cycles are NOT a leak — unlike naive reference counting.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-memory-leak",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "memory-leak",
+      "gc",
+      "debugging"
+    ],
+    "question": "Can Java have memory leaks? What causes them?",
+    "answer": "<p>Yes — a leak is an object that's <strong>unused but still reachable</strong>, so the GC can't touch it. Common causes:</p><ul><li>Static collections that only ever grow (a cache with no eviction).</li><li><code class=\"inline\">ThreadLocal</code> not removed on a pooled thread.</li><li>Unclosed resources / unregistered listeners.</li><li>A non-static inner class holding its outer instance.</li><li>Mutating a key's hash while it's in a HashMap.</li></ul>",
+    "tip": "GC frees UNREACHABLE objects, not USELESS ones. Anything a static field points at lives for the life of the JVM.",
+    "code": "// classic leak — nothing is ever removed\nprivate static final Map<String, User> CACHE = new HashMap<>();",
+    "lang": "java"
+  },
+  {
+    "id": "java-oom-errors",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "memory",
+      "errors",
+      "debugging"
+    ],
+    "question": "What kinds of OutOfMemoryError are there?",
+    "answer": "<ul><li><strong>Java heap space</strong> — too many live objects: a leak, or the heap is too small.</li><li><strong>GC overhead limit exceeded</strong> — &gt;98% of time in GC reclaiming &lt;2%. Effectively a leak.</li><li><strong>Metaspace</strong> — too many loaded classes (classic in app servers that redeploy).</li><li><strong>unable to create new native thread</strong> — OS thread limit hit.</li></ul>",
+    "tip": "Run with -XX:+HeapDumpOnOutOfMemoryError, then open the dump in Eclipse MAT — it names the leaking object graph.",
+    "code": "java -Xmx2g -XX:+HeapDumpOnOutOfMemoryError \\\n     -XX:HeapDumpPath=/tmp/dump.hprof -jar app.jar",
+    "lang": "bash"
+  },
+  {
+    "id": "java-stackoverflow",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "stack",
+      "recursion",
+      "errors"
+    ],
+    "question": "What causes StackOverflowError?",
+    "answer": "<p>The thread's stack is exhausted — almost always <strong>unbounded recursion</strong> (a missing or wrong base case), or occasionally mutual recursion or an accidental infinite <code class=\"inline\">toString()</code>/<code class=\"inline\">equals()</code> loop.</p><p>Java has no tail-call optimization, so deep recursion doesn't get flattened — convert it to a loop.</p>",
+    "tip": "Java has NO tail-call optimization — recursion that's fine in Scala or Haskell will overflow here.",
+    "code": "int bad(int n) { return bad(n - 1); }   // no base case",
+    "lang": "java"
+  },
+  {
+    "id": "java-classloader",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "classloader",
+      "jvm"
+    ],
+    "question": "How does class loading work?",
+    "answer": "<p>Three phases: <strong>Loading</strong> (read the bytecode), <strong>Linking</strong> (verify → prepare → resolve), <strong>Initialization</strong> (run static blocks/fields).</p><p>Loaders form a chain — Bootstrap → Platform → Application — using <strong>parent delegation</strong>: each asks its parent first, so nobody can substitute a fake <code class=\"inline\">java.lang.String</code>.</p>",
+    "tip": "Parent delegation is a security feature: core JDK classes always load from the bootstrap loader, so they can't be spoofed.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-classnotfound-noclassdeffound",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "classloader",
+      "errors",
+      "debugging"
+    ],
+    "question": "ClassNotFoundException vs NoClassDefFoundError.",
+    "answer": "<p><strong>ClassNotFoundException</strong> (checked) — an explicit dynamic lookup like <code class=\"inline\">Class.forName(\"x\")</code> found nothing on the classpath.</p><p><strong>NoClassDefFoundError</strong> (an Error) — the class was present at <em>compile</em> time but is missing at runtime, <em>or</em> it failed its static initialization earlier and the JVM now refuses to use it.</p>",
+    "tip": "NoClassDefFoundError often means the class's static initializer threw — look for an earlier ExceptionInInitializerError, not a missing jar.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-jit",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "jvm",
+      "jit",
+      "performance"
+    ],
+    "question": "What is the JIT compiler?",
+    "answer": "<p>The JVM starts by <strong>interpreting</strong> bytecode, profiles what actually runs, then the <strong>JIT</strong> compiles hot methods to native code — applying inlining, loop unrolling, and escape analysis.</p><p>Because it optimizes on <em>real</em> runtime data, long-running Java can rival C++ — but only after warm-up.</p>",
+    "tip": "JIT warm-up is why naive microbenchmarks lie — use JMH, which warms up before measuring.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-jdk-versions",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "java-versions",
+      "features"
+    ],
+    "question": "What are the headline features of the recent LTS releases?",
+    "answer": "<ul><li><strong>Java 8</strong> — lambdas, Streams, Optional, new date/time API.</li><li><strong>Java 11</strong> — <code class=\"inline\">var</code> in lambdas, HttpClient, <code class=\"inline\">String.isBlank/lines/repeat</code>.</li><li><strong>Java 17</strong> — records, sealed classes, switch expressions, text blocks, pattern-matching instanceof.</li><li><strong>Java 21</strong> — <strong>virtual threads</strong>, pattern matching for switch, record patterns, sequenced collections.</li></ul>",
+    "tip": "LTS releases are 8, 11, 17, 21 — those are the ones companies actually run. Java 21's headline is virtual threads.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "java-date-time-api",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "date-time",
+      "java8"
+    ],
+    "question": "Why did Java 8 replace Date and Calendar?",
+    "answer": "<p>The old API was <strong>mutable</strong> (so not thread-safe), had a 0-based month, and <code class=\"inline\">SimpleDateFormat</code> was famously not thread-safe.</p><p><code class=\"inline\">java.time</code> is immutable and clear: <strong>LocalDate</strong> (no time), <strong>LocalDateTime</strong> (no zone), <strong>ZonedDateTime</strong> (zone-aware), <strong>Instant</strong> (a UTC timestamp), <strong>Duration</strong>/<strong>Period</strong>.</p>",
+    "tip": "A static SimpleDateFormat shared across threads silently corrupts dates — java.time's DateTimeFormatter is immutable and safe.",
+    "code": "LocalDate d = LocalDate.now().plusDays(7);\nInstant now = Instant.now();                 // UTC timestamp\nDuration.between(start, end).toMinutes();",
+    "lang": "java"
+  },
+  {
+    "id": "java-reflection",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "reflection",
+      "jvm",
+      "frameworks"
+    ],
+    "question": "What is reflection and what is it used for?",
+    "answer": "<p>Inspecting and invoking classes, fields, and methods <strong>at runtime</strong> by name. It's how Spring does dependency injection, Jackson maps JSON, JUnit finds <code class=\"inline\">@Test</code>, and Hibernate populates entities.</p><p>Costs: no compile-time safety, slower than direct calls, and it can break encapsulation.</p>",
+    "tip": "You rarely write reflection — but every framework you use is built on it. That's the answer interviewers want.",
+    "code": "Class<?> c = Class.forName(\"com.app.User\");\nObject o = c.getDeclaredConstructor().newInstance();\nMethod m = c.getMethod(\"getName\");\nString name = (String) m.invoke(o);",
+    "lang": "java"
+  },
+  {
+    "id": "java-annotations",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "annotations",
+      "metadata"
+    ],
+    "question": "What are annotations, and how do you write one?",
+    "answer": "<p>Metadata attached to code, read by the compiler or by frameworks at runtime via reflection.</p><p>To be visible at runtime an annotation needs <code class=\"inline\">@Retention(RUNTIME)</code>; <code class=\"inline\">@Target</code> restricts where it can be applied.</p>",
+    "tip": "The default retention is CLASS, not RUNTIME — forget @Retention(RUNTIME) and your framework will never see the annotation.",
+    "code": "@Retention(RetentionPolicy.RUNTIME)\n@Target(ElementType.METHOD)\npublic @interface Audited {\n  String value() default \"\";\n}",
+    "lang": "java"
+  },
+  {
+    "id": "java-modules",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "modules",
+      "java9",
+      "jpms"
+    ],
+    "question": "What is the module system (Java 9)?",
+    "answer": "<p>JPMS adds <strong>strong encapsulation above the package level</strong>. A <code class=\"inline\">module-info.java</code> declares what the module <code class=\"inline\">exports</code> and what it <code class=\"inline\">requires</code> — so a public class in a non-exported package is genuinely inaccessible.</p><p>It also allows <code class=\"inline\">jlink</code> to build a trimmed runtime with only the modules you use.</p>",
+    "tip": "Before modules, 'public' meant public to the entire world. Modules finally let a library hide its internals.",
+    "code": "module com.app.orders {\n  requires com.app.core;\n  exports com.app.orders.api;   // internals stay hidden\n}",
+    "lang": "java"
+  },
+  {
+    "id": "java-strong-weak-soft-reference",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "references",
+      "gc",
+      "memory"
+    ],
+    "question": "Strong, weak, soft and phantom references.",
+    "answer": "<ul><li><strong>Strong</strong> — the normal kind; never collected while reachable.</li><li><strong>Soft</strong> — collected only when memory is tight. Good for caches.</li><li><strong>Weak</strong> — collected at the next GC. Used by <code class=\"inline\">WeakHashMap</code> for metadata keyed on objects.</li><li><strong>Phantom</strong> — for cleanup actions after finalization.</li></ul>",
+    "tip": "WeakHashMap entries vanish once the key has no other reference — perfect for caches you don't want to leak.",
+    "code": "WeakReference<Image> ref = new WeakReference<>(img);\nImage i = ref.get();   // may be null — always check",
+    "lang": "java"
+  },
+  {
+    "id": "java-jvm-tuning-flags",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "jvm",
+      "performance",
+      "tuning"
+    ],
+    "question": "Which JVM flags matter in production?",
+    "answer": "<ul><li><code class=\"inline\">-Xms</code> / <code class=\"inline\">-Xmx</code> — initial/max heap. Set them <strong>equal</strong> in production to avoid resize pauses.</li><li><code class=\"inline\">-XX:+UseG1GC</code>, <code class=\"inline\">-XX:MaxGCPauseMillis</code> — collector and pause target.</li><li><code class=\"inline\">-XX:+HeapDumpOnOutOfMemoryError</code> — essential for diagnosing OOM.</li><li><code class=\"inline\">-XX:MaxRAMPercentage</code> — the right way to size a heap in a container.</li></ul>",
+    "tip": "In containers use -XX:MaxRAMPercentage rather than a fixed -Xmx, so the JVM adapts to the container's memory limit.",
+    "code": "java -Xms2g -Xmx2g -XX:+UseG1GC \\\n     -XX:+HeapDumpOnOutOfMemoryError -jar app.jar",
+    "lang": "bash"
+  },
+  {
+    "id": "java-profiling-tools",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "debugging",
+      "performance",
+      "tools"
+    ],
+    "question": "How do you diagnose a slow or leaking Java application?",
+    "answer": "<ul><li><strong>jstack</strong> — thread dump; finds deadlocks and stuck threads.</li><li><strong>jmap</strong> + <strong>Eclipse MAT</strong> — heap dump; finds what's retaining memory.</li><li><strong>jstat</strong> — live GC statistics.</li><li><strong>JFR + JDK Mission Control</strong> — low-overhead production profiling.</li><li><strong>JMH</strong> — trustworthy microbenchmarks.</li></ul>",
+    "tip": "Java Flight Recorder is designed for production — a few percent overhead, so you can profile the real system, not a guess.",
+    "code": "jstack <pid>                 # thread dump\njmap -dump:live,format=b,file=heap.hprof <pid>\njstat -gcutil <pid> 1000     # GC every second",
+    "lang": "bash"
+  },
+  {
+    "id": "java-solid",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "solid",
+      "design",
+      "oop"
+    ],
+    "question": "What are the SOLID principles?",
+    "answer": "<ul><li><strong>S</strong>ingle responsibility — one reason to change.</li><li><strong>O</strong>pen/closed — open for extension, closed for modification.</li><li><strong>L</strong>iskov substitution — a subtype must work anywhere its parent does.</li><li><strong>I</strong>nterface segregation — many small interfaces beat one fat one.</li><li><strong>D</strong>ependency inversion — depend on abstractions, not concretions.</li></ul>",
+    "tip": "Have one concrete example ready per principle — reciting the acronym without examples is an obvious red flag.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>S — Single Responsibility</h4><p>A class should have one reason to change. A <code class=\"inline\">UserService</code> that validates, saves to the DB, <em>and</em> sends email has three: validation rules, schema changes, and the mail provider. Split it.</p><h4>O — Open/Closed</h4><pre><code>// Closed to extension — every new type edits this method\ndouble area(Shape s) {\n  if (s instanceof Circle) ...\n  else if (s instanceof Square) ...\n}\n\n// Open — a new shape adds a class, changes nothing\ninterface Shape { double area(); }</code></pre><h4>L — Liskov Substitution</h4><p>The classic violation: <code class=\"inline\">Square extends Rectangle</code>. Setting width on a Square must also change height, so code written against Rectangle (<em>set width to 5, height to 4, expect area 20</em>) silently breaks. The inheritance is mathematically true but behaviourally wrong.</p><p>Warning sign: a subclass overriding a method to throw <code class=\"inline\">UnsupportedOperationException</code>.</p><h4>I — Interface Segregation</h4><pre><code>// Fat — a Robot must implement eat()\ninterface Worker { void work(); void eat(); }\n\n// Segregated\ninterface Workable { void work(); }\ninterface Feedable { void eat(); }</code></pre><h4>D — Dependency Inversion</h4><pre><code>// Depends on a concretion — untestable\nclass OrderService { private final MySqlRepo repo = new MySqlRepo(); }\n\n// Depends on an abstraction — inject it, mock it in tests\nclass OrderService {\n  private final OrderRepository repo;\n  OrderService(OrderRepository repo) { this.repo = repo; }\n}</code></pre><p>This is exactly what Spring's constructor injection gives you — and why DI makes code testable.</p><h4>How to say it in an interview</h4><p>“They're guidelines for change-tolerant code. The two I lean on daily are dependency inversion — constructor-inject an interface so I can mock it in tests — and single responsibility. The one people get wrong is Liskov: <code class=\"inline\">Square extends Rectangle</code> compiles fine but breaks every caller's expectations.”</p>"
+  },
+  {
+    "id": "java-singleton",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "design-patterns",
+      "singleton"
+    ],
+    "question": "How do you implement a Singleton correctly?",
+    "answer": "<p>Best: an <strong>enum</strong> — the JVM guarantees one instance, and it's serialization- and reflection-safe for free.</p><p>Otherwise use the <strong>holder idiom</strong>: a static nested class loaded lazily on first access, made thread-safe by the classloader with no synchronization.</p>",
+    "tip": "Enum singleton is Josh Bloch's recommendation — it's the only approach reflection can't break.",
+    "code": "// best\npublic enum Config { INSTANCE; public void load() { } }\n\n// holder idiom — lazy + thread-safe, no locks\npublic class Config {\n  private Config() { }\n  private static class Holder { static final Config I = new Config(); }\n  public static Config get() { return Holder.I; }\n}",
+    "lang": "java"
+  },
+  {
+    "id": "java-factory-pattern",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "design-patterns",
+      "factory"
+    ],
+    "question": "What is the Factory pattern?",
+    "answer": "<p>It moves object creation behind a method, so callers ask for <em>what</em> they need without knowing <em>which</em> concrete class they get. Adding a new type doesn't touch calling code.</p><p>The JDK is full of them: <code class=\"inline\">List.of()</code>, <code class=\"inline\">Integer.valueOf()</code>, <code class=\"inline\">Executors.newFixedThreadPool()</code>.</p>",
+    "tip": "A static factory also beats a constructor because it can have a meaningful name, return a cached instance, and return a subtype.",
+    "code": "static Notifier of(Channel c) {\n  return switch (c) {\n    case EMAIL -> new EmailNotifier();\n    case SMS   -> new SmsNotifier();\n  };\n}",
+    "lang": "java"
+  },
+  {
+    "id": "java-builder-pattern",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "design-patterns",
+      "builder"
+    ],
+    "question": "What is the Builder pattern and when do you use it?",
+    "answer": "<p>It builds an object step by step through a fluent chain — the fix for the <strong>telescoping constructor</strong> problem, where many optional parameters produce a dozen overloads and unreadable call sites.</p><p>It also makes the result immutable and lets you validate in <code class=\"inline\">build()</code>.</p>",
+    "tip": "Four-plus constructor parameters — especially several of the same type — is the signal to reach for a builder. new User(true, false, true) is unreadable.",
+    "code": "User u = User.builder()\n    .name(\"Ann\")\n    .email(\"a@x.com\")\n    .active(true)\n    .build();",
+    "lang": "java"
+  },
+  {
+    "id": "java-strategy-pattern",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "design-patterns",
+      "strategy",
+      "lambda"
+    ],
+    "question": "What is the Strategy pattern?",
+    "answer": "<p>It puts each algorithm behind a common interface so it can be swapped at runtime — replacing a growing <code class=\"inline\">if/else</code> or <code class=\"inline\">switch</code> over behaviour types.</p><p>In modern Java the strategy is usually just a <strong>lambda</strong>: <code class=\"inline\">Comparator</code> passed to <code class=\"inline\">sort()</code> is Strategy.</p>",
+    "tip": "Every lambda you pass into a method is Strategy. Since Java 8 the pattern mostly stopped needing its own classes.",
+    "code": "interface Discount { BigDecimal apply(BigDecimal amt); }\n\nMap<Tier, Discount> rules = Map.of(\n  Tier.GOLD, amt -> amt.multiply(new BigDecimal(\"0.8\")),\n  Tier.NONE, amt -> amt);",
+    "lang": "java"
+  },
+  {
+    "id": "java-observer-pattern",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "design-patterns",
+      "observer"
+    ],
+    "question": "What is the Observer pattern?",
+    "answer": "<p>A subject keeps a list of listeners and notifies them all when its state changes — so publishers and subscribers stay decoupled.</p><p>It's everywhere: Swing listeners, Spring's <code class=\"inline\">ApplicationEvent</code>, RxJava, and any pub/sub system.</p>",
+    "tip": "Its classic bug is the lister leak: an observer that never unregisters keeps the whole subscriber graph reachable forever.",
+    "code": "private final List<Listener> listeners = new CopyOnWriteArrayList<>();\nvoid publish(Event e) { listeners.forEach(l -> l.onEvent(e)); }",
+    "lang": "java"
+  },
+  {
+    "id": "java-decorator-pattern",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "design-patterns",
+      "decorator"
+    ],
+    "question": "What is the Decorator pattern?",
+    "answer": "<p>It wraps an object in another with the same interface to add behaviour <em>without</em> subclassing — and the wrappers compose in any order.</p><p>The canonical example is <code class=\"inline\">java.io</code>: <code class=\"inline\">new BufferedReader(new InputStreamReader(in))</code>.</p>",
+    "tip": "Decorator adds behaviour with the same interface; Proxy controls ACCESS to it. That distinction is a common follow-up.",
+    "code": "Reader r = new BufferedReader(\n             new InputStreamReader(\n               new FileInputStream(file)));",
+    "lang": "java"
+  },
+  {
+    "id": "java-dependency-injection",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "design-patterns",
+      "di",
+      "testing"
+    ],
+    "question": "What is dependency injection and why does it matter?",
+    "answer": "<p>A class receives its collaborators from outside instead of constructing them (<code class=\"inline\">new</code>). That inverts control: the class depends on an <strong>interface</strong>, and the caller (or a container like Spring) decides the implementation.</p><p>The payoff is <strong>testability</strong> — you can pass a mock in a unit test.</p>",
+    "tip": "Prefer constructor injection: dependencies can be final, the object is never half-built, and it works without a framework in tests.",
+    "code": "// hard to test — the dependency is welded in\nclass Service { private final Repo r = new MySqlRepo(); }\n\n// injectable, mockable\nclass Service {\n  private final Repo r;\n  Service(Repo r) { this.r = r; }\n}",
+    "lang": "java"
+  },
+  {
+    "id": "java-composition-vs-inheritance",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "design",
+      "inheritance",
+      "composition"
+    ],
+    "question": "Why favour composition over inheritance?",
+    "answer": "<p>Inheritance is the tightest coupling in OOP: a subclass depends on its parent's <em>implementation</em>, so a parent change silently breaks it (the <strong>fragile base class</strong> problem). It's also fixed at compile time and single.</p><p>Composition — holding a collaborator and delegating — is swappable at runtime and unaffected by the other class's internals.</p>",
+    "tip": "Use inheritance only for a genuine is-a with a class designed for it (documented, or final). Otherwise compose.",
+    "code": "// fragile — addAll() calls add() internally, double-counting\nclass CountingList<E> extends ArrayList<E> { }\n\n// robust — delegate\nclass CountingList<E> {\n  private final List<E> inner = new ArrayList<>();\n}",
+    "lang": "java"
+  },
+  {
+    "id": "java-mvc-layers",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "architecture",
+      "design",
+      "layers"
+    ],
+    "question": "How do you structure a typical layered Java backend?",
+    "answer": "<ul><li><strong>Controller</strong> — HTTP only: parse, validate, map to DTOs. No business logic.</li><li><strong>Service</strong> — business rules and transaction boundaries.</li><li><strong>Repository</strong> — persistence only.</li></ul><p>Each layer depends on the one below <em>through an interface</em>, and entities don't leak out as API responses — map to DTOs.</p>",
+    "tip": "Returning JPA entities straight from a controller leaks your schema into your API and causes lazy-loading errors. Map to a DTO.",
+    "code": "",
+    "lang": ""
+  }
+]

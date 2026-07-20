@@ -1,0 +1,11 @@
+{
+  "name": "interview-helper-question-bank",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Single source of truth for Interview Helper questions (JSON + manifest).",
+  "type": "module",
+  "scripts": {
+    "build": "node build-manifest.mjs",
+    "prepare": "git config core.hooksPath hooks"
+  }
+}

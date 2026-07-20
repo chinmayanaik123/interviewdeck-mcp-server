@@ -1,0 +1,11 @@
+server:
+  port: ${PORT:8090}
+
+spring:
+  application:
+    name: interviewdeck-mcp-server
+
+interviewdeck:
+  questions-path: classpath:questions/
+  firebase:
+    credentials-path: ${FIREBASE_CREDENTIALS_PATH:config/firebase-service-account.json}

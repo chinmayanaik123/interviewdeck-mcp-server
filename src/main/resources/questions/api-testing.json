@@ -1,0 +1,320 @@
+[
+  {
+    "id": "api-what-is",
+    "category": "api-testing",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "basics",
+      "rest"
+    ],
+    "question": "What is API testing? Why is it important for SDETs?",
+    "answer": "<p><strong>API testing</strong> validates application programming interfaces — usually REST/HTTP services — by sending requests and checking responses without (or before) using the UI.</p><p>It is important because APIs are the backbone of modern apps: faster than UI tests, more stable, and they catch business-logic and contract bugs early.</p>",
+    "tip": "If UI is down but API works, backend may be fine — API tests isolate layers.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>What you typically validate</h4><ul><li>Status code (200, 201, 400, 401, 404, 500…).</li><li>Response body fields, types, and business values.</li><li>Headers (Content-Type, auth).</li><li>Error messages for invalid input.</li><li>Side effects (DB row created, message published) when needed.</li></ul><h4>Why SDETs love API tests</h4><p>UI tests are slower and flakier. API tests give high coverage of rules (pricing, order state transitions) in seconds and fit well in CI.</p><h4>How to say it in an interview</h4><p>“API testing checks service contracts and business logic directly. I use it as the backbone of automation because it’s faster and more stable than UI, then keep UI for critical user journeys.”</p>"
+  },
+  {
+    "id": "api-http-methods-status",
+    "category": "api-testing",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "http",
+      "status-codes"
+    ],
+    "question": "Explain common HTTP methods and status codes used in API testing.",
+    "answer": "<p><strong>Methods</strong>: <code class=\"inline\">GET</code> (read), <code class=\"inline\">POST</code> (create), <code class=\"inline\">PUT</code>/<code class=\"inline\">PATCH</code> (update), <code class=\"inline\">DELETE</code> (remove).</p><p><strong>Status codes</strong>: <code class=\"inline\">2xx</code> success (<code class=\"inline\">200</code>/<code class=\"inline\">201</code>), <code class=\"inline\">4xx</code> client error (<code class=\"inline\">400</code> bad request, <code class=\"inline\">401</code> unauthorized, <code class=\"inline\">403</code> forbidden, <code class=\"inline\">404</code> not found), <code class=\"inline\">5xx</code> server error (<code class=\"inline\">500</code>).</p>",
+    "tip": "Always assert both status code and body — 200 with wrong data is still a bug.",
+    "code": "GET    /api/orders/123     → 200 + order JSON\nPOST   /api/orders         → 201 + created id\nDELETE /api/orders/123     → 204 or 200",
+    "lang": "http",
+    "deep": "<h4>Beginner map</h4><table><thead><tr><th>Code</th><th>Meaning for testers</th></tr></thead><tbody><tr><td>200</td><td>OK — request succeeded</td></tr><tr><td>201</td><td>Created — resource created</td></tr><tr><td>204</td><td>No Content — success, empty body</td></tr><tr><td>400</td><td>Client sent invalid data</td></tr><tr><td>401</td><td>Not authenticated (missing/bad token)</td></tr><tr><td>403</td><td>Authenticated but not allowed</td></tr><tr><td>404</td><td>Resource missing</td></tr><tr><td>500</td><td>Server bug / unhandled error</td></tr></tbody></table><h4>PUT vs PATCH</h4><p><code class=\"inline\">PUT</code> usually replaces the whole resource; <code class=\"inline\">PATCH</code> updates partial fields. Confirm with your API docs — teams differ.</p><h4>How to say it in an interview</h4><p>“I treat method + status + body as one assertion set. For example, creating an order should be POST → 201 with an id, and a missing auth token should be 401, not 500.”</p>"
+  },
+  {
+    "id": "api-postman",
+    "category": "api-testing",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "postman",
+      "tools"
+    ],
+    "question": "How do you use Postman for API testing?",
+    "answer": "<p>In Postman you create <strong>requests</strong> (method, URL, headers, body), organise them into <strong>Collections</strong>, and use <strong>Environments</strong> for variables like base URL and tokens.</p><p>You can add <strong>Tests</strong> (JavaScript assertions) on status/body, chain requests with variables, and run collections via Collection Runner or Newman in CI.</p>",
+    "tip": "Never hardcode tokens in shared collections — use environment variables.",
+    "code": "pm.test('status is 200', () => {\n  pm.response.to.have.status(200);\n});\npm.test('has orderId', () => {\n  const json = pm.response.json();\n  pm.expect(json.orderId).to.be.a('string');\n});",
+    "lang": "js",
+    "deep": "<h4>Practical workflow</h4><ol><li>Set <code class=\"inline\">baseUrl</code> in Environment (dev/qa/stage).</li><li>Login/auth request → save <code class=\"inline\">token</code> to environment.</li><li>Business requests use <code class=\"inline\">{{baseUrl}}</code> and <code class=\"inline\">Authorization: Bearer {{token}}</code>.</li><li>Write assertions for status, schema fields, and key values.</li></ol><h4>What interviewers want to hear</h4><p>Not just \"I click Send\" — mention collections, environments, assertions, data-driven runs, and exporting for Newman/CI.</p><h4>How to say it in an interview</h4><p>“I structure Postman by feature collections, separate environments per stage, store auth tokens in variables, and assert status plus critical response fields. For automation I can run the same collection via Newman in Jenkins.”</p>"
+  },
+  {
+    "id": "api-auth",
+    "category": "api-testing",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "authentication",
+      "authorization",
+      "security"
+    ],
+    "question": "How do you test API authentication and authorization?",
+    "answer": "<p><strong>Authentication</strong> = who you are (login/token). <strong>Authorization</strong> = what you are allowed to do (roles/permissions).</p><p>Test with valid token, missing token, expired/invalid token, and a valid user calling a forbidden resource (e.g. normal user hitting admin API).</p>",
+    "tip": "401 = not logged in; 403 = logged in but not allowed — don’t mix them up.",
+    "code": "Authorization: Bearer <access_token>",
+    "lang": "http",
+    "deep": "<h4>Common mechanisms</h4><ul><li><strong>Basic Auth</strong> — username/password encoded (rare for modern public APIs).</li><li><strong>Bearer JWT / OAuth2 token</strong> — most common.</li><li><strong>API keys</strong> — header/query key for service access.</li></ul><h4>Must-run negative cases</h4><ul><li>No <code class=\"inline\">Authorization</code> header → 401.</li><li>Garbage/expired token → 401.</li><li>Valid user, wrong role → 403.</li><li>IDOR-style checks: user A must not read user B’s order by changing id.</li></ul><h4>How to say it in an interview</h4><p>“I test both authn and authz: valid token works, missing/invalid token is rejected, and role boundaries return 403. I also check users can’t access other users’ resources by swapping IDs.”</p>"
+  },
+  {
+    "id": "api-validate-response",
+    "category": "api-testing",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "assertions",
+      "validation"
+    ],
+    "question": "What do you validate in an API response?",
+    "answer": "<ul><li><strong>Status code</strong> matches the scenario.</li><li><strong>Response time</strong> is within an agreed limit (basic performance signal).</li><li><strong>Headers</strong> like <code class=\"inline\">Content-Type</code>.</li><li><strong>Body</strong>: required fields present, correct types/values, error structure on failures.</li><li><strong>Contract</strong>: no unexpected breaking field changes when relevant.</li><li><strong>Side effects</strong>: DB/UI state updated if the API creates/updates data.</li></ul>",
+    "tip": "Assert business meaning, not only \"status 200\".",
+    "code": "pm.test('order status is CREATED', () => {\n  pm.expect(pm.response.json().status).to.eql('CREATED');\n});",
+    "lang": "js",
+    "deep": "<h4>Layered assertions</h4><ol><li>Transport OK? (status, content-type)</li><li>Shape OK? (required keys exist)</li><li>Business OK? (totals, statuses, IDs)</li><li>Persistence OK? (optional DB check)</li></ol><h4>Positive + negative example</h4><ul><li>Create order with valid payload → 201, <code class=\"inline\">orderId</code> returned, status <code class=\"inline\">CREATED</code>.</li><li>Create order with missing itemId → 400, clear validation message, no DB row.</li></ul><h4>How to say it in an interview</h4><p>“I validate status, schema/fields, business values, and important side effects. A 200 with wrong order total is still a failed test.”</p>"
+  },
+  {
+    "id": "api-end-to-end-flow",
+    "category": "api-testing",
+    "difficulty": "intermediate",
+    "tags": [
+      "e2e",
+      "workflow",
+      "real-world"
+    ],
+    "question": "How do you design an end-to-end API test flow (example: ecommerce order)?",
+    "answer": "<p>Chain APIs in business order and pass data between calls: authenticate → create customer/cart → place order → fetch order → (optional) cancel/update → assert final state.</p><p>Store dynamic IDs/tokens from each response and reuse them. Clean up test data when possible so runs stay independent.</p>",
+    "tip": "One flow should tell a business story, not randomly call unrelated endpoints.",
+    "code": "1) POST /auth/login          → token\n2) POST /cart/items          → cartId\n3) POST /orders              → orderId\n4) GET  /orders/{{orderId}}  → status=CREATED",
+    "lang": "http",
+    "deep": "<h4>Design checklist</h4><ul><li>Independent test data (unique emails/ids).</li><li>Clear assertions after each step, not only at the end.</li><li>Negative branch: payment failure should not create a completed order.</li><li>Idempotency/duplicate submit behaviour if the business cares.</li></ul><h4>How to say it in an interview</h4><p>“I model API tests as business journeys. For order management I’d authenticate, create the order, verify retrieval/status transitions, and include failure paths like invalid payment — asserting no incorrect final state.”</p>"
+  },
+  {
+    "id": "api-rest-vs-soap",
+    "category": "api-testing",
+    "difficulty": "beginner",
+    "tags": [
+      "rest",
+      "soap",
+      "basics"
+    ],
+    "question": "REST vs SOAP — what should a tester know?",
+    "answer": "<p><strong>REST</strong> APIs usually use HTTP + JSON, are resource-based, and are most common today. <strong>SOAP</strong> uses XML envelopes and strict WSDL contracts — still seen in enterprise/telecom integrations. Testing REST focuses on HTTP semantics; SOAP focuses on operations and XML schemas.</p>",
+    "tip": "For most modern SDET interviews, be fluent in REST; know SOAP exists in legacy/enterprise.",
+    "code": "REST: GET /orders/1  → JSON\nSOAP: XML <GetOrder> request/response",
+    "lang": "text",
+    "deep": "<h4>How to say it in an interview</h4><p>“I’ve mostly tested REST with JSON over HTTP. In telecom/BSS landscapes you may still meet SOAP services — same validation mindset, different payload/contract format.”</p>"
+  },
+  {
+    "id": "api-idempotent",
+    "category": "api-testing",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "idempotent",
+      "http"
+    ],
+    "question": "What is idempotency in APIs? Why test it?",
+    "answer": "<p>An idempotent operation can be repeated with the same result — e.g. <code class=\"inline\">GET</code>, <code class=\"inline\">PUT</code>, <code class=\"inline\">DELETE</code> ideally. <code class=\"inline\">POST</code> create is often not idempotent (two calls → two orders) unless the API uses an idempotency key.</p>",
+    "tip": "Double-submit and retry bugs are classic production incidents.",
+    "code": "POST /orders twice without key → 2 orders (bug risk)\nPOST /orders with Idempotency-Key → same order returned",
+    "lang": "http",
+    "deep": "<h4>What to test</h4><ul><li>Retry same create request — duplicate side effects?</li><li>DELETE twice — second call 404/204 consistently?</li><li>Payment capture retries don’t double-charge.</li></ul><h4>How to say it in an interview</h4><p>“I test retries and duplicate submits. For order creation I check whether the API is protected by idempotency keys so network retries don’t create duplicate orders.”</p>"
+  },
+  {
+    "id": "api-headers",
+    "category": "api-testing",
+    "difficulty": "beginner",
+    "tags": [
+      "headers",
+      "content-type",
+      "accept"
+    ],
+    "question": "Which HTTP headers matter most in API testing?",
+    "answer": "<p>Common critical headers: <code class=\"inline\">Authorization</code>, <code class=\"inline\">Content-Type</code>, <code class=\"inline\">Accept</code>, correlation/request IDs, and sometimes <code class=\"inline\">If-Match</code>/idempotency keys. Wrong Content-Type often yields 415; missing auth yields 401.</p>",
+    "tip": "Assert response headers too — e.g. Content-Type application/json.",
+    "code": "Content-Type: application/json\nAuthorization: Bearer <token>\nAccept: application/json",
+    "lang": "http",
+    "deep": "<h4>Negative examples</h4><ul><li>Send XML body with JSON Content-Type.</li><li>Omit Authorization on protected route.</li><li>Ask for unsupported Accept type.</li></ul><h4>How to say it in an interview</h4><p>“I treat headers as part of the contract — especially auth and content negotiation — and I include negative header cases in API suites.”</p>"
+  },
+  {
+    "id": "api-path-query",
+    "category": "api-testing",
+    "difficulty": "beginner",
+    "tags": [
+      "path-params",
+      "query-params"
+    ],
+    "question": "Path parameters vs query parameters — how do you test them?",
+    "answer": "<p><strong>Path params</strong> identify a resource (<code class=\"inline\">/orders/{orderId}</code>). <strong>Query params</strong> filter/sort/page (<code class=\"inline\">/orders?status=OPEN&amp;page=2</code>). Test valid values, missing required params, invalid types, and empty/unknown filters.</p>",
+    "tip": "Check both result correctness and error codes for bad params.",
+    "code": "GET /orders/ORD-1\nGET /orders?status=CANCELLED&page=1&size=20",
+    "lang": "http",
+    "deep": "<h4>Cases</h4><ul><li>Valid id → 200.</li><li>Unknown id → 404.</li><li>page=-1 → 400.</li><li>Filter status returns only matching records.</li></ul><h4>How to say it in an interview</h4><p>“I validate resource identifiers in the path and filtering/pagination in query params, including invalid combinations that should return 400/404.”</p>"
+  },
+  {
+    "id": "api-payload-validation",
+    "category": "api-testing",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "schema",
+      "validation"
+    ],
+    "question": "How do you test request body / schema validation?",
+    "answer": "<p>Send valid payloads and systematic invalid ones: missing required fields, wrong types, empty strings, oversized values, extra unexpected fields (depending on API strictness). Expect 400 with clear validation errors — not 500.</p>",
+    "tip": "A 500 on bad input is often a backend defect.",
+    "code": "POST /orders {\"items\":[]}           → 400\nPOST /orders {\"items\":[{\"qty\":\"x\"}]} → 400\nPOST /orders valid body              → 201",
+    "lang": "json",
+    "deep": "<h4>How to say it in an interview</h4><p>“I test schema and business validation separately: type/required-field errors should be 400 with field messages, while business rule failures may be 409/422 depending on the API design.”</p>"
+  },
+  {
+    "id": "api-status-vs-body",
+    "category": "api-testing",
+    "difficulty": "intermediate",
+    "tags": [
+      "assertions",
+      "contract"
+    ],
+    "question": "Why is asserting only HTTP status code not enough?",
+    "answer": "<p>Status can be 200 while body is wrong (incorrect total, missing fields, wrong status enum). Always assert business-critical fields and types. Conversely, body may look fine while status is wrong for the contract.</p>",
+    "tip": "Status + key body fields + important side effects.",
+    "code": "expect(status).toBe(201)\nexpect(body.orderId).toBeTruthy()\nexpect(body.status).toBe('CREATED')",
+    "lang": "js",
+    "deep": "<h4>Example bug</h4><p>API returns 200 with <code class=\"inline\">totalAmount: 0</code> after placing a paid order — status alone would pass a weak test.</p><h4>How to say it in an interview</h4><p>“I never trust status alone. I assert the fields that represent business truth — ids, statuses, amounts — and verify persistence when needed.”</p>"
+  },
+  {
+    "id": "api-newman-ci",
+    "category": "api-testing",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "newman",
+      "ci",
+      "postman"
+    ],
+    "question": "How do you run Postman collections in CI (Newman)?",
+    "answer": "<p><strong>Newman</strong> is the CLI runner for Postman collections. In CI you export collection + environment, run Newman in the pipeline, fail the build on test failures, and publish the HTML/CLI report.</p>",
+    "tip": "Keep secrets in CI credentials, not in the committed environment JSON.",
+    "code": "newman run order-api.postman_collection.json \\\n  -e qa.postman_environment.json \\\n  --reporters cli,htmlextra",
+    "lang": "bash",
+    "deep": "<h4>Pipeline tips</h4><ul><li>Separate smoke collection vs full regression.</li><li>Inject baseUrl/token via env/CI vars.</li><li>Archive reports as build artifacts.</li></ul><h4>How to say it in an interview</h4><p>“I maintain Postman collections with assertions and run them via Newman in Jenkins so API smoke becomes a merge/release gate.”</p>"
+  },
+  {
+    "id": "api-mocking",
+    "category": "api-testing",
+    "difficulty": "intermediate",
+    "tags": [
+      "mocking",
+      "stub",
+      "dependencies"
+    ],
+    "question": "When should you mock dependencies in API testing?",
+    "answer": "<p>Mock when a dependency is unstable, costly, or outside your control (payment gateway, SMS, third-party KYC). Don’t mock the system under test itself. Use real integrated envs for contract confidence on critical paths when possible.</p>",
+    "tip": "Mocks speed tests; over-mocking hides integration bugs.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Example</h4><p>While testing Order API, stub Payment Gateway to return success/failure variants, but still validate Order service state transitions and DB writes for those outcomes.</p><h4>How to say it in an interview</h4><p>“I mock volatile third parties to test our service’s handling of success/failure, and I keep a smaller set of real integration checks for release confidence.”</p>"
+  },
+  {
+    "id": "api-pagination-sorting",
+    "category": "api-testing",
+    "difficulty": "intermediate",
+    "tags": [
+      "pagination",
+      "sorting",
+      "filtering"
+    ],
+    "question": "How do you test pagination, sorting, and filtering?",
+    "answer": "<p>Verify page size boundaries, page numbers, empty pages, total counts, stable sort order, and filter combinations. Check that no duplicates appear across pages and that invalid page params return 400.</p>",
+    "tip": "Create enough seed data first — pagination bugs need volume.",
+    "code": "GET /orders?page=1&size=10&sort=createdAt,desc&status=OPEN",
+    "lang": "http",
+    "deep": "<h4>Cases</h4><ul><li>size=10 returns ≤10.</li><li>page1 + page2 have unique ids.</li><li>filter status=OPEN returns only OPEN.</li><li>sort desc by date is actually descending.</li></ul><h4>How to say it in an interview</h4><p>“I seed data, then validate page size, uniqueness across pages, filter correctness, and sort order — not just a 200.”</p>"
+  },
+  {
+    "id": "api-error-contract",
+    "category": "api-testing",
+    "difficulty": "intermediate",
+    "tags": [
+      "errors",
+      "contract",
+      "consistency"
+    ],
+    "question": "What should you validate in API error responses?",
+    "answer": "<p>Validate status code, stable error code/message structure, field-level validation details when relevant, and that no sensitive internals leak (stack traces, SQL, secrets). Errors should be consistent across endpoints.</p>",
+    "tip": "Inconsistent error shapes break client apps — treat them as contract bugs.",
+    "code": "{\n  \"code\": \"VALIDATION_ERROR\",\n  \"message\": \"Invalid request\",\n  \"fields\": [{\"name\": \"qty\", \"error\": \"must be >= 1\"}]\n}",
+    "lang": "json",
+    "deep": "<h4>How to say it in an interview</h4><p>“I assert error contracts carefully — correct status, usable message/code, and no sensitive leak. Consistency matters as much as the happy path.”</p>"
+  },
+  {
+    "id": "api-rate-limit",
+    "category": "api-testing",
+    "difficulty": "advanced",
+    "tags": [
+      "rate-limit",
+      "non-functional",
+      "security"
+    ],
+    "question": "How do you test API rate limiting / throttling?",
+    "answer": "<p>Send requests beyond the documented limit and expect throttling responses (often 429) with retry guidance when provided. Confirm legitimate traffic still works below the threshold and that limits apply per user/IP/key as designed.</p>",
+    "tip": "Coordinate with env owners — rate-limit tests can disturb shared QA.",
+    "code": "Burst 100 req/sec → expect 429 after threshold",
+    "lang": "text",
+    "deep": "<h4>How to say it in an interview</h4><p>“If the API documents rate limits, I verify enforcement with controlled bursts and check that clients get a clear 429 rather than random 500s.”</p>"
+  },
+  {
+    "id": "api-versioning",
+    "category": "api-testing",
+    "difficulty": "intermediate",
+    "tags": [
+      "versioning",
+      "compatibility"
+    ],
+    "question": "How do you approach API versioning in testing?",
+    "answer": "<p>Know how versions are exposed (URL <code class=\"inline\">/v1</code>, header, or media type). Test that older supported versions still behave for consumers, and that breaking changes don’t silently land on an existing version. Regression should include critical contracts per supported version.</p>",
+    "tip": "Breaking response field removal on an active version is a high-severity defect.",
+    "code": "GET /v1/orders/1\nGET /v2/orders/1",
+    "lang": "http",
+    "deep": "<h4>How to say it in an interview</h4><p>“I keep contract tests per supported version and watch for breaking changes — removed fields or changed enums — especially when multiple clients depend on v1.”</p>"
+  },
+  {
+    "id": "api-file-upload",
+    "category": "api-testing",
+    "difficulty": "intermediate",
+    "tags": [
+      "upload",
+      "multipart"
+    ],
+    "question": "How do you test file upload APIs?",
+    "answer": "<p>Test valid file types/sizes, invalid type, oversize file, empty file, missing multipart field, and auth on upload endpoints. Verify response metadata and that the file is stored/linked correctly (or rejected cleanly).</p>",
+    "tip": "Include malware/extension spoofing cases if security requirements exist.",
+    "code": "POST /documents multipart/form-data file=@invoice.pdf",
+    "lang": "http",
+    "deep": "<h4>How to say it in an interview</h4><p>“I test happy-path uploads plus boundary negatives — type, size, empty file — and confirm the API rejects bad files without 500s.”</p>"
+  },
+  {
+    "id": "api-contract-testing",
+    "category": "api-testing",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "contract",
+      "consumer-driven"
+    ],
+    "question": "What is API contract testing?",
+    "answer": "<p>Contract testing verifies that a provider’s API still meets the expectations a consumer relies on (fields, types, status behaviours). It catches breaking changes earlier than full UI e2e, often via schema checks or consumer-driven contract tools.</p>",
+    "tip": "Even a lightweight JSON schema assertion pack is a practical contract safety net.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Lightweight approach</h4><p>Maintain a suite that asserts required fields/types for critical endpoints on every build. That’s a pragmatic contract pack even without Pact.</p><h4>How to say it in an interview</h4><p>“Contract tests protect consumers from breaking API changes. I keep schema/field assertions on critical order APIs in CI so incompatibilities fail fast.”</p>"
+  }
+]

@@ -1,0 +1,458 @@
+[
+  {
+    "id": "html-semantic",
+    "category": "html",
+    "difficulty": "beginner",
+    "tags": [
+      "semantics",
+      "accessibility",
+      "seo"
+    ],
+    "question": "What is semantic HTML and why does it matter?",
+    "answer": "<p>Using elements that describe their meaning — <code class=\"inline\">&lt;header&gt;</code>, <code class=\"inline\">&lt;nav&gt;</code>, <code class=\"inline\">&lt;main&gt;</code>, <code class=\"inline\">&lt;article&gt;</code>, <code class=\"inline\">&lt;footer&gt;</code> — instead of generic <code class=\"inline\">&lt;div&gt;</code>s.</p><p>Benefits: better <strong>accessibility</strong> (screen readers understand structure), improved <strong>SEO</strong>, and more maintainable markup.</p>",
+    "tip": "Reach for a div only when no semantic element fits.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "html-doctype",
+    "category": "html",
+    "difficulty": "beginner",
+    "tags": [
+      "doctype",
+      "basics"
+    ],
+    "question": "What does <!DOCTYPE html> do?",
+    "answer": "<p>It tells the browser to render in <strong>standards mode</strong> rather than legacy 'quirks mode'. Without it, older browsers emulate 1990s bugs and box models, breaking layouts.</p>",
+    "tip": "It's a mode switch, not an HTML tag or a version declaration.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "html-block-inline",
+    "category": "html",
+    "difficulty": "beginner",
+    "tags": [
+      "display",
+      "block",
+      "inline"
+    ],
+    "question": "Block vs inline vs inline-block elements.",
+    "answer": "<ul><li><strong>Block</strong> — starts on a new line, takes full width (<code class=\"inline\">div</code>, <code class=\"inline\">p</code>, <code class=\"inline\">section</code>).</li><li><strong>Inline</strong> — flows within text, ignores width/height (<code class=\"inline\">span</code>, <code class=\"inline\">a</code>).</li><li><strong>inline-block</strong> — flows inline but respects width/height/margins.</li></ul>",
+    "tip": "You can't set width/height on a pure inline element — switch to inline-block.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "html-meta-viewport",
+    "category": "html",
+    "difficulty": "beginner",
+    "tags": [
+      "meta",
+      "responsive",
+      "viewport"
+    ],
+    "question": "What does the viewport meta tag do?",
+    "answer": "<p>It controls how mobile browsers scale the page. Without it, phones render at desktop width and zoom out. <code class=\"inline\">width=device-width, initial-scale=1</code> makes the layout match the device's real width — essential for responsive design.</p>",
+    "tip": "Forget this tag and your media queries won't kick in on phones.",
+    "code": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">",
+    "lang": "html"
+  },
+  {
+    "id": "html-data-attr",
+    "category": "html",
+    "difficulty": "beginner",
+    "tags": [
+      "data-attributes",
+      "dataset"
+    ],
+    "question": "What are data-* attributes?",
+    "answer": "<p>Data attributes are custom HTML attributes used to store application-specific data on an element. They start with <code class=\"inline\">data-</code> and can be accessed in JavaScript using the <code class=\"inline\">dataset</code> API.</p>",
+    "tip": "Use <code class=\"inline\">data-*</code> attributes to store IDs or metadata on elements. They work well with event delegation and keep your HTML standards-compliant.",
+    "code": "<li data-id=\"42\" data-name=\"Angular\">Angular</li>\n\nconst item = document.querySelector('li');\nconsole.log(item.dataset.id);   // '42'\nconsole.log(item.dataset.name); // 'Angular'",
+    "lang": "html",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests your understanding of HTML custom data attributes, the <code class=\"inline\">dataset</code> API, and how to associate custom information with DOM elements.</p><h4>What Problem Do They Solve?</h4><p>Data attributes allow you to store extra application-specific information on HTML elements without misusing standard attributes like <code class=\"inline\">id</code> or <code class=\"inline\">class</code>.</p><h4>Example</h4><pre><code>&lt;li data-id=\"42\" data-name=\"Angular\"&gt;Angular&lt;/li&gt;\n\nconst item = document.querySelector('li');\nconsole.log(item.dataset.id);   // \"42\"\nconsole.log(item.dataset.name); // \"Angular\"</code></pre><h4>How It Works</h4><ol><li>Add custom attributes using the <code class=\"inline\">data-*</code> syntax.</li><li>Access them in JavaScript using the element's <code class=\"inline\">dataset</code> property.</li><li>Attributes like <code class=\"inline\">data-user-id</code> become <code class=\"inline\">dataset.userId</code>.</li></ol><h4>Real-world Examples</h4><ul><li>Store product or user IDs.</li><li>Associate metadata with table rows.</li><li>Pass values for event delegation.</li><li>Store filter or sorting information.</li></ul><h4>Common Interview Follow-ups</h4><ul><li>How do you access <code class=\"inline\">data-*</code> attributes in JavaScript?</li><li>What is the difference between <code class=\"inline\">dataset</code> and <code class=\"inline\">getAttribute()</code>?</li><li>How is <code class=\"inline\">data-user-id</code> mapped to <code class=\"inline\">dataset.userId</code>?</li><li>Why should you use <code class=\"inline\">data-*</code> instead of custom HTML attributes?</li></ul><h4>How to say it in an interview</h4><p><strong>\"Data attributes let us store custom information on HTML elements using the <code class=\"inline\">data-*</code> syntax. They can be accessed through the <code class=\"inline\">dataset</code> API, making them ideal for storing IDs, metadata, or values used by JavaScript while keeping the HTML standards-compliant.\"</strong></p>"
+  },
+  {
+    "id": "html-local-session",
+    "category": "html",
+    "difficulty": "intermediate",
+    "tags": [
+      "storage",
+      "localstorage",
+      "cookies"
+    ],
+    "question": "localStorage vs sessionStorage vs cookies.",
+    "answer": "<ul><li><strong>localStorage</strong> — ~5–10MB, persists until cleared, not sent to the server.</li><li><strong>sessionStorage</strong> — same API, cleared when the tab closes.</li><li><strong>cookies</strong> — small (~4KB), sent with every HTTP request; used for auth/session tokens.</li></ul>",
+    "tip": "Never store JWTs in localStorage if you can avoid it — httpOnly cookies resist XSS.",
+    "code": "localStorage.setItem('theme', 'dark');\nlocalStorage.getItem('theme');",
+    "lang": "js"
+  },
+  {
+    "id": "html-defer-async",
+    "category": "html",
+    "difficulty": "intermediate",
+    "tags": [
+      "scripts",
+      "defer",
+      "async",
+      "performance"
+    ],
+    "question": "script defer vs async.",
+    "answer": "<p>Both download the script without blocking HTML parsing.</p><ul><li><strong>async</strong> — runs as soon as it's downloaded, order not guaranteed. For independent scripts (analytics).</li><li><strong>defer</strong> — runs after parsing, in order. For app scripts that depend on the DOM or each other.</li></ul>",
+    "tip": "Use defer for your app bundle so it runs after the DOM is ready and in order.",
+    "code": "<script src=\"app.js\" defer></script>",
+    "lang": "html"
+  },
+  {
+    "id": "html-forms-validation",
+    "category": "html",
+    "difficulty": "beginner",
+    "tags": [
+      "forms",
+      "validation"
+    ],
+    "question": "What native form validation does HTML5 provide?",
+    "answer": "<p>Attributes like <code class=\"inline\">required</code>, <code class=\"inline\">type=\"email\"</code>, <code class=\"inline\">min</code>/<code class=\"inline\">max</code>, <code class=\"inline\">pattern</code>, and <code class=\"inline\">minlength</code> validate input before submit, with built-in error UI — no JS needed for basics.</p>",
+    "tip": "Always validate again on the server — client validation is a UX nicety, not security.",
+    "code": "<input type=\"email\" required pattern=\".+@company\\.com\">",
+    "lang": "html"
+  },
+  {
+    "id": "html-accessibility",
+    "category": "html",
+    "difficulty": "intermediate",
+    "tags": [
+      "accessibility",
+      "aria",
+      "a11y"
+    ],
+    "question": "How do you make a page accessible?",
+    "answer": "<ul><li>Semantic elements + correct heading order.</li><li><code class=\"inline\">alt</code> text on images; labels tied to inputs.</li><li>Keyboard operability and visible focus states.</li><li>ARIA roles/attributes only when native elements can't express the semantics.</li><li>Sufficient colour contrast.</li></ul>",
+    "tip": "First rule of ARIA: don't use ARIA if a native element already does the job.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "html-srcset",
+    "category": "html",
+    "difficulty": "intermediate",
+    "tags": [
+      "images",
+      "responsive",
+      "performance"
+    ],
+    "question": "How do you serve responsive images?",
+    "answer": "<p>Use <code class=\"inline\">srcset</code> + <code class=\"inline\">sizes</code> so the browser picks the best resolution for the device, or <code class=\"inline\">&lt;picture&gt;</code> for art direction / modern formats (WebP/AVIF) with fallbacks. Add <code class=\"inline\">loading=\"lazy\"</code> for offscreen images.</p>",
+    "tip": "loading=\"lazy\" is a one-attribute performance win for image-heavy pages.",
+    "code": "<img src=\"s.jpg\" srcset=\"s.jpg 480w, l.jpg 1080w\" loading=\"lazy\" alt=\"...\">",
+    "lang": "html"
+  },
+  {
+    "id": "html-meta-seo",
+    "category": "html",
+    "difficulty": "intermediate",
+    "tags": [
+      "seo",
+      "meta",
+      "open-graph"
+    ],
+    "question": "Which meta tags matter for SEO and sharing?",
+    "answer": "<p><code class=\"inline\">&lt;title&gt;</code> and <code class=\"inline\">&lt;meta name=\"description\"&gt;</code> for search results; <strong>Open Graph</strong> (<code class=\"inline\">og:title</code>, <code class=\"inline\">og:image</code>) and <strong>Twitter Card</strong> tags for rich link previews; <code class=\"inline\">canonical</code> to avoid duplicate-content penalties.</p>",
+    "tip": "og:image is what makes your link look good when shared on WhatsApp/LinkedIn.",
+    "code": "<meta property=\"og:title\" content=\"...\">\n<link rel=\"canonical\" href=\"https://site.com/page\">",
+    "lang": "html"
+  },
+  {
+    "id": "html-progressive",
+    "category": "html",
+    "difficulty": "advanced",
+    "tags": [
+      "pwa",
+      "manifest"
+    ],
+    "question": "What makes a site a Progressive Web App (PWA)?",
+    "answer": "<p>A Progressive Web App (PWA) combines modern web technologies to deliver a native app-like experience. The three core requirements are a <strong>Web App Manifest</strong> (defines the app's name, icons, theme, and display mode), a <strong>Service Worker</strong> (enables offline support, caching, and background functionality), and <strong>HTTPS</strong> (required for security and service workers). Together, these allow users to install the website, launch it like an app, and continue using it even with limited or no internet connection.</p>",
+    "tip": "Remember the three essentials: <strong>Manifest + Service Worker + HTTPS</strong>. These are the foundation of every PWA.",
+    "code": "<link rel=\"manifest\" href=\"manifest.json\">",
+    "lang": "html",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests your understanding of Progressive Web Apps (PWAs), including the technologies required to provide an installable, offline-capable, app-like web experience.</p><h4>Core Requirements</h4><ul><li><strong>Web App Manifest</strong> – Defines the application's name, icons, theme color, and display mode.</li><li><strong>Service Worker</strong> – Handles caching, offline support, background sync, and push notifications.</li><li><strong>HTTPS</strong> – Required to securely register and run service workers.</li></ul><h4>Real-world Example</h4><p><strong>Twitter (X)</strong> is a well-known Progressive Web App. Users can install it on their home screen, receive push notifications, and continue browsing cached content even when offline, providing an experience similar to a native mobile application.</p><table><thead><tr><th>Feature</th><th>PWA</th><th>Native App</th></tr></thead><tbody><tr><td>Offline Support</td><td>Yes</td><td>Yes</td></tr><tr><td>Push Notifications</td><td>Yes</td><td>Yes</td></tr><tr><td>Installation</td><td>Home Screen</td><td>App Store / Play Store</td></tr><tr><td>Platform</td><td>Web</td><td>iOS / Android</td></tr></tbody></table><h4>Benefits of PWAs</h4><ul><li>Works offline using cached resources.</li><li>Can be installed from the browser.</li><li>Loads quickly after the first visit.</li><li>Supports push notifications.</li><li>Runs across multiple platforms from a single codebase.</li></ul><h4>Common Interview Follow-ups</h4><ul><li>What is the role of a Service Worker?</li><li>What information is stored in the Web App Manifest?</li><li>Why is HTTPS mandatory for PWAs?</li><li>Can a PWA work completely offline?</li><li>What is the difference between a PWA and a native mobile app?</li></ul><h4>How to say it in an interview</h4><p><strong>\"A Progressive Web App combines a Web App Manifest, a Service Worker, and HTTPS to provide an installable, secure, and offline-capable web application. It offers many native app features such as home screen installation, offline caching, and push notifications while running entirely in the browser.\"</strong></p>"
+  },
+  {
+    "id": "html-web-components",
+    "category": "html",
+    "difficulty": "advanced",
+    "tags": [
+      "web-components",
+      "custom-elements",
+      "shadow-dom"
+    ],
+    "question": "What are Web Components?",
+    "answer": "<p>Web Components are a set of browser standards for building reusable, framework-independent UI components. They consist of <strong>Custom Elements</strong> (custom HTML tags), <strong>Shadow DOM</strong> (encapsulated DOM and styles), and <strong>HTML Templates</strong> using <code class=\"inline\">&lt;template&gt;</code> and <code class=\"inline\">&lt;slot&gt;</code>. Since they are browser-native, they can be used with Angular, React, Vue, or plain JavaScript.</p>",
+    "tip": "Remember the three building blocks: <strong>Custom Elements + Shadow DOM + HTML Templates</strong>. Shadow DOM provides true style encapsulation.",
+    "code": "class MyCard extends HTMLElement {\n  connectedCallback() {\n    this.attachShadow({ mode: 'open' }).innerHTML = `\n      <style>\n        div { border: 1px solid #ccc; padding: 12px; }\n      </style>\n      <div><slot></slot></div>`;\n  }\n}\n\ncustomElements.define('my-card', MyCard);",
+    "lang": "js",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests your understanding of browser-native reusable components, Shadow DOM, and how Web Components differ from framework-specific components.</p><h4>Building Blocks of Web Components</h4><ul><li><strong>Custom Elements</strong> – Define your own HTML elements such as <code class=\"inline\">&lt;my-card&gt;</code>.</li><li><strong>Shadow DOM</strong> – Encapsulates HTML structure and CSS to prevent style leakage.</li><li><strong>HTML Templates</strong> – Use <code class=\"inline\">&lt;template&gt;</code> and <code class=\"inline\">&lt;slot&gt;</code> to define reusable markup.</li></ul><h4>How They Work</h4><ol><li>Create a class that extends <code class=\"inline\">HTMLElement</code>.</li><li>Register it using <code class=\"inline\">customElements.define()</code>.</li><li>Optionally attach a Shadow DOM for style encapsulation.</li><li>Use the custom element anywhere like a normal HTML tag.</li></ol><h4>Real-world Examples</h4><ul><li>Reusable button or card components.</li><li>Date picker.</li><li>Modal dialog.</li><li>Company design system components.</li><li>Framework-independent UI libraries.</li></ul><h4>Web Components vs Angular Components</h4><table><thead><tr><th>Web Components</th><th>Angular Components</th></tr></thead><tbody><tr><td>Browser standard.</td><td>Angular framework feature.</td></tr><tr><td>Works with any framework.</td><td>Works inside Angular applications.</td></tr><tr><td>Uses native Shadow DOM.</td><td>Uses Emulated encapsulation by default.</td></tr><tr><td>Registered with <code class=\"inline\">customElements.define()</code>.</td><td>Declared inside an Angular module or standalone component.</td></tr></tbody></table><h4>Angular and Web Components</h4><p>Angular supports Web Components through <strong>Angular Elements</strong>, allowing Angular components to be packaged and used as custom HTML elements in any web application.</p><h4>Common Interview Follow-ups</h4><ul><li>What is Shadow DOM?</li><li>What problem does Shadow DOM solve?</li><li>What is the difference between Shadow DOM and Angular's View Encapsulation?</li><li>What is the purpose of the <code class=\"inline\">&lt;slot&gt;</code> element?</li><li>When would you choose Web Components over Angular components?</li></ul><h4>How to say it in an interview</h4><p><strong>\"Web Components are browser-native reusable UI components built using Custom Elements, Shadow DOM, and HTML Templates. They are framework-independent, provide true style encapsulation through Shadow DOM, and can be used with Angular, React, Vue, or plain JavaScript. Angular can also expose its components as Web Components using Angular Elements.\"</strong></p>"
+  },
+  {
+    "id": "html-input-types",
+    "category": "html",
+    "difficulty": "beginner",
+    "tags": [
+      "forms",
+      "inputs",
+      "mobile"
+    ],
+    "question": "Why do input types matter (email, number, tel, date)?",
+    "answer": "<p>The right <code class=\"inline\">type</code> gives free validation, the correct <strong>mobile keyboard</strong> (numeric/email layout), native pickers (date/color), and better accessibility — improving UX with zero JS.</p>",
+    "tip": "type=\"email\" and type=\"tel\" change the phone keyboard — a quick mobile UX win.",
+    "code": "<input type=\"email\" inputmode=\"email\">\n<input type=\"number\" inputmode=\"numeric\">",
+    "lang": "html"
+  },
+  {
+    "id": "html-dialog",
+    "category": "html",
+    "difficulty": "intermediate",
+    "tags": [
+      "dialog",
+      "modal",
+      "accessibility"
+    ],
+    "question": "What does the native <dialog> element give you?",
+    "answer": "<p>A built-in modal/popup with <code class=\"inline\">showModal()</code>/<code class=\"inline\">close()</code>, automatic focus trapping, backdrop (<code class=\"inline\">::backdrop</code>), and <code class=\"inline\">Esc</code>-to-close — accessibility that used to require a library.</p>",
+    "tip": "Use <dialog> before reaching for a modal library — it's accessible by default.",
+    "code": "<dialog id=\"m\"><form method=\"dialog\"><button>OK</button></form></dialog>\n<script>m.showModal();</script>",
+    "lang": "html"
+  },
+  {
+    "id": "html-details",
+    "category": "html",
+    "difficulty": "beginner",
+    "tags": [
+      "details",
+      "summary",
+      "disclosure"
+    ],
+    "question": "What are <details> and <summary>?",
+    "answer": "<p>A native, zero-JS disclosure widget: <code class=\"inline\">&lt;summary&gt;</code> is the always-visible label and the rest of <code class=\"inline\">&lt;details&gt;</code> expands/collapses on click — accessible and keyboard-friendly out of the box (this app's cards use the same idea).</p>",
+    "tip": "Perfect for FAQs and accordions without any JavaScript.",
+    "code": "<details><summary>Show answer</summary><p>Hidden content</p></details>",
+    "lang": "html"
+  },
+  {
+    "id": "html-rel-noopener",
+    "category": "html",
+    "difficulty": "intermediate",
+    "tags": [
+      "security",
+      "links",
+      "target-blank"
+    ],
+    "question": "Why add rel=\"noopener\" to target=\"_blank\" links?",
+    "answer": "<p>Without it, the newly opened page can access <code class=\"inline\">window.opener</code> and hijack the original tab (tabnabbing). <code class=\"inline\">rel=\"noopener\"</code> severs that reference; <code class=\"inline\">noreferrer</code> also hides the referrer. Modern browsers imply noopener, but set it explicitly.</p>",
+    "tip": "Always pair target=\"_blank\" with rel=\"noopener\" for external links.",
+    "code": "<a href=\"https://ext.com\" target=\"_blank\" rel=\"noopener noreferrer\">Link</a>",
+    "lang": "html"
+  },
+  {
+    "id": "html-preload-prefetch",
+    "category": "html",
+    "difficulty": "advanced",
+    "tags": [
+      "performance",
+      "preload",
+      "prefetch"
+    ],
+    "question": "What is the difference between preload, prefetch, and preconnect?",
+    "answer": "<p>These resource hints help improve page performance. <strong>preload</strong> fetches a critical resource needed for the current page as early as possible. <strong>prefetch</strong> downloads a low-priority resource that is likely to be needed on a future page. <strong>preconnect</strong> establishes the DNS, TCP, and TLS connection to another origin before any requests are made, reducing connection latency.</p>",
+    "tip": "Remember: <strong>preload = need now</strong>, <strong>prefetch = need later</strong>, <strong>preconnect = connect early</strong>.",
+    "code": "<link rel=\"preload\" href=\"font.woff2\" as=\"font\" crossorigin>\n<link rel=\"prefetch\" href=\"next-page.js\">\n<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">",
+    "lang": "html",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests your understanding of browser resource hints and how they improve website performance by optimizing resource loading and network connections.</p><h4>Resource Hints</h4><table><thead><tr><th>Hint</th><th>Purpose</th><th>Typical Use</th></tr></thead><tbody><tr><td><code class=\"inline\">preload</code></td><td>Load a critical resource for the current page as early as possible.</td><td>Fonts, hero images, critical CSS, important JavaScript.</td></tr><tr><td><code class=\"inline\">prefetch</code></td><td>Download a resource likely to be needed on the next page.</td><td>Next page's JavaScript, images, or routes.</td></tr><tr><td><code class=\"inline\">preconnect</code></td><td>Establish DNS, TCP, and TLS connections before making requests.</td><td>Google Fonts, CDN, analytics, external APIs.</td></tr></tbody></table><h4>Example</h4><pre><code>&lt;link rel=\"preload\" href=\"font.woff2\" as=\"font\" crossorigin&gt;\n&lt;link rel=\"prefetch\" href=\"dashboard.js\"&gt;\n&lt;link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"&gt;</code></pre><h4>How It Works</h4><ol><li><strong>preload</strong> tells the browser to fetch an important resource immediately.</li><li><strong>prefetch</strong> downloads resources during idle time for future navigation.</li><li><strong>preconnect</strong> performs the network handshake early so future requests start faster.</li></ol><h4>Real-world Examples</h4><ul><li>Preload the main font used above the fold.</li><li>Prefetch the JavaScript bundle for the dashboard after login.</li><li>Preconnect to Google Fonts or a CDN before requesting resources.</li></ul><h4>Common Interview Follow-ups</h4><ul><li>When should you use <code class=\"inline\">preload</code> instead of <code class=\"inline\">prefetch</code>?</li><li>What happens if you preload too many resources?</li><li>Why is <code class=\"inline\">crossorigin</code> required when preloading fonts?</li><li>What is the difference between <code class=\"inline\">preconnect</code> and <code class=\"inline\">dns-prefetch</code>?</li></ul><h4>How to say it in an interview</h4><p><strong>\"I use <code class=\"inline\">preload</code> for resources needed immediately on the current page, <code class=\"inline\">prefetch</code> for resources likely to be needed on the next navigation, and <code class=\"inline\">preconnect</code> to establish connections to external domains early, reducing network latency and improving page load performance.\"</strong></p>"
+  },
+  {
+    "id": "html-canvas-svg",
+    "category": "html",
+    "difficulty": "intermediate",
+    "tags": [
+      "canvas",
+      "svg",
+      "graphics"
+    ],
+    "question": "Canvas vs SVG — when to use which?",
+    "answer": "<p><strong>SVG</strong> is vector, DOM-based, scalable, and stylable/accessible — good for icons, charts, and anything interactive or resolution-independent. <strong>Canvas</strong> is an immediate-mode pixel bitmap — better for lots of objects, games, and heavy pixel manipulation.</p>",
+    "tip": "Few interactive shapes → SVG; thousands of pixels/particles → Canvas.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "html-tabindex",
+    "category": "html",
+    "difficulty": "intermediate",
+    "tags": [
+      "accessibility",
+      "focus",
+      "keyboard"
+    ],
+    "question": "What does tabindex do?",
+    "answer": "<ul><li><code class=\"inline\">tabindex=\"0\"</code> — makes a non-focusable element focusable in normal order.</li><li><code class=\"inline\">tabindex=\"-1\"</code> — focusable via script only (not Tab), for managing focus.</li><li><code class=\"inline\">tabindex=\"1+\"</code> — avoid; it breaks natural tab order.</li></ul>",
+    "tip": "Prefer native interactive elements (button/a) over div + tabindex.",
+    "code": "<div role=\"button\" tabindex=\"0\">Custom button</div>",
+    "lang": "html"
+  },
+  {
+    "id": "html-crp",
+    "category": "html",
+    "difficulty": "advanced",
+    "tags": [
+      "performance",
+      "rendering",
+      "critical-path"
+    ],
+    "question": "What is the Critical Rendering Path?",
+    "answer": "<p>The steps the browser takes to turn HTML/CSS/JS into pixels: build the <strong>DOM</strong> and <strong>CSSOM</strong>, combine into the render tree, then layout and paint. CSS is render-blocking and synchronous JS is parser-blocking — optimise by inlining critical CSS, deferring JS, and minimising above-the-fold work.</p>",
+    "tip": "Render-blocking CSS + parser-blocking JS are the two levers for faster first paint.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "html-aria-live",
+    "category": "html",
+    "difficulty": "advanced",
+    "tags": [
+      "accessibility",
+      "aria",
+      "screen-reader"
+    ],
+    "question": "What is an ARIA live region?",
+    "answer": "<p>An ARIA live region is an element with the <code class=\"inline\">aria-live</code> attribute that automatically announces dynamic content changes to screen readers without moving keyboard focus. Use <code class=\"inline\">aria-live=\"polite\"</code> for non-urgent updates and <code class=\"inline\">aria-live=\"assertive\"</code> for critical messages that should be announced immediately.</p>",
+    "tip": "Use <code class=\"inline\">aria-live=\"polite\"</code> for search results or status messages, and <code class=\"inline\">aria-live=\"assertive\"</code> only for urgent alerts like validation errors or session timeouts.",
+    "code": "<div aria-live=\"polite\">12 results found</div>\n<div aria-live=\"assertive\">Your session has expired.</div>",
+    "lang": "html",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests your understanding of web accessibility (ARIA), screen readers, and how to make dynamically updated content accessible to users with visual impairments.</p><h4>What Problem Does It Solve?</h4><p>Normally, screen readers only announce content when the user navigates to it. An ARIA live region allows dynamic updates to be announced automatically without requiring the user to move focus.</p><h4>Values of <code class=\"inline\">aria-live</code></h4><table><thead><tr><th>Value</th><th>Behavior</th><th>Typical Use</th></tr></thead><tbody><tr><td><code class=\"inline\">polite</code></td><td>Waits until the screen reader is idle before announcing.</td><td>Search results, status messages, notifications.</td></tr><tr><td><code class=\"inline\">assertive</code></td><td>Interrupts the current announcement immediately.</td><td>Validation errors, session expiration, critical alerts.</td></tr></tbody></table><h4>Example</h4><pre><code>&lt;div aria-live=\"polite\"&gt;\n  12 results found\n&lt;/div&gt;\n\n&lt;div aria-live=\"assertive\"&gt;\n  Your session has expired.\n&lt;/div&gt;</code></pre><h4>Real-world Examples</h4><ul><li>Displaying the number of search results.</li><li>Showing form validation messages.</li><li>Announcing items added to a shopping cart.</li><li>Displaying upload progress or completion.</li><li>Notifying users when a session expires.</li></ul><h4>Common Interview Follow-ups</h4><ul><li>What is the difference between <code class=\"inline\">polite</code> and <code class=\"inline\">assertive</code>?</li><li>When should you avoid using <code class=\"inline\">assertive</code>?</li><li>How is an ARIA live region different from moving keyboard focus?</li><li>What other ARIA attributes are commonly used for accessibility?</li></ul><h4>How to say it in an interview</h4><p><strong>\"An ARIA live region allows screen readers to announce dynamic content updates without moving keyboard focus. I use <code class=\"inline\">aria-live='polite'</code> for non-critical updates like search results and <code class=\"inline\">aria-live='assertive'</code> only for urgent messages such as validation errors or session timeouts.\"</strong></p>"
+  },
+  {
+    "id": "html-noscript",
+    "category": "html",
+    "difficulty": "intermediate",
+    "tags": [
+      "noscript",
+      "accessibility",
+      "seo"
+    ],
+    "question": "What is the <noscript> tag?",
+    "answer": "<p>The <code class=\"inline\">&lt;noscript&gt;</code> element defines content that is displayed only when JavaScript is disabled or not supported by the browser. It is commonly used to inform users that JavaScript is required, provide alternative content, or include fallback resources.</p>",
+    "tip": "Use <code class=\"inline\">&lt;noscript&gt;</code> to provide a graceful fallback for users who have JavaScript disabled. Avoid placing essential application functionality inside it.",
+    "code": "<noscript>\n  <p>This application requires JavaScript to function properly. Please enable JavaScript in your browser.</p>\n</noscript>",
+    "lang": "html",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests your understanding of progressive enhancement, graceful degradation, and how browsers behave when JavaScript is unavailable.</p><h4>What Problem Does It Solve?</h4><p>Modern web applications often rely heavily on JavaScript. If JavaScript is disabled, blocked, or fails to load, users may see a blank or unusable page. The <code class=\"inline\">&lt;noscript&gt;</code> element allows you to display fallback content or instructions in these situations.</p><h4>Example</h4><pre><code>&lt;noscript&gt;\n  &lt;p&gt;This application requires JavaScript. Please enable JavaScript to continue.&lt;/p&gt;\n&lt;/noscript&gt;</code></pre><h4>Common Use Cases</h4><ul><li>Display a message asking users to enable JavaScript.</li><li>Provide a basic fallback for critical content.</li><li>Include analytics or tracking pixels for users without JavaScript.</li><li>Improve SEO by providing alternative content when appropriate.</li></ul><h4>Advantages</h4><ul><li>Improves user experience when JavaScript is unavailable.</li><li>Supports progressive enhancement.</li><li>Allows graceful degradation of web applications.</li></ul><h4>Common Interview Follow-ups</h4><ul><li>When is the <code class=\"inline\">&lt;noscript&gt;</code> element rendered?</li><li>Can JavaScript modify content inside <code class=\"inline\">&lt;noscript&gt;</code>?</li><li>What is the difference between progressive enhancement and graceful degradation?</li><li>Should critical application logic be placed inside <code class=\"inline\">&lt;noscript&gt;</code>?</li></ul><h4>How to say it in an interview</h4><p><strong>\"The <code class=\"inline\">&lt;noscript&gt;</code> element displays fallback content when JavaScript is disabled or unavailable. It's commonly used to show instructions, alternative content, or basic functionality, helping applications degrade gracefully and improving the user experience.\"</strong></p>"
+  },
+  {
+    "id": "html-dom",
+    "category": "html",
+    "difficulty": "beginner",
+    "tags": [
+      "dom",
+      "basics"
+    ],
+    "question": "What is the DOM?",
+    "answer": "<p>The <strong>Document Object Model</strong> is the browser's in-memory, tree-shaped representation of your HTML. Each tag becomes a <em>node</em>, and JavaScript can read and change these nodes (<code class=\"inline\">querySelector</code>, <code class=\"inline\">textContent</code>, <code class=\"inline\">createElement</code>) to update the page dynamically.</p><p>The DOM is a <em>live</em> API, not the original HTML source — frameworks like Angular/React manipulate it (often via a virtual DOM or their own diffing) instead of you touching it by hand.</p>",
+    "tip": "HTML is the source text; the DOM is the live object tree the browser builds from it.",
+    "code": "document.querySelector('h1').textContent = 'Hi';\nconst li = document.createElement('li');\ndocument.body.appendChild(li);",
+    "lang": "js"
+  },
+  {
+    "id": "html-get-post",
+    "category": "html",
+    "difficulty": "beginner",
+    "tags": [
+      "forms",
+      "http"
+    ],
+    "question": "Form method GET vs POST — what's the difference?",
+    "answer": "<ul><li><strong>GET</strong> — appends form data to the URL as query params. Visible, bookmarkable, cached, length-limited. Use for <em>searches/filters</em> (idempotent reads).</li><li><strong>POST</strong> — sends data in the request body. Not in the URL, not cached, no size limit. Use for <em>creating/changing</em> data (logins, submissions).</li></ul><p>Never send passwords or sensitive data with GET — it lands in URLs, history, and server logs.</p>",
+    "tip": "GET = read/idempotent (safe to repeat); POST = write (changes server state).",
+    "code": "<form method=\"get\" action=\"/search\">...</form>\n<form method=\"post\" action=\"/login\">...</form>",
+    "lang": "html"
+  },
+  {
+    "id": "html-id-vs-class",
+    "category": "html",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "id",
+      "class",
+      "selectors"
+    ],
+    "question": "What is the difference between id and class?",
+    "answer": "<ul><li><strong>id</strong> uniquely identifies a single element on the page and should only be used once.</li><li><strong>class</strong> can be reused across multiple elements.</li><li><strong>CSS Specificity</strong>: <code class=\"inline\">#id</code> has higher specificity than <code class=\"inline\">.class</code>.</li><li><strong>JavaScript</strong>: Access an id using <code class=\"inline\">getElementById()</code>, while classes are commonly selected using <code class=\"inline\">querySelectorAll()</code>.</li></ul>",
+    "tip": "Use classes for styling and reuse. Reserve ids for unique elements or anchor links.",
+    "code": "<div id=\"header\"></div>\n<div class=\"card\"></div>\n<div class=\"card\"></div>",
+    "lang": "html"
+  },
+  {
+    "id": "html-label-for",
+    "category": "html",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "forms",
+      "accessibility",
+      "label"
+    ],
+    "question": "Why should you use the label element with the for attribute?",
+    "answer": "<p>The <code class=\"inline\">label</code> element improves accessibility by associating descriptive text with an input. Clicking the label automatically focuses the corresponding input, making forms easier to use for both mouse and keyboard users as well as screen readers.</p>",
+    "tip": "Every form input should have an associated label whenever possible.",
+    "code": "<label for=\"email\">Email</label>\n<input id=\"email\" type=\"email\">",
+    "lang": "html"
+  },
+  {
+    "id": "html-alt-attribute",
+    "category": "html",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "images",
+      "accessibility",
+      "seo"
+    ],
+    "question": "Why is the alt attribute important for images?",
+    "answer": "<p>The <code class=\"inline\">alt</code> attribute provides alternative text when an image cannot be displayed. It is also read by screen readers for visually impaired users and helps search engines understand image content. Decorative images should use <code class=\"inline\">alt=\"\"</code>.</p>",
+    "tip": "Don't use the file name as alt text. Describe the image's purpose instead.",
+    "code": "<img src=\"profile.jpg\" alt=\"Profile photo of John Doe\">",
+    "lang": "html"
+  },
+  {
+    "id": "html-iframe",
+    "category": "html",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "iframe",
+      "security",
+      "sandbox"
+    ],
+    "question": "What is an iframe and what security precautions should you take?",
+    "answer": "<p>An <code class=\"inline\">iframe</code> embeds another webpage inside the current page. It is commonly used for videos, maps, and third-party widgets. Since embedded content may be untrusted, use the <code class=\"inline\">sandbox</code> attribute to restrict its capabilities and improve security.</p>",
+    "tip": "Always apply the minimum permissions required when using the sandbox attribute.",
+    "code": "<iframe\n  src=\"https://example.com\"\n  sandbox=\"allow-scripts allow-same-origin\">\n</iframe>",
+    "lang": "html"
+  },
+  {
+    "id": "html-autocomplete",
+    "category": "html",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "forms",
+      "autocomplete",
+      "ux"
+    ],
+    "question": "What is the autocomplete attribute and why is it useful?",
+    "answer": "<p>The <code class=\"inline\">autocomplete</code> attribute tells the browser whether it should automatically fill form fields using previously saved user information. It improves user experience by reducing typing and supports values like <code class=\"inline\">email</code>, <code class=\"inline\">username</code>, <code class=\"inline\">current-password</code>, and <code class=\"inline\">new-password</code>.</p>",
+    "tip": "Use meaningful autocomplete values instead of simply turning autocomplete off.",
+    "code": "<input type=\"email\" autocomplete=\"email\">\n<input type=\"password\" autocomplete=\"current-password\">\n<input type=\"password\" autocomplete=\"new-password\">",
+    "lang": "html"
+  }
+]

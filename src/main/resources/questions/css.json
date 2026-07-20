@@ -1,0 +1,541 @@
+[
+  {
+    "id": "css-box-model",
+    "category": "css",
+    "difficulty": "beginner",
+    "tags": [
+      "box-model",
+      "layout"
+    ],
+    "question": "Explain the box model and box-sizing.",
+    "answer": "<p>Every element is a box: <strong>content → padding → border → margin</strong>. By default (<code class=\"inline\">content-box</code>) width applies to content only, so padding/border add to the total size.</p><p><code class=\"inline\">box-sizing: border-box</code> makes width include padding and border — far more predictable, which is why most resets set it globally.</p>",
+    "tip": "* { box-sizing: border-box } is the first line of almost every CSS reset.",
+    "code": "* { box-sizing: border-box; }",
+    "lang": "css",
+    "deep": "<h4>The four layers, inside out</h4><ul><li><strong>Content</strong> — the text/image; its size is <code class=\"inline\">width</code> × <code class=\"inline\">height</code>.</li><li><strong>Padding</strong> — space inside the border, takes the background.</li><li><strong>Border</strong> — the edge around the padding.</li><li><strong>Margin</strong> — transparent space <em>outside</em>, separating this box from others.</li></ul><h4>content-box vs border-box — the whole point</h4><pre><code>.a { box-sizing: content-box; width: 200px; padding: 20px; border: 5px solid; }\n/* rendered width = 200 + 20*2 + 5*2 = 250px  */\n\n.b { box-sizing: border-box; width: 200px; padding: 20px; border: 5px solid; }\n/* rendered width = 200px  ✅ padding &amp; border fit INSIDE */</code></pre><p>With the default <code class=\"inline\">content-box</code>, padding and border are <em>added</em> to your declared width, so a \"200px\" box is actually wider. <code class=\"inline\">border-box</code> makes <code class=\"inline\">width</code> the final rendered width — which is why nearly every reset sets it globally.</p><pre><code>*, *::before, *::after { box-sizing: border-box; }</code></pre><h4>Margin doesn't count toward width — and it collapses</h4><p>Margin is always outside the box and never part of <code class=\"inline\">width</code>. Vertical margins between block elements also <strong>collapse</strong>: adjacent 20px and 30px margins produce a 30px gap, not 50px (padding and border never collapse).</p><h4>Handy diagnostics</h4><ul><li><code class=\"inline\">outline</code> draws like a border but takes <em>no</em> space — great for debugging layout.</li><li>DevTools' box-model panel shows the four layers with live numbers.</li></ul><h4>How to say it in an interview</h4><p>“Every element is a box of content, padding, border, and margin. By default <code class=\"inline\">width</code> only sizes the content, so padding and border add to the total — I set <code class=\"inline\">box-sizing: border-box</code> globally so <code class=\"inline\">width</code> is the actual rendered width. Margin stays outside the box and collapses vertically.”</p>"
+  },
+  {
+    "id": "css-flex-grid",
+    "category": "css",
+    "difficulty": "intermediate",
+    "tags": [
+      "flexbox",
+      "grid",
+      "layout"
+    ],
+    "question": "When should you use Flexbox instead of CSS Grid?",
+    "answer": "<p><strong>Flexbox</strong> is a one-dimensional layout system that arranges items in a single row or column. It is ideal for navigation bars, toolbars, buttons, and aligning or distributing items along one axis. <strong>CSS Grid</strong> is a two-dimensional layout system that manages both rows and columns simultaneously, making it the preferred choice for page layouts, dashboards, galleries, and complex responsive designs.</p>",
+    "tip": "Remember: <strong>Flexbox = one dimension</strong>, <strong>Grid = two dimensions</strong>. Use Flexbox for components and Grid for page layouts.",
+    "code": "/* Flexbox */\n.nav {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n}\n\n/* CSS Grid */\n.cards {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));\n  gap: 16px;\n}",
+    "lang": "css",
+    "youtube": "https://youtu.be/3elGSZSWTbM",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question evaluates whether you understand the strengths of Flexbox and CSS Grid and can choose the appropriate layout system for different UI requirements.</p><h4>Flexbox vs Grid</h4><table><thead><tr><th>Flexbox</th><th>CSS Grid</th></tr></thead><tbody><tr><td>One-dimensional layout (row <strong>or</strong> column).</td><td>Two-dimensional layout (rows <strong>and</strong> columns).</td></tr><tr><td>Best for aligning and distributing items.</td><td>Best for creating complete page layouts.</td></tr><tr><td>Content-driven layout.</td><td>Layout-driven design.</td></tr><tr><td>Excellent for navigation bars, forms, menus, and cards.</td><td>Excellent for dashboards, galleries, and responsive page structures.</td></tr><tr><td>Uses properties like <code class=\"inline\">justify-content</code>, <code class=\"inline\">align-items</code>, and <code class=\"inline\">flex-wrap</code>.</td><td>Uses <code class=\"inline\">grid-template-columns</code>, <code class=\"inline\">grid-template-rows</code>, <code class=\"inline\">grid-area</code>, and <code class=\"inline\">gap</code>.</td></tr></tbody></table><h4>Example</h4><pre><code>/* Navigation */\n.nav {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n}\n\n/* Product Grid */\n.products {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));\n  gap: 20px;\n}</code></pre><h4>Real-world Examples</h4><ul><li>Use <strong>Flexbox</strong> for navigation bars, headers, footers, toolbars, button groups, and form controls.</li><li>Use <strong>Grid</strong> for dashboards, admin panels, image galleries, pricing cards, and full-page layouts.</li><li>Many modern applications combine both—Grid for the overall layout and Flexbox inside individual components.</li></ul><h4>Common Interview Follow-ups</h4><ul><li>Can Flexbox create grid-like layouts?</li><li>Can Grid replace Flexbox completely?</li><li>What is the difference between <code class=\"inline\">auto-fill</code> and <code class=\"inline\">auto-fit</code>?</li><li>How does <code class=\"inline\">fr</code> work in CSS Grid?</li><li>When would you nest Flexbox inside Grid?</li></ul><h4>Common Mistakes</h4><ul><li>Using Flexbox for complex two-dimensional page layouts.</li><li>Using Grid for simple horizontal or vertical alignment.</li><li>Ignoring <code class=\"inline\">gap</code> and relying on margins for spacing.</li><li>Not combining Grid and Flexbox where each is most suitable.</li></ul><h4>How to say it in an interview</h4><p><strong>\"I use Flexbox for one-dimensional layouts where I need to align items in a row or column, such as navigation bars, forms, or button groups. I use CSS Grid for two-dimensional layouts involving both rows and columns, such as dashboards or responsive card layouts. In real projects, I often combine them by using Grid for the overall page structure and Flexbox within individual components.\"</strong></p>"
+  },
+  {
+    "id": "css-specificity",
+    "category": "css",
+    "difficulty": "intermediate",
+    "tags": [
+      "specificity",
+      "cascade"
+    ],
+    "question": "How does CSS specificity work?",
+    "answer": "<p>When multiple CSS rules match the same element, the browser decides which one to apply using the <strong>cascade</strong> and <strong>specificity</strong>. Specificity is calculated in the order: <strong>Inline styles &gt; IDs &gt; Classes, attributes &amp; pseudo-classes &gt; Elements &amp; pseudo-elements</strong>. If two selectors have the same specificity, the rule that appears later in the stylesheet wins. Although <code class=\"inline\">!important</code> overrides normal specificity, it should generally be avoided because it makes CSS harder to maintain.</p>",
+    "tip": "If a style isn't being applied, check the browser's DevTools to inspect which selector has the highest specificity.",
+    "code": "/* Specificity Examples */\n#header {\n  color: blue;\n}\n\n.menu .item {\n  color: red;\n}\n\np {\n  color: green;\n}\n\n/* #header wins because IDs have higher specificity */",
+    "lang": "css",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests whether you understand how the browser resolves conflicting CSS rules using the cascade, specificity, source order, and <code class=\"inline\">!important</code>.</p><h4>Specificity Hierarchy</h4><table><thead><tr><th>Selector</th><th>Specificity</th></tr></thead><tbody><tr><td>Inline styles</td><td>1,0,0,0</td></tr><tr><td>ID selector (<code class=\"inline\">#id</code>)</td><td>0,1,0,0</td></tr><tr><td>Class, attribute, pseudo-class (<code class=\"inline\">.class</code>, <code class=\"inline\">[type]</code>, <code class=\"inline\">:hover</code>)</td><td>0,0,1,0</td></tr><tr><td>Element and pseudo-element (<code class=\"inline\">div</code>, <code class=\"inline\">p</code>, <code class=\"inline\">::before</code>)</td><td>0,0,0,1</td></tr></tbody></table><h4>How the Browser Chooses a Rule</h4><ol><li>Check whether a rule uses <code class=\"inline\">!important</code>.</li><li>Compare selector specificity.</li><li>If specificity is equal, the rule that appears later in the stylesheet wins.</li></ol><h4>Example</h4><pre><code>#title {\n  color: blue;\n}\n\n.card .title {\n  color: red;\n}\n\nh1 {\n  color: green;\n}</code></pre><p>The element with <code class=\"inline\">id=\"title\"</code> will be <strong>blue</strong> because the ID selector has the highest specificity.</p><h4>Real-world Examples</h4><ul><li>Overriding third-party library styles.</li><li>Debugging why a CSS rule is not applied.</li><li>Styling Angular or React components.</li><li>Avoiding unnecessary use of <code class=\"inline\">!important</code>.</li></ul><h4>Common Interview Follow-ups</h4><ul><li>What is the CSS cascade?</li><li>What happens when two selectors have the same specificity?</li><li>Why is <code class=\"inline\">!important</code> discouraged?</li><li>Does the universal selector (<code class=\"inline\">*</code>) contribute to specificity?</li><li>How do pseudo-classes and pseudo-elements affect specificity?</li></ul><h4>Common Mistakes</h4><ul><li>Using multiple IDs or <code class=\"inline\">!important</code> to solve CSS conflicts.</li><li>Ignoring source order when specificity is equal.</li><li>Writing overly specific selectors that are difficult to override.</li></ul><h4>How to say it in an interview</h4><p><strong>\"When multiple CSS rules target the same element, the browser first considers <code class=\"inline\">!important</code>, then compares selector specificity, and finally uses source order if the specificity is the same. The specificity order is Inline styles &gt; IDs &gt; Classes/Attributes/Pseudo-classes &gt; Elements/Pseudo-elements. I avoid using <code class=\"inline\">!important</code> because it makes CSS harder to maintain.\"</strong></p>"
+  },
+  {
+    "id": "css-position",
+    "category": "css",
+    "difficulty": "intermediate",
+    "tags": [
+      "position"
+    ],
+    "question": "Explain the difference between position: relative, absolute, fixed, and sticky.",
+    "answer": "<p>The <code class=\"inline\">position</code> property controls how an element is placed in the document. <strong>relative</strong> keeps the element in the normal document flow while allowing it to be offset from its original position. <strong>absolute</strong> removes the element from the normal flow and positions it relative to its nearest positioned ancestor. <strong>fixed</strong> positions the element relative to the viewport, so it stays in the same place even while scrolling. <strong>sticky</strong> behaves like <code class=\"inline\">relative</code> until a specified scroll threshold (such as <code class=\"inline\">top: 0</code>) is reached, after which it behaves like <code class=\"inline\">fixed</code> within its scrolling container.</p>",
+    "tip": "Remember: <strong>Relative = reference</strong>, <strong>Absolute = nearest positioned parent</strong>, <strong>Fixed = viewport</strong>, <strong>Sticky = sticks while scrolling</strong>.",
+    "code": "/* Relative */\n.card {\n  position: relative;\n}\n\n/* Absolute */\n.badge {\n  position: absolute;\n  top: 8px;\n  right: 8px;\n}\n\n/* Fixed */\n.chat-button {\n  position: fixed;\n  bottom: 20px;\n  right: 20px;\n}\n\n/* Sticky */\n.header {\n  position: sticky;\n  top: 0;\n}",
+    "lang": "css",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question evaluates your understanding of CSS positioning, document flow, containing blocks, and common UI layouts.</p><h4>Position Types</h4><table><thead><tr><th>Position</th><th>Behavior</th><th>Typical Use</th></tr></thead><tbody><tr><td><code class=\"inline\">relative</code></td><td>Remains in the normal document flow and can be offset from its original position. Also creates a positioning context for absolutely positioned children.</td><td>Parent container, small element adjustments.</td></tr><tr><td><code class=\"inline\">absolute</code></td><td>Removed from the normal flow and positioned relative to the nearest ancestor with a position other than <code class=\"inline\">static</code>.</td><td>Badges, tooltips, dropdowns, overlays.</td></tr><tr><td><code class=\"inline\">fixed</code></td><td>Removed from the flow and positioned relative to the viewport.</td><td>Floating action buttons, chat widgets, fixed headers.</td></tr><tr><td><code class=\"inline\">sticky</code></td><td>Acts like <code class=\"inline\">relative</code> until a scroll threshold is reached, then sticks within its scroll container.</td><td>Sticky headers, sidebars, table headings.</td></tr></tbody></table><h4>Example</h4><pre><code>.card {\n  position: relative;\n}\n\n.badge {\n  position: absolute;\n  top: 8px;\n  right: 8px;\n}\n\n.header {\n  position: sticky;\n  top: 0;\n}</code></pre><h4>Real-world Examples</h4><ul><li>Use <strong>relative</strong> on a card so an absolute badge can be positioned inside it.</li><li>Use <strong>absolute</strong> for notification badges, tooltips, and dropdown menus.</li><li>Use <strong>fixed</strong> for chat buttons, back-to-top buttons, and persistent navigation.</li><li>Use <strong>sticky</strong> for navigation bars, table headers, and sidebar menus that remain visible while scrolling.</li></ul><h4>Common Interview Follow-ups</h4><ul><li>What is the default value of <code class=\"inline\">position</code>?</li><li>What happens if an absolutely positioned element has no positioned ancestor?</li><li>Why isn't <code class=\"inline\">position: sticky</code> working?</li><li>What is the difference between <code class=\"inline\">fixed</code> and <code class=\"inline\">sticky</code>?</li><li>How does <code class=\"inline\">z-index</code> interact with positioned elements?</li></ul><h4>Common Mistakes</h4><ul><li>Forgetting to set <code class=\"inline\">position: relative</code> on the parent before using <code class=\"inline\">position: absolute</code>.</li><li>Expecting <code class=\"inline\">sticky</code> to work without specifying <code class=\"inline\">top</code>, <code class=\"inline\">left</code>, <code class=\"inline\">right</code>, or <code class=\"inline\">bottom</code>.</li><li>Using <code class=\"inline\">fixed</code> when <code class=\"inline\">sticky</code> provides a better scrolling experience.</li><li>Ignoring stacking context issues when combining positioned elements with <code class=\"inline\">z-index</code>.</li></ul><h4>How to say it in an interview</h4><p><strong>\"I use <code class=\"inline\">position: relative</code> to establish a positioning context for child elements. <code class=\"inline\">position: absolute</code> is used for overlays, badges, and dropdowns because it positions elements relative to the nearest positioned ancestor. <code class=\"inline\">position: fixed</code> is ideal for elements that should remain visible while scrolling, such as floating buttons. <code class=\"inline\">position: sticky</code> behaves like a normal element until it reaches a specified offset, after which it sticks during scrolling, making it perfect for headers and navigation bars.\"</strong></p>"
+  },
+  {
+    "id": "css-units",
+    "category": "css",
+    "difficulty": "beginner",
+    "tags": [
+      "units",
+      "responsive"
+    ],
+    "question": "What is the difference between px, em, rem, %, vh, and vw in CSS?",
+    "answer": "<p>CSS provides different units for sizing elements. <strong>px</strong> is a fixed pixel unit. <strong>em</strong> is relative to the font size of its parent (or the element itself for certain properties). <strong>rem</strong> is relative to the root (<code class=\"inline\">html</code>) font size. <strong>%</strong> is relative to the size of the parent element. <strong>vh</strong> and <strong>vw</strong> represent 1% of the viewport's height and width respectively, making them useful for responsive layouts.</p>",
+    "tip": "Use <strong>rem</strong> for typography and spacing, <strong>%</strong> for fluid layouts, and <strong>vh/vw</strong> for viewport-based sizing. Avoid excessive use of <strong>em</strong> unless nested scaling is intended.",
+    "code": ".container {\n  width: 80%;\n  padding: 2rem;\n}\n\nh1 {\n  font-size: 2rem;\n}\n\n.card {\n  width: 50vw;\n  height: 40vh;\n}\n\nbutton {\n  font-size: 1.2em;\n}",
+    "lang": "css",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests your understanding of CSS sizing units, responsive design, accessibility, and when each unit should be used in real-world applications.</p><h4>CSS Units Comparison</h4><table><thead><tr><th>Unit</th><th>Relative To</th><th>Typical Use</th></tr></thead><tbody><tr><td><code class=\"inline\">px</code></td><td>Fixed CSS pixels.</td><td>Borders, shadows, fine-grained positioning.</td></tr><tr><td><code class=\"inline\">em</code></td><td>Parent's font size (or current element for some properties).</td><td>Components that scale with their parent.</td></tr><tr><td><code class=\"inline\">rem</code></td><td>Root (<code class=\"inline\">html</code>) font size.</td><td>Typography, spacing, padding, margins.</td></tr><tr><td><code class=\"inline\">%</code></td><td>Parent element's size.</td><td>Fluid widths and responsive layouts.</td></tr><tr><td><code class=\"inline\">vh</code></td><td>1% of viewport height.</td><td>Hero sections, fullscreen layouts.</td></tr><tr><td><code class=\"inline\">vw</code></td><td>1% of viewport width.</td><td>Responsive widths and typography.</td></tr></tbody></table><h4>Example</h4><pre><code>.container {\n  width: 80%;\n  padding: 2rem;\n}\n\nh1 {\n  font-size: 2rem;\n}\n\n.card {\n  width: 50vw;\n  height: 40vh;\n}</code></pre><h4>Real-world Examples</h4><ul><li>Use <strong>rem</strong> for consistent typography across the application.</li><li>Use <strong>%</strong> for responsive containers.</li><li>Use <strong>vh</strong> for landing pages that fill the screen.</li><li>Use <strong>vw</strong> for responsive banners or dynamic font sizing.</li><li>Use <strong>px</strong> for borders, icons, and hairline elements.</li></ul><h4>Common Mistakes</h4><ul><li>Using <code class=\"inline\">em</code> everywhere can lead to unexpected size compounding.</li><li>Using only <code class=\"inline\">px</code> reduces scalability and accessibility.</li><li>Using <code class=\"inline\">100vh</code> on mobile may not account for browser UI, causing layout issues.</li></ul><h4>Common Interview Follow-ups</h4><ul><li>Why is <code class=\"inline\">rem</code> generally preferred over <code class=\"inline\">em</code>?</li><li>What causes <code class=\"inline\">em</code> values to compound?</li><li>When would you choose <code class=\"inline\">vh</code> over <code class=\"inline\">%</code>?</li><li>What are the issues with using <code class=\"inline\">100vh</code> on mobile browsers?</li></ul><h4>How to say it in an interview</h4><p><strong>\"I typically use <code class=\"inline\">rem</code> for fonts and spacing because it's predictable and respects the user's root font size. I use percentages for flexible layouts, <code class=\"inline\">vh</code> and <code class=\"inline\">vw</code> for viewport-based sizing, and reserve <code class=\"inline\">px</code> for fixed values like borders or shadows. I use <code class=\"inline\">em</code> only when I intentionally want sizing to scale relative to its parent.\"</strong></p>"
+  },
+  {
+    "id": "css-center",
+    "category": "css",
+    "difficulty": "beginner",
+    "tags": [
+      "centering",
+      "flexbox"
+    ],
+    "question": "How do you center an element?",
+    "answer": "<p>Modern answer: flexbox or grid.</p><ul><li>Flex: <code class=\"inline\">display:flex; justify-content:center; align-items:center;</code></li><li>Grid: <code class=\"inline\">display:grid; place-items:center;</code></li><li>Absolute: <code class=\"inline\">top:50%; left:50%; transform:translate(-50%,-50%);</code></li></ul>",
+    "tip": "place-items: center is the shortest way to center in both axes.",
+    "code": ".box { display: grid; place-items: center; }",
+    "lang": "css"
+  },
+  {
+    "id": "css-pseudo",
+    "category": "css",
+    "difficulty": "beginner",
+    "tags": [
+      "pseudo-class",
+      "pseudo-element"
+    ],
+    "question": "What is the difference between a pseudo-class and a pseudo-element?",
+    "answer": "<p>A <strong>pseudo-class</strong> selects an existing element based on its state or position, such as <code class=\"inline\">:hover</code>, <code class=\"inline\">:focus</code>, or <code class=\"inline\">:nth-child()</code>. A <strong>pseudo-element</strong> selects or creates a specific part of an element, such as <code class=\"inline\">::before</code>, <code class=\"inline\">::after</code>, <code class=\"inline\">::first-line</code>, or <code class=\"inline\">::placeholder</code>.</p>",
+    "tip": "Think of it this way: <strong>pseudo-classes change how an existing element behaves</strong>, while <strong>pseudo-elements create or target part of an element</strong>.",
+    "code": "button:hover {\n  background: royalblue;\n}\n\nli:nth-child(2) {\n  color: red;\n}\n\n.badge::after {\n  content: '✓';\n  color: green;\n}\n\np::first-line {\n  font-weight: bold;\n}",
+    "lang": "css",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests whether you understand the difference between selecting an element's <strong>state</strong> and selecting or creating a <strong>part of an element</strong>. Interviewers often ask for examples of each.</p><h4>Pseudo-class vs Pseudo-element</h4><table><thead><tr><th>Pseudo-class</th><th>Pseudo-element</th></tr></thead><tbody><tr><td>Selects an existing element based on its state or position.</td><td>Selects or creates a specific part of an element.</td></tr><tr><td>Uses a single colon (<code class=\"inline\">:</code>).</td><td>Uses two colons (<code class=\"inline\">::</code>).</td></tr><tr><td>Examples: <code class=\"inline\">:hover</code>, <code class=\"inline\">:focus</code>, <code class=\"inline\">:active</code>, <code class=\"inline\">:checked</code>, <code class=\"inline\">:nth-child()</code>.</td><td>Examples: <code class=\"inline\">::before</code>, <code class=\"inline\">::after</code>, <code class=\"inline\">::first-letter</code>, <code class=\"inline\">::first-line</code>, <code class=\"inline\">::placeholder</code>.</td></tr></tbody></table><h4>Example</h4><pre><code>button:hover {\n  background: blue;\n}\n\n.card::before {\n  content: \"New\";\n  color: red;\n}</code></pre><h4>Real-world Examples</h4><ul><li>Use <code class=\"inline\">:hover</code> to change a button's appearance.</li><li>Use <code class=\"inline\">:focus</code> to highlight an active input.</li><li>Use <code class=\"inline\">:nth-child()</code> to style alternating table rows.</li><li>Use <code class=\"inline\">::before</code> or <code class=\"inline\">::after</code> to add icons, badges, or decorative elements without extra HTML.</li><li>Use <code class=\"inline\">::placeholder</code> to style placeholder text.</li></ul><h4>Common Interview Follow-ups</h4><ul><li>Why do pseudo-elements require the <code class=\"inline\">content</code> property with <code class=\"inline\">::before</code> and <code class=\"inline\">::after</code>?</li><li>Can you attach event listeners to pseudo-elements?</li><li>Why are pseudo-elements useful for reducing unnecessary HTML?</li><li>Why do modern CSS specifications recommend using double colons for pseudo-elements?</li></ul><h4>Common Mistakes</h4><ul><li>Confusing <code class=\"inline\">:hover</code> with <code class=\"inline\">::before</code>.</li><li>Forgetting to specify the <code class=\"inline\">content</code> property when using <code class=\"inline\">::before</code> or <code class=\"inline\">::after</code>.</li><li>Adding unnecessary HTML instead of using pseudo-elements for decorative content.</li></ul><h4>How to say it in an interview</h4><p><strong>\"A pseudo-class styles an existing element based on its state or position, such as <code class=\"inline\">:hover</code> or <code class=\"inline\">:focus</code>. A pseudo-element styles or creates a specific part of an element, such as <code class=\"inline\">::before</code> or <code class=\"inline\">::after</code>. I commonly use pseudo-classes for interactive states and pseudo-elements for icons, badges, and decorative content without adding extra HTML.\"</strong></p>"
+  },
+  {
+    "id": "css-variables",
+    "category": "css",
+    "difficulty": "intermediate",
+    "tags": [
+      "custom-properties",
+      "variables",
+      "theming"
+    ],
+    "question": "What are CSS custom properties (CSS variables)?",
+    "answer": "<p>CSS custom properties (also called CSS variables) are reusable values defined using the <code class=\"inline\">--</code> prefix and accessed with the <code class=\"inline\">var()</code> function. Unlike preprocessor variables (Sass/Less), CSS variables exist at runtime, participate in the CSS cascade, inherit by default, and can be updated dynamically using JavaScript. They are commonly used for theming, design systems, and reducing duplicated values.</p>",
+    "tip": "Define global variables in <code class=\"inline\">:root</code> and override them for themes, such as <code class=\"inline\">[data-theme=\"dark\"]</code>, without changing component styles.",
+    "code": ":root {\n  --primary-color: #2563eb;\n  --border-radius: 8px;\n}\n\n[data-theme=\"dark\"] {\n  --primary-color: #60a5fa;\n}\n\n.button {\n  background: var(--primary-color);\n  border-radius: var(--border-radius);\n}",
+    "lang": "css",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question evaluates your understanding of CSS custom properties, the CSS cascade, inheritance, dynamic styling, and their advantages over preprocessor variables.</p><h4>What Are CSS Variables?</h4><p>CSS custom properties are variables declared using the <code class=\"inline\">--</code> prefix. Their values are accessed using the <code class=\"inline\">var()</code> function and are resolved by the browser at runtime.</p><h4>Syntax</h4><pre><code>:root {\n  --primary-color: #2563eb;\n}\n\n.button {\n  color: var(--primary-color);\n}</code></pre><h4>Why Use CSS Variables?</h4><ul><li>Reduce duplicated values.</li><li>Create consistent design systems.</li><li>Implement light and dark themes.</li><li>Update styles dynamically using JavaScript.</li><li>Take advantage of inheritance and the CSS cascade.</li></ul><h4>CSS Variables vs Sass/Less Variables</h4><table><thead><tr><th>CSS Variables</th><th>Sass/Less Variables</th></tr></thead><tbody><tr><td>Evaluated at runtime.</td><td>Compiled at build time.</td></tr><tr><td>Can be modified with JavaScript.</td><td>Cannot be changed after compilation.</td></tr><tr><td>Participate in the CSS cascade and inheritance.</td><td>No runtime cascade or inheritance.</td></tr><tr><td>Ideal for themes and dynamic styling.</td><td>Ideal for static values and code organization.</td></tr></tbody></table><h4>Real-world Examples</h4><ul><li>Light and dark mode switching.</li><li>Brand color customization.</li><li>Shared spacing and typography tokens.</li><li>Reusable border radius and shadow values.</li><li>Enterprise design systems.</li></ul><h4>Common Interview Follow-ups</h4><ul><li>How are CSS variables different from Sass variables?</li><li>Why are CSS variables useful for theming?</li><li>Can CSS variables be changed with JavaScript?</li><li>Where should global variables be declared?</li><li>What happens if a CSS variable is undefined?</li></ul><h4>Common Mistakes</h4><ul><li>Defining global variables outside <code class=\"inline\">:root</code> unnecessarily.</li><li>Using hard-coded values instead of reusable variables.</li><li>Confusing CSS variables with Sass or Less variables.</li><li>Forgetting that CSS variables follow the normal cascade and inheritance rules.</li></ul><h4>How to say it in an interview</h4><p><strong>\"CSS custom properties are runtime variables declared using the <code class=\"inline\">--</code> syntax and accessed with <code class=\"inline\">var()</code>. Unlike Sass variables, they participate in the CSS cascade, inherit naturally, and can be updated dynamically with JavaScript. I commonly use them to build design systems and implement light and dark themes.\"</strong></p>"
+  },
+  {
+    "id": "css-responsive",
+    "category": "css",
+    "difficulty": "intermediate",
+    "tags": [
+      "responsive",
+      "media-queries"
+    ],
+    "question": "How do you build a responsive layout in CSS?",
+    "answer": "<p>A responsive layout adapts to different screen sizes and devices. Use a <strong>mobile-first</strong> approach by writing base styles for smaller screens, then enhance the layout using <code class=\"inline\">min-width</code> media queries. Combine flexible layouts like <strong>Flexbox</strong> and <strong>CSS Grid</strong> with fluid units such as <code class=\"inline\">%</code>, <code class=\"inline\">rem</code>, <code class=\"inline\">fr</code>, and functions like <code class=\"inline\">minmax()</code>. Also include the viewport meta tag so layouts scale correctly on mobile devices.</p>",
+    "tip": "Build mobile-first. Modern CSS Grid using <code class=\"inline\">repeat(auto-fit, minmax())</code> often creates responsive layouts without many media queries.",
+    "code": "<!-- HTML -->\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n\n/* CSS */\n.cards {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));\n  gap: 16px;\n}\n\n@media (min-width: 768px) {\n  .sidebar {\n    display: block;\n  }\n}",
+    "lang": "css",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests your understanding of responsive web design, modern CSS layout techniques, mobile-first development, and how websites adapt across different screen sizes.</p><h4>Best Practices for Responsive Design</h4><ul><li>Use a <strong>mobile-first</strong> approach.</li><li>Include the viewport meta tag.</li><li>Use flexible layouts with <strong>Flexbox</strong> or <strong>CSS Grid</strong>.</li><li>Prefer fluid units like <code class=\"inline\">%</code>, <code class=\"inline\">rem</code>, <code class=\"inline\">fr</code>, and <code class=\"inline\">vw</code>.</li><li>Use media queries only when the layout actually needs to change.</li><li>Make images responsive using <code class=\"inline\">max-width: 100%</code>.</li></ul><h4>Common Responsive Techniques</h4><table><thead><tr><th>Technique</th><th>Purpose</th></tr></thead><tbody><tr><td>Flexbox</td><td>Responsive one-dimensional layouts.</td></tr><tr><td>CSS Grid</td><td>Responsive two-dimensional layouts.</td></tr><tr><td><code class=\"inline\">repeat(auto-fit, minmax())</code></td><td>Automatically adjusts the number of columns.</td></tr><tr><td>Media Queries</td><td>Apply styles at specific breakpoints.</td></tr><tr><td>Fluid Units</td><td>Scale elements naturally across devices.</td></tr><tr><td>Responsive Images</td><td>Prevent images from overflowing their containers.</td></tr></tbody></table><h4>Example</h4><pre><code>.cards {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));\n  gap: 16px;\n}\n\nimg {\n  max-width: 100%;\n  height: auto;\n}\n\n@media (min-width: 768px) {\n  .sidebar {\n    display: block;\n  }\n}</code></pre><h4>Real-world Examples</h4><ul><li>Product listing pages that automatically adjust the number of columns.</li><li>Navigation menus that collapse into a hamburger menu on mobile.</li><li>Responsive dashboards with sidebars that appear only on larger screens.</li><li>Image galleries that resize without overflowing.</li><li>Landing pages optimized for phones, tablets, and desktops.</li></ul><h4>Common Interview Follow-ups</h4><ul><li>What is mobile-first design?</li><li>Why use <code class=\"inline\">min-width</code> instead of <code class=\"inline\">max-width</code> media queries?</li><li>What is the purpose of the viewport meta tag?</li><li>What is the difference between <code class=\"inline\">auto-fit</code> and <code class=\"inline\">auto-fill</code>?</li><li>When can CSS Grid eliminate the need for media queries?</li></ul><h4>Common Mistakes</h4><ul><li>Using fixed widths instead of flexible layouts.</li><li>Creating too many breakpoint-specific media queries.</li><li>Forgetting the viewport meta tag.</li><li>Using pixels everywhere instead of responsive units.</li><li>Not testing layouts on different screen sizes.</li></ul><h4>How to say it in an interview</h4><p><strong>\"I build responsive layouts using a mobile-first approach. I use Flexbox and CSS Grid with flexible units like <code class=\"inline\">fr</code>, <code class=\"inline\">%</code>, and <code class=\"inline\">rem</code>. I rely on features like <code class=\"inline\">repeat(auto-fit, minmax())</code> to create adaptive layouts and add <code class=\"inline\">min-width</code> media queries only when the layout needs to change. I also include the viewport meta tag to ensure proper rendering on mobile devices.\"</strong></p>"
+  },
+  {
+    "id": "css-selectors",
+    "category": "css",
+    "difficulty": "intermediate",
+    "tags": [
+      "selectors",
+      "combinators"
+    ],
+    "question": "What are CSS combinators? Explain the descendant, child, adjacent sibling, and general sibling combinators.",
+    "answer": "<p>CSS combinators define the relationship between selectors. The <strong>descendant combinator</strong> (<code class=\"inline\">A B</code>) selects any matching descendant. The <strong>child combinator</strong> (<code class=\"inline\">A &gt; B</code>) selects only direct children. The <strong>adjacent sibling combinator</strong> (<code class=\"inline\">A + B</code>) selects the immediate next sibling. The <strong>general sibling combinator</strong> (<code class=\"inline\">A ~ B</code>) selects all following siblings that share the same parent.</p>",
+    "tip": "Remember: <strong>Space = any descendant</strong>, <strong>&gt; = direct child</strong>, <strong>+ = next sibling</strong>, <strong>~ = all following siblings</strong>.",
+    "code": "/* Descendant */\n.card p {\n  color: blue;\n}\n\n/* Direct Child */\n.card > p {\n  font-weight: bold;\n}\n\n/* Adjacent Sibling */\nh2 + p {\n  margin-top: 0;\n}\n\n/* General Sibling */\nh2 ~ p {\n  color: gray;\n}",
+    "lang": "css",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests whether you understand CSS selector relationships and know how to target elements efficiently without adding unnecessary classes or IDs.</p><h4>CSS Combinators</h4><table><thead><tr><th>Combinator</th><th>Description</th><th>Example</th></tr></thead><tbody><tr><td><code class=\"inline\">A B</code></td><td>Selects all matching descendants at any nesting level.</td><td><code class=\"inline\">.card p</code></td></tr><tr><td><code class=\"inline\">A &gt; B</code></td><td>Selects only direct children.</td><td><code class=\"inline\">.card &gt; p</code></td></tr><tr><td><code class=\"inline\">A + B</code></td><td>Selects the immediate next sibling.</td><td><code class=\"inline\">h2 + p</code></td></tr><tr><td><code class=\"inline\">A ~ B</code></td><td>Selects all following siblings with the same parent.</td><td><code class=\"inline\">h2 ~ p</code></td></tr></tbody></table><h4>Example</h4><pre><code>&lt;div class=\"card\"&gt;\n  &lt;p&gt;Direct child&lt;/p&gt;\n  &lt;section&gt;\n    &lt;p&gt;Nested paragraph&lt;/p&gt;\n  &lt;/section&gt;\n&lt;/div&gt;</code></pre><ul><li><code class=\"inline\">.card p</code> selects both paragraphs.</li><li><code class=\"inline\">.card &gt; p</code> selects only the first paragraph.</li></ul><h4>Real-world Examples</h4><ul><li>Style navigation links that are direct children of a menu.</li><li>Remove the top margin from the paragraph immediately following a heading using <code class=\"inline\">h2 + p</code>.</li><li>Highlight all messages that come after a selected message using <code class=\"inline\">~</code>.</li><li>Scope component styles using <code class=\"inline\">&gt;</code> to avoid affecting deeply nested elements.</li></ul><h4>Common Interview Follow-ups</h4><ul><li>What is the difference between <code class=\"inline\">A B</code> and <code class=\"inline\">A &gt; B</code>?</li><li>When would you use <code class=\"inline\">+</code> instead of <code class=\"inline\">~</code>?</li><li>Do combinators affect CSS specificity?</li><li>Can combinators be combined with pseudo-classes?</li><li>How do combinators help write maintainable CSS?</li></ul><h4>Common Mistakes</h4><ul><li>Using the descendant selector when only direct children should be styled.</li><li>Confusing <code class=\"inline\">+</code> (next sibling) with <code class=\"inline\">~</code> (all following siblings).</li><li>Writing overly broad descendant selectors that unintentionally style nested elements.</li></ul><h4>How to say it in an interview</h4><p><strong>\"CSS combinators define relationships between elements. A space selects any descendant, <code class=\"inline\">&gt;</code> selects only direct children, <code class=\"inline\">+</code> selects the immediate next sibling, and <code class=\"inline\">~</code> selects all following siblings with the same parent. I prefer using the most specific combinator, especially <code class=\"inline\">&gt;</code>, to keep component styles predictable and avoid unintended styling.\"</strong></p>"
+  },
+  {
+    "id": "css-zindex",
+    "category": "css",
+    "difficulty": "advanced",
+    "tags": [
+      "z-index",
+      "stacking-context"
+    ],
+    "question": "Why doesn't my z-index work? (stacking context)",
+    "answer": "<p><code class=\"inline\">z-index</code> only compares elements within the <strong>same stacking context</strong>. Properties like <code class=\"inline\">transform</code>, <code class=\"inline\">opacity &lt; 1</code>, <code class=\"inline\">filter</code>, and <code class=\"inline\">position + z-index</code> create new contexts, trapping children's z-index inside them.</p>",
+    "tip": "A parent's transform can make a huge child z-index useless — check ancestors first.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "css-transitions",
+    "category": "css",
+    "difficulty": "beginner",
+    "tags": [
+      "animation",
+      "transition",
+      "performance"
+    ],
+    "question": "Which CSS properties are best for smooth animations?",
+    "answer": "<p>For smooth, high-performance animations, prefer animating <strong>transform</strong> and <strong>opacity</strong>. These properties are handled by the browser's compositor and typically avoid layout recalculations and repainting. Avoid animating layout-related properties such as <code class=\"inline\">width</code>, <code class=\"inline\">height</code>, <code class=\"inline\">top</code>, <code class=\"inline\">left</code>, and <code class=\"inline\">margin</code>, as they trigger layout updates and can cause janky animations.</p>",
+    "tip": "The golden rule is: <strong>Animate only <code class=\"inline\">transform</code> and <code class=\"inline\">opacity</code></strong> whenever possible for smooth 60 FPS animations.",
+    "code": ".card {\n  transition: transform 0.2s ease, opacity 0.2s ease;\n}\n\n.card:hover {\n  transform: translateY(-4px) scale(1.02);\n  opacity: 0.9;\n}",
+    "lang": "css",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests your understanding of browser rendering, animation performance, and which CSS properties minimize rendering work.</p><h4>Browser Rendering Pipeline</h4><p>When rendering a page, the browser generally performs these steps:</p><ol><li><strong>Layout (Reflow)</strong> – Calculates element positions and sizes.</li><li><strong>Paint</strong> – Draws pixels for elements.</li><li><strong>Composite</strong> – Combines layers and displays them on screen.</li></ol><p>Animations that skip Layout and Paint are significantly smoother.</p><h4>Performance Comparison</h4><table><thead><tr><th>Property</th><th>Performance</th><th>Reason</th></tr></thead><tbody><tr><td><code class=\"inline\">transform</code></td><td>★★★★★</td><td>Handled by the compositor without layout changes.</td></tr><tr><td><code class=\"inline\">opacity</code></td><td>★★★★★</td><td>Only changes transparency, no layout required.</td></tr><tr><td><code class=\"inline\">width</code>, <code class=\"inline\">height</code></td><td>★★☆☆☆</td><td>Triggers layout and repaint.</td></tr><tr><td><code class=\"inline\">top</code>, <code class=\"inline\">left</code></td><td>★★☆☆☆</td><td>Changes element position, causing layout.</td></tr><tr><td><code class=\"inline\">margin</code>, <code class=\"inline\">padding</code></td><td>★★☆☆☆</td><td>Requires layout recalculation.</td></tr><tr><td><code class=\"inline\">background-color</code></td><td>★★★☆☆</td><td>Causes repaint but not layout.</td></tr></tbody></table><h4>Example</h4><pre><code>.card {\n  transition: transform .2s ease;\n}\n\n.card:hover {\n  transform: translateY(-4px) scale(1.02);\n}</code></pre><h4>Real-world Examples</h4><ul><li>Hover effects on cards and buttons.</li><li>Sliding side navigation menus.</li><li>Modal fade-in and fade-out animations.</li><li>Image zoom effects.</li><li>Loading skeletons and shimmer animations.</li></ul><h4>Common Interview Follow-ups</h4><ul><li>Why is <code class=\"inline\">transform</code> faster than <code class=\"inline\">top</code> or <code class=\"inline\">left</code>?</li><li>What is the difference between reflow, repaint, and compositing?</li><li>What is GPU compositing?</li><li>When would you use <code class=\"inline\">will-change</code>?</li><li>How do you identify slow animations using Chrome DevTools?</li></ul><h4>Common Mistakes</h4><ul><li>Animating <code class=\"inline\">width</code> or <code class=\"inline\">height</code> for expand/collapse effects.</li><li>Moving elements using <code class=\"inline\">top</code> and <code class=\"inline\">left</code> instead of <code class=\"inline\">transform: translate()</code>.</li><li>Applying <code class=\"inline\">will-change</code> to too many elements, which can increase memory usage.</li></ul><h4>How to say it in an interview</h4><p><strong>\"For smooth animations, I always try to animate <code class=\"inline\">transform</code> and <code class=\"inline\">opacity</code> because they are handled by the browser's compositor and usually avoid layout and repaint operations. I avoid animating properties like <code class=\"inline\">width</code>, <code class=\"inline\">height</code>, or <code class=\"inline\">top</code> since they trigger reflow and can reduce animation performance.\"</strong></p>"
+  },
+  {
+    "id": "css-bem",
+    "category": "css",
+    "difficulty": "intermediate",
+    "tags": [
+      "bem",
+      "architecture",
+      "methodology"
+    ],
+    "question": "What is BEM, and why is it used in CSS?",
+    "answer": "<p><strong>BEM</strong> (Block, Element, Modifier) is a CSS naming convention that makes class names predictable, reusable, and easy to maintain. It promotes low-specificity selectors, avoids deeply nested CSS, and makes components easier to understand and modify. BEM is especially useful in large projects and teams because it reduces style conflicts and improves code organization.</p>",
+    "tip": "Think of BEM as: <strong>Block = component</strong>, <strong>Element = part of the component</strong>, <strong>Modifier = variation of the component</strong>.",
+    "code": "/* Block */\n.card {}\n\n/* Element */\n.card__title {}\n.card__image {}\n\n/* Modifier */\n.card--featured {}\n.card__button--disabled {}",
+    "lang": "css",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests whether you understand CSS architecture, maintainable naming conventions, and how to organize styles in large-scale applications.</p><h4>What is BEM?</h4><p>BEM stands for <strong>Block</strong>, <strong>Element</strong>, and <strong>Modifier</strong>. It is a naming convention that encourages reusable, component-based CSS with low specificity.</p><table><thead><tr><th>Part</th><th>Meaning</th><th>Example</th></tr></thead><tbody><tr><td><strong>Block</strong></td><td>A standalone component.</td><td><code class=\"inline\">.card</code></td></tr><tr><td><strong>Element</strong></td><td>A child that belongs to the block.</td><td><code class=\"inline\">.card__title</code></td></tr><tr><td><strong>Modifier</strong></td><td>A variation or state of a block or element.</td><td><code class=\"inline\">.card--featured</code>, <code class=\"inline\">.card__button--disabled</code></td></tr></tbody></table><h4>Example</h4><pre><code>&lt;div class=\"card card--featured\"&gt;\n  &lt;img class=\"card__image\"&gt;\n  &lt;h2 class=\"card__title\"&gt;Product&lt;/h2&gt;\n  &lt;button class=\"card__button card__button--disabled\"&gt;\n    Buy Now\n  &lt;/button&gt;\n&lt;/div&gt;</code></pre><h4>Why Use BEM?</h4><ul><li>Keeps CSS predictable and easy to understand.</li><li>Reduces selector specificity by relying on class selectors.</li><li>Avoids deeply nested selectors.</li><li>Prevents accidental style overrides.</li><li>Makes components reusable and easier to maintain.</li><li>Works well with Angular, React, Vue, and other component-based frameworks.</li></ul><h4>Real-world Examples</h4><ul><li>Large enterprise applications with hundreds of reusable components.</li><li>Design systems and component libraries.</li><li>Teams where multiple developers work on the same stylesheet.</li><li>Projects requiring consistent naming across modules.</li></ul><h4>Common Interview Follow-ups</h4><ul><li>Why is BEM better than deeply nested selectors?</li><li>Does BEM improve CSS performance?</li><li>How does BEM help reduce specificity issues?</li><li>How is BEM different from CSS Modules or Tailwind CSS?</li><li>Is BEM still useful in Angular or React projects?</li></ul><h4>Common Mistakes</h4><ul><li>Creating unnecessary nesting like <code class=\"inline\">.card .card__title</code> instead of using the BEM class directly.</li><li>Using IDs together with BEM classes, increasing specificity.</li><li>Treating modifiers as separate components instead of variations.</li><li>Creating overly long or inconsistent class names.</li></ul><h4>How to say it in an interview</h4><p><strong>\"BEM is a CSS naming convention that stands for Block, Element, and Modifier. It helps organize styles into reusable components with low specificity, making CSS easier to maintain and less prone to conflicts. I've used BEM in Angular projects because it keeps component styles predictable and works well in large codebases with multiple developers.\"</strong></p>"
+  },
+  {
+    "id": "css-flex-props",
+    "category": "css",
+    "difficulty": "intermediate",
+    "tags": [
+      "flexbox",
+      "flex-grow",
+      "flex-basis"
+    ],
+    "question": "Explain flex-grow, flex-shrink, and flex-basis.",
+    "answer": "<p>The <code class=\"inline\">flex</code> shorthand controls how items share space:</p><ul><li><strong>flex-grow</strong> — how much an item grows to fill free space.</li><li><strong>flex-shrink</strong> — how much it shrinks when space is tight.</li><li><strong>flex-basis</strong> — the starting size before grow/shrink.</li></ul><p><code class=\"inline\">flex: 1</code> = <code class=\"inline\">1 1 0</code> (grow equally from zero).</p>",
+    "tip": "flex: 1 on children makes them share the row equally — the most-used flex value.",
+    "code": ".col { flex: 1 1 200px; } /* grow, shrink, basis */",
+    "lang": "css",
+    "deep": "<h4>Two axes: main and cross</h4><p>Flexbox is <strong>one-dimensional</strong>. <code class=\"inline\">flex-direction</code> sets the <em>main axis</em> (<code class=\"inline\">row</code> = horizontal, <code class=\"inline\">column</code> = vertical); the <em>cross axis</em> is perpendicular. All the alignment properties are defined relative to these axes, which is the thing to get straight first.</p><table><thead><tr><th>Property</th><th>Axis</th><th>Does</th></tr></thead><tbody><tr><td><code class=\"inline\">justify-content</code></td><td>main</td><td>distributes items along the main axis</td></tr><tr><td><code class=\"inline\">align-items</code></td><td>cross</td><td>aligns items on the cross axis</td></tr><tr><td><code class=\"inline\">align-content</code></td><td>cross</td><td>spaces multiple <em>lines</em> (when wrapped)</td></tr><tr><td><code class=\"inline\">align-self</code></td><td>cross</td><td>overrides align-items for one item</td></tr></tbody></table><h4>The three flex-item properties</h4><ul><li><strong><code class=\"inline\">flex-grow</code></strong> — a unitless ratio of how leftover free space is shared. <code class=\"inline\">0</code> = don't grow. Two items at <code class=\"inline\">1</code> and <code class=\"inline\">2</code> split extra space 1:2.</li><li><strong><code class=\"inline\">flex-shrink</code></strong> — ratio for how items give up space when the container is too small. <code class=\"inline\">0</code> = never shrink (can overflow).</li><li><strong><code class=\"inline\">flex-basis</code></strong> — the item's size along the main axis <em>before</em> grow/shrink. <code class=\"inline\">auto</code> uses the content/width; <code class=\"inline\">0</code> ignores it.</li></ul><h4>Reading the flex shorthand</h4><pre><code>flex: 1;        /* 1 1 0   — grow &amp; shrink from zero, equal columns */\nflex: auto;     /* 1 1 auto — grow/shrink from content size */\nflex: none;     /* 0 0 auto — fixed, never grow or shrink */\nflex: 0 0 200px;/* fixed 200px track */</code></pre><p><strong>Key nuance:</strong> <code class=\"inline\">flex: 1</code> uses basis <code class=\"inline\">0</code>, so items become truly equal regardless of content. <code class=\"inline\">flex: auto</code> uses basis <code class=\"inline\">auto</code>, so bigger content starts bigger. That difference trips people up constantly.</p><h4>Common patterns</h4><pre><code>/* perfect centering */\n.center { display: flex; justify-content: center; align-items: center; }\n\n/* push last item to the right (nav bar) */\n.nav { display: flex; gap: 12px; }\n.nav .spacer { margin-left: auto; }\n\n/* responsive wrap */\n.cards { display: flex; flex-wrap: wrap; gap: 16px; }\n.cards > * { flex: 1 1 240px; } /* grow, but never below ~240px */</code></pre><h4>Gotchas</h4><ul><li>Items overflow instead of shrinking? A child's <code class=\"inline\">min-width</code> defaults to <code class=\"inline\">auto</code> (min-content) — set <code class=\"inline\">min-width: 0</code> to let it shrink.</li><li><code class=\"inline\">margin: auto</code> on a flex item absorbs free space — handy for pushing items apart.</li><li>Use <code class=\"inline\">gap</code> for spacing, not margins — it's cleaner and doesn't add edge gaps.</li></ul><h4>How to say it in an interview</h4><p>“Flexbox lays items along a main axis set by <code class=\"inline\">flex-direction</code>; <code class=\"inline\">justify-content</code> aligns on the main axis and <code class=\"inline\">align-items</code> on the cross axis. On items, <code class=\"inline\">flex-grow</code>/<code class=\"inline\">shrink</code> are ratios for sharing or giving up space and <code class=\"inline\">flex-basis</code> is the starting size — <code class=\"inline\">flex: 1</code> means grow and shrink from a zero basis, giving equal columns.”</p>"
+  },
+  {
+    "id": "css-grid-areas",
+    "category": "css",
+    "difficulty": "intermediate",
+    "tags": [
+      "grid",
+      "layout",
+      "template-areas"
+    ],
+    "question": "What is grid-template-areas and when is it used?",
+    "answer": "<p><code class=\"inline\">grid-template-areas</code> lets you define named regions in a CSS Grid using a readable, text-based layout. Child elements are assigned to these regions using the <code class=\"inline\">grid-area</code> property. This makes complex layouts easier to understand, maintain, and rearrange for responsive designs by simply changing the area definitions.</p>",
+    "tip": "Use <code class=\"inline\">grid-template-areas</code> for page layouts with clearly defined sections like headers, sidebars, and content. Responsive layouts often require changing only the area map.",
+    "code": ".layout {\n  display: grid;\n  grid-template-columns: 250px 1fr;\n  grid-template-areas:\n    \"header header\"\n    \"sidebar main\"\n    \"footer footer\";\n  gap: 16px;\n}\n\n.header { grid-area: header; }\n.sidebar { grid-area: sidebar; }\n.main { grid-area: main; }\n.footer { grid-area: footer; }\n\n@media (max-width: 768px) {\n  .layout {\n    grid-template-columns: 1fr;\n    grid-template-areas:\n      \"header\"\n      \"main\"\n      \"sidebar\"\n      \"footer\";\n  }\n}",
+    "lang": "css",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests your understanding of advanced CSS Grid features, readable layout design, and responsive page architecture.</p><h4>How <code class=\"inline\">grid-template-areas</code> Works</h4><p>Instead of placing items using row and column numbers, you assign names to sections of the grid. Each child element is then placed into its named area using the <code class=\"inline\">grid-area</code> property.</p><h4>Example</h4><pre><code>.layout {\n  display: grid;\n  grid-template-columns: 250px 1fr;\n  grid-template-areas:\n    \"header header\"\n    \"sidebar main\"\n    \"footer footer\";\n}\n\n.header { grid-area: header; }\n.sidebar { grid-area: sidebar; }\n.main { grid-area: main; }\n.footer { grid-area: footer; }</code></pre><h4>Responsive Example</h4><p>Instead of changing the HTML, you can simply redefine the layout:</p><pre><code>@media (max-width: 768px) {\n  .layout {\n    grid-template-areas:\n      \"header\"\n      \"main\"\n      \"sidebar\"\n      \"footer\";\n  }\n}</code></pre><h4>Benefits</h4><ul><li>Makes layouts easy to read and understand.</li><li>Separates layout structure from HTML.</li><li>Responsive layouts require minimal CSS changes.</li><li>Avoids manually managing grid row and column numbers.</li><li>Ideal for dashboards, admin panels, and page templates.</li></ul><h4>Real-world Examples</h4><ul><li>Blog layouts with a header, sidebar, content, and footer.</li><li>Admin dashboards.</li><li>E-commerce product pages.</li><li>Documentation websites.</li><li>News portals with multiple content sections.</li></ul><h4>Common Interview Follow-ups</h4><ul><li>What is the difference between <code class=\"inline\">grid-template-areas</code> and manually placing items with grid lines?</li><li>Can one area span multiple rows or columns?</li><li>Can an area be left empty?</li><li>How do you make <code class=\"inline\">grid-template-areas</code> responsive?</li><li>When should you use Grid Areas instead of Flexbox?</li></ul><h4>Common Mistakes</h4><ul><li>Using different area names in <code class=\"inline\">grid-template-areas</code> and <code class=\"inline\">grid-area</code>.</li><li>Creating rows with different numbers of area names.</li><li>Trying to use Grid Areas for simple one-dimensional layouts where Flexbox is more appropriate.</li><li>Changing HTML order unnecessarily instead of redefining the grid areas.</li></ul><h4>How to say it in an interview</h4><p><strong>\"<code class=\"inline\">grid-template-areas</code> allows me to define named sections of a CSS Grid using a visual layout. I assign elements to those regions with <code class=\"inline\">grid-area</code>, making complex layouts much easier to read and maintain. For responsive designs, I simply redefine the area map inside a media query instead of changing the HTML or manually repositioning elements.\"</strong></p>"
+  },
+  {
+    "id": "css-clamp",
+    "category": "css",
+    "difficulty": "intermediate",
+    "tags": [
+      "responsive",
+      "clamp",
+      "fluid-typography"
+    ],
+    "question": "What is clamp() and when is it used?",
+    "answer": "<p>The <code class=\"inline\">clamp()</code> function lets you define a responsive value by specifying a <strong>minimum</strong>, a <strong>preferred</strong>, and a <strong>maximum</strong> value. The browser uses the preferred value as long as it stays within the specified range. It is commonly used for fluid typography, spacing, widths, and other responsive values without relying on multiple media queries.</p>",
+    "tip": "A common pattern is <code class=\"inline\">clamp(min, viewport-based value, max)</code>, which creates smooth responsive sizing while preventing values from becoming too small or too large.",
+    "code": "h1 {\n  font-size: clamp(1.5rem, 4vw, 3rem);\n}\n\n.container {\n  padding: clamp(1rem, 3vw, 2rem);\n}",
+    "lang": "css",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests your understanding of modern responsive CSS techniques and whether you know how to create fluid layouts without excessive media queries.</p><h4>Syntax</h4><pre><code>clamp(minimum, preferred, maximum)</code></pre><p>The browser calculates the preferred value and ensures it never goes below the minimum or above the maximum.</p><table><thead><tr><th>Parameter</th><th>Purpose</th></tr></thead><tbody><tr><td><strong>Minimum</strong></td><td>The smallest allowed value.</td></tr><tr><td><strong>Preferred</strong></td><td>Usually a responsive value such as <code class=\"inline\">vw</code>.</td></tr><tr><td><strong>Maximum</strong></td><td>The largest allowed value.</td></tr></tbody></table><h4>Example</h4><pre><code>h1 {\n  font-size: clamp(1.5rem, 4vw, 3rem);\n}\n\n.card {\n  padding: clamp(1rem, 2vw, 2rem);\n}</code></pre><p>As the viewport grows, the font size and padding increase smoothly but never exceed their maximum values or shrink below their minimum values.</p><h4>Why Use <code class=\"inline\">clamp()</code>?</h4><ul><li>Creates fluid typography.</li><li>Reduces the need for multiple media queries.</li><li>Improves responsiveness with less CSS.</li><li>Keeps layouts readable on both small and large screens.</li><li>Works well for spacing, widths, margins, and gaps.</li></ul><h4>Real-world Examples</h4><ul><li>Responsive headings on landing pages.</li><li>Adaptive padding and margins.</li><li>Fluid button sizes.</li><li>Responsive card layouts.</li><li>Design systems using scalable spacing tokens.</li></ul><h4>Common Interview Follow-ups</h4><ul><li>How is <code class=\"inline\">clamp()</code> different from <code class=\"inline\">min()</code> and <code class=\"inline\">max()</code>?</li><li>Why is <code class=\"inline\">vw</code> commonly used as the preferred value?</li><li>Can <code class=\"inline\">clamp()</code> replace media queries?</li><li>When would you still use media queries?</li><li>What CSS properties can use <code class=\"inline\">clamp()</code>?</li></ul><h4>Common Mistakes</h4><ul><li>Using fixed pixel values for all three arguments, making the value non-responsive.</li><li>Choosing unrealistic minimum or maximum values.</li><li>Assuming <code class=\"inline\">clamp()</code> completely replaces media queries—it handles sizing, not layout changes.</li><li>Forgetting that the preferred value should usually be viewport-relative (for example, <code class=\"inline\">vw</code>).</li></ul><h4>How to say it in an interview</h4><p><strong>\"The <code class=\"inline\">clamp()</code> function creates responsive values by specifying a minimum, preferred, and maximum value. The browser uses the preferred value as long as it stays within the defined range. I commonly use it for fluid typography and spacing because it produces smooth scaling across screen sizes while reducing the number of media queries required.\"</strong></p>"
+  },
+  {
+    "id": "css-aspect-ratio",
+    "category": "css",
+    "difficulty": "beginner",
+    "tags": [
+      "aspect-ratio",
+      "responsive"
+    ],
+    "question": "How do you keep an element's aspect ratio?",
+    "answer": "<p>The <code class=\"inline\">aspect-ratio</code> property reserves space in a fixed ratio (e.g. 16/9) so the box sizes correctly and avoids layout shift — replacing the old padding-top hack. Great for video/image placeholders.</p>",
+    "tip": "aspect-ratio prevents cumulative layout shift (CLS) for media before it loads.",
+    "code": ".video { aspect-ratio: 16 / 9; width: 100%; }",
+    "lang": "css"
+  },
+  {
+    "id": "css-object-fit",
+    "category": "css",
+    "difficulty": "beginner",
+    "tags": [
+      "images",
+      "object-fit"
+    ],
+    "question": "What does object-fit do?",
+    "answer": "<p>Controls how a replaced element (img/video) fills its box: <code class=\"inline\">cover</code> (fill, crop), <code class=\"inline\">contain</code> (fit, letterbox), <code class=\"inline\">fill</code> (stretch). Pair with <code class=\"inline\">object-position</code> to control the crop focus.</p>",
+    "tip": "object-fit: cover is the CSS way to crop images to a fixed box without distortion.",
+    "code": ".avatar { width: 64px; height: 64px; object-fit: cover; }",
+    "lang": "css"
+  },
+  {
+    "id": "css-container-queries",
+    "category": "css",
+    "difficulty": "advanced",
+    "tags": [
+      "container-queries",
+      "responsive",
+      "components"
+    ],
+    "question": "What are CSS Container Queries, and how do they differ from Media Queries?",
+    "answer": "<p><strong>Container Queries</strong> allow a component to change its styles based on the size of its <strong>parent container</strong>, whereas <strong>Media Queries</strong> respond to the size of the <strong>viewport</strong>. This makes components truly reusable because they adapt to the space available rather than the device size. Container Queries are ideal for building responsive UI components that may appear in sidebars, cards, or full-page layouts.</p>",
+    "tip": "Think of it this way: <strong>Media Queries respond to the screen, Container Queries respond to the component's parent.</strong>",
+    "code": ".wrapper {\n  container-type: inline-size;\n}\n\n.card {\n  display: block;\n}\n\n@container (min-width: 400px) {\n  .card {\n    display: flex;\n    gap: 1rem;\n  }\n}",
+    "lang": "css",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question evaluates whether you understand modern responsive design techniques and know the difference between viewport-based and component-based responsiveness.</p><h4>Media Queries vs Container Queries</h4><table><thead><tr><th>Media Queries</th><th>Container Queries</th></tr></thead><tbody><tr><td>Respond to the viewport size.</td><td>Respond to the size of a parent container.</td></tr><tr><td>Useful for page-level layouts.</td><td>Ideal for reusable UI components.</td></tr><tr><td>All components change together when the screen size changes.</td><td>Each component adapts independently based on its available space.</td></tr><tr><td>Uses <code class=\"inline\">@media</code>.</td><td>Uses <code class=\"inline\">@container</code>.</td></tr></tbody></table><h4>How Container Queries Work</h4><p>First, declare a container by setting <code class=\"inline\">container-type</code> on the parent element. Then use the <code class=\"inline\">@container</code> rule to apply styles based on the container's dimensions.</p><pre><code>.wrapper {\n  container-type: inline-size;\n}\n\n@container (min-width: 400px) {\n  .card {\n    display: flex;\n  }\n}</code></pre><h4>Why Use Container Queries?</h4><ul><li>Create truly reusable components.</li><li>Components adapt to their available space instead of the entire screen.</li><li>Reduce component-specific media queries.</li><li>Improve maintainability in design systems.</li><li>Perfect for cards, widgets, sidebars, and dashboards.</li></ul><h4>Real-world Examples</h4><ul><li>A product card displayed vertically in a sidebar but horizontally in the main content.</li><li>Dashboard widgets that resize independently.</li><li>Reusable components inside different layouts.</li><li>Responsive card grids without relying on viewport breakpoints.</li><li>Component libraries used across multiple applications.</li></ul><h4>Common Interview Follow-ups</h4><ul><li>When should you use Container Queries instead of Media Queries?</li><li>What does <code class=\"inline\">container-type: inline-size</code> do?</li><li>Can Media Queries and Container Queries be used together?</li><li>What types of containers can be queried?</li><li>Are Container Queries supported in modern browsers?</li></ul><h4>Common Mistakes</h4><ul><li>Forgetting to declare a container using <code class=\"inline\">container-type</code>.</li><li>Using Container Queries for page-level layouts where Media Queries are more appropriate.</li><li>Assuming Container Queries replace Media Queries completely—they complement each other.</li><li>Applying Container Queries without understanding the parent container's size.</li></ul><h4>How to say it in an interview</h4><p><strong>\"Media Queries make layouts responsive based on the viewport, while Container Queries make individual components responsive based on the size of their parent container. I use Media Queries for overall page layouts and Container Queries for reusable components like cards, widgets, and sidebars so they can adapt regardless of where they're placed.\"</strong></p>"
+  },
+  {
+    "id": "css-has",
+    "category": "css",
+    "difficulty": "advanced",
+    "tags": [
+      "selectors",
+      "has",
+      "parent-selector"
+    ],
+    "question": "What is the :has() selector?",
+    "answer": "<p>The long-awaited <strong>parent selector</strong>: style an element based on its descendants or following siblings. E.g. style a card that contains an image, or a label whose input is invalid — logic that previously required JavaScript.</p>",
+    "tip": ":has() finally lets you style a parent based on its children — no JS needed.",
+    "code": ".card:has(img) { padding: 0; }\nlabel:has(input:invalid) { color: red; }",
+    "lang": "css"
+  },
+  {
+    "id": "css-cascade-layers",
+    "category": "css",
+    "difficulty": "advanced",
+    "tags": [
+      "cascade",
+      "layers",
+      "specificity"
+    ],
+    "question": "What are cascade layers (@layer)?",
+    "answer": "<p><code class=\"inline\">@layer</code> lets you group styles into ordered layers (e.g. reset, base, components, utilities). Layer order wins over specificity, so you can manage the cascade predictably and stop fighting <code class=\"inline\">!important</code> in large codebases.</p>",
+    "tip": "Layers let a low-specificity utility beat a high-specificity component rule intentionally.",
+    "code": "@layer reset, base, components;\n@layer components { .btn { color: red; } }",
+    "lang": "css"
+  },
+  {
+    "id": "css-logical-properties",
+    "category": "css",
+    "difficulty": "intermediate",
+    "tags": [
+      "logical-properties",
+      "i18n",
+      "rtl"
+    ],
+    "question": "What are logical properties (margin-inline, inset)?",
+    "answer": "<p>Direction-aware properties that adapt to writing mode/text direction: <code class=\"inline\">margin-inline</code>/<code class=\"inline\">block</code>, <code class=\"inline\">padding-inline</code>, <code class=\"inline\">inset</code>. They make layouts work automatically in RTL languages without separate stylesheets.</p>",
+    "tip": "Use margin-inline instead of margin-left/right for RTL-ready layouts.",
+    "code": ".box { margin-inline: auto; padding-block: 1rem; }",
+    "lang": "css"
+  },
+  {
+    "id": "css-will-change",
+    "category": "css",
+    "difficulty": "advanced",
+    "tags": [
+      "performance",
+      "gpu",
+      "compositing"
+    ],
+    "question": "What does will-change do, and when should you avoid it?",
+    "answer": "<p><code class=\"inline\">will-change</code> hints the browser to promote an element to its own GPU layer ahead of an animation, reducing jank. But overusing it wastes memory and can hurt performance — apply it sparingly, ideally just before animating, and remove it after.</p>",
+    "tip": "Don't slap will-change on everything — it's a targeted hint, not a global optimisation.",
+    "code": ".modal { will-change: transform, opacity; }",
+    "lang": "css"
+  },
+  {
+    "id": "css-hide-elements",
+    "category": "css",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "display",
+      "visibility"
+    ],
+    "question": "display:none vs visibility:hidden vs opacity:0 — how do they differ?",
+    "answer": "<table><thead><tr><th></th><th>Takes space?</th><th>Clickable?</th><th>Screen readers?</th></tr></thead><tbody><tr><td><code class=\"inline\">display:none</code></td><td>no (removed from layout)</td><td>no</td><td>no</td></tr><tr><td><code class=\"inline\">visibility:hidden</code></td><td>yes (space reserved)</td><td>no</td><td>no</td></tr><tr><td><code class=\"inline\">opacity:0</code></td><td>yes</td><td><strong>yes</strong> (still there)</td><td>yes</td></tr></tbody></table>",
+    "tip": "opacity:0 is invisible but still clickable — a common source of 'ghost' click bugs.",
+    "code": ".gone   { display: none; }      /* no space, not rendered */\n.hidden { visibility: hidden; } /* space kept, invisible */\n.faded  { opacity: 0; }         /* space kept, still interactive */",
+    "lang": "css",
+    "deep": "<h4>The three are not interchangeable</h4><ul><li><strong><code class=\"inline\">display:none</code></strong> — the element is gone from the layout entirely. No box, no space, not focusable, ignored by screen readers. Toggling it reflows the page.</li><li><strong><code class=\"inline\">visibility:hidden</code></strong> — the element is invisible but still occupies its space (a hole in the layout). Not clickable, not read by AT.</li><li><strong><code class=\"inline\">opacity:0</code></strong> — fully transparent but <em>fully present</em>: it takes space, is still clickable/focusable, and is announced by screen readers. Only opacity is animatable of the three.</li></ul><h4>Which to use</h4><ul><li>Remove from flow (menus, tabs): <code class=\"inline\">display:none</code>.</li><li>Reserve space to avoid layout shift: <code class=\"inline\">visibility:hidden</code>.</li><li>Fade in/out with a transition: animate <code class=\"inline\">opacity</code> (add <code class=\"inline\">pointer-events:none</code> so the invisible element isn't clickable).</li></ul><pre><code>.fade { opacity: 0; pointer-events: none; transition: opacity .2s; }\n.fade.show { opacity: 1; pointer-events: auto; }</code></pre><h4>How to say it in an interview</h4><p>“<code class=\"inline\">display:none</code> removes the element and its space; <code class=\"inline\">visibility:hidden</code> hides it but keeps the space; <code class=\"inline\">opacity:0</code> makes it transparent while still taking space and staying interactive — so I add <code class=\"inline\">pointer-events:none</code> and use opacity when I want to animate a fade.”</p>"
+  },
+  {
+    "id": "css-float-clearfix",
+    "category": "css",
+    "difficulty": "intermediate",
+    "tags": [
+      "float",
+      "layout",
+      "clearfix"
+    ],
+    "question": "What is float, and what problem does clearfix solve?",
+    "answer": "<p><code class=\"inline\">float</code> pulls an element to the left/right and lets text/inline content wrap around it — its original purpose (e.g. an image inside a paragraph). Floated elements are taken out of normal flow, so a parent containing only floats <strong>collapses to zero height</strong>.</p><p><strong>clearfix</strong> forces the parent to contain its floats. The modern one-liner is <code class=\"inline\">display: flow-root</code>; the old trick is a clearing pseudo-element.</p>",
+    "tip": "For layout, use Flexbox/Grid — float is now mainly for wrapping text around an image.",
+    "code": "/* modern */ .parent { display: flow-root; }\n/* legacy  */ .clearfix::after { content: ''; display: block; clear: both; }",
+    "lang": "css"
+  },
+  {
+    "id": "css-overflow",
+    "category": "css",
+    "difficulty": "intermediate",
+    "tags": [
+      "overflow",
+      "scroll",
+      "layout"
+    ],
+    "question": "What is the overflow property in CSS?",
+    "answer": "<p>The <code class=\"inline\">overflow</code> property controls what happens when an element's content exceeds its available space. <strong>visible</strong> lets content overflow outside the element. <strong>hidden</strong> clips the overflow without showing scrollbars. <strong>auto</strong> displays scrollbars only when needed. <strong>scroll</strong> always shows scrollbars, even if there is no overflow. <strong>clip</strong> clips overflowing content like <code class=\"inline\">hidden</code> but completely disables scrolling, including programmatic scrolling.</p>",
+    "tip": "Use <code class=\"inline\">overflow: auto</code> for most scrollable containers. Reserve <code class=\"inline\">scroll</code> only when you always want scrollbars visible.",
+    "code": ".container {\n  height: 300px;\n  overflow: auto;\n}\n\n.image {\n  overflow: hidden;\n}\n\n.code-block {\n  overflow-x: auto;\n}",
+    "lang": "css",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests your understanding of how CSS handles overflowing content, when scrollbars appear, and which overflow value is appropriate for different UI scenarios.</p><h4>Overflow Values</h4><table><thead><tr><th>Value</th><th>Behavior</th><th>Common Use</th></tr></thead><tbody><tr><td><code class=\"inline\">visible</code></td><td>Content is allowed to overflow outside the element.</td><td>Default behavior.</td></tr><tr><td><code class=\"inline\">hidden</code></td><td>Overflow is clipped and no scrollbars are shown.</td><td>Image cropping, hiding excess content.</td></tr><tr><td><code class=\"inline\">auto</code></td><td>Scrollbars appear only when the content overflows.</td><td>Scrollable panels, tables, chat windows.</td></tr><tr><td><code class=\"inline\">scroll</code></td><td>Scrollbars are always visible regardless of overflow.</td><td>Rarely used when a consistent scrollbar is desired.</td></tr><tr><td><code class=\"inline\">clip</code></td><td>Overflow is clipped and scrolling is completely disabled.</td><td>Performance-sensitive layouts and decorative clipping.</td></tr></tbody></table><h4>Example</h4><pre><code>.chat {\n  height: 300px;\n  overflow-y: auto;\n}\n\n.avatar {\n  overflow: hidden;\n  border-radius: 50%;\n}\n\npre {\n  overflow-x: auto;\n}</code></pre><h4>Real-world Examples</h4><ul><li>Chat applications with vertically scrollable message lists.</li><li>Scrollable code snippets using <code class=\"inline\">overflow-x: auto</code>.</li><li>Cropping profile images inside circular containers with <code class=\"inline\">overflow: hidden</code>.</li><li>Dashboards with scrollable sidebars.</li><li>Responsive tables that scroll horizontally on small screens.</li></ul><h4>Common Interview Follow-ups</h4><ul><li>What is the difference between <code class=\"inline\">hidden</code> and <code class=\"inline\">clip</code>?</li><li>What are <code class=\"inline\">overflow-x</code> and <code class=\"inline\">overflow-y</code>?</li><li>Why isn't my scrollbar appearing?</li><li>How do you create horizontal scrolling for tables or code blocks?</li><li>Can <code class=\"inline\">overflow</code> create a new block formatting context?</li></ul><h4>Common Mistakes</h4><ul><li>Using <code class=\"inline\">overflow: scroll</code> when <code class=\"inline\">auto</code> provides a better user experience.</li><li>Expecting scrolling without setting a constrained width or height.</li><li>Using <code class=\"inline\">overflow: hidden</code> and then wondering why content cannot be accessed.</li><li>Confusing <code class=\"inline\">clip</code> with <code class=\"inline\">hidden</code>; unlike <code class=\"inline\">hidden</code>, <code class=\"inline\">clip</code> completely disables scrolling.</li></ul><h4>How to say it in an interview</h4><p><strong>\"The <code class=\"inline\">overflow</code> property controls how content behaves when it exceeds an element's boundaries. <code class=\"inline\">visible</code> allows overflow, <code class=\"inline\">hidden</code> clips it without scrollbars, <code class=\"inline\">auto</code> adds scrollbars only when necessary, <code class=\"inline\">scroll</code> always shows scrollbars, and <code class=\"inline\">clip</code> clips the content while preventing any scrolling. In most applications, I use <code class=\"inline\">overflow: auto</code> because it provides the best user experience.\"</strong></p>"
+  },
+  {
+    "id": "css-width-minwidth-maxwidth",
+    "category": "css",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "width",
+      "min-width",
+      "max-width",
+      "responsive"
+    ],
+    "question": "What is the difference between width, min-width and max-width?",
+    "answer": "<p><strong>width</strong> sets the preferred width. <strong>min-width</strong> prevents the element from becoming smaller than a given size. <strong>max-width</strong> prevents it from growing beyond a given size. Together they make layouts responsive while avoiding elements becoming too small or too large.</p>",
+    "tip": "<code class=\"inline\">max-width:100%</code> is commonly used to keep images responsive.",
+    "code": ".card {\n  width: 100%;\n  max-width: 400px;\n  min-width: 250px;\n}",
+    "lang": "css"
+  },
+  {
+    "id": "css-min-width-flex",
+    "category": "css",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "flexbox",
+      "overflow",
+      "min-width"
+    ],
+    "question": "Why does a Flexbox child sometimes overflow even though flex-shrink is enabled?",
+    "answer": "<p>Flex items have a default <code class=\"inline\">min-width:auto</code>, which prevents them from shrinking smaller than their content. Long text or large elements can therefore overflow. Setting <code class=\"inline\">min-width:0</code> allows the item to shrink correctly.</p>",
+    "tip": "If text refuses to truncate inside a flex item, the first thing to try is <code class=\"inline\">min-width:0</code>.",
+    "code": ".content {\n  flex: 1;\n  min-width: 0;\n}",
+    "lang": "css"
+  },
+  {
+    "id": "css-min-height-height",
+    "category": "css",
+    "difficulty": "intermediate",
+    "tags": [
+      "height",
+      "min-height",
+      "responsive"
+    ],
+    "question": "What is the difference between height and min-height?",
+    "answer": "<p><strong>height</strong> fixes the element's height. If the content is larger, it may overflow. <strong>min-height</strong> sets the minimum height but allows the element to grow if more content is added. It is commonly used for responsive layouts and full-page sections.</p>",
+    "tip": "Prefer <code class=\"inline\">min-height</code> for content containers because it adapts to varying content.",
+    "code": ".hero {\n  min-height: 100vh;\n}",
+    "lang": "css"
+  },
+  {
+    "id": "css-pointer-events",
+    "category": "css",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "pointer-events",
+      "events"
+    ],
+    "question": "What does pointer-events: none do and when should you use it?",
+    "answer": "<p><code class=\"inline\">pointer-events:none</code> prevents an element from receiving mouse or touch events. Clicks pass through to the element underneath. It is useful for disabled overlays, decorative elements, loading screens, or invisible elements with <code class=\"inline\">opacity:0</code>.</p>",
+    "tip": "When using <code class=\"inline\">opacity:0</code>, also consider <code class=\"inline\">pointer-events:none</code> to avoid invisible clickable elements.",
+    "code": ".overlay {\n  opacity: 0;\n  pointer-events: none;\n}",
+    "lang": "css"
+  },
+  {
+    "id": "css-transform-vs-position",
+    "category": "css",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "transform",
+      "translate",
+      "position",
+      "performance"
+    ],
+    "question": "When should you use transform: translate() instead of top/left positioning?",
+    "answer": "<p><code class=\"inline\">transform: translate()</code> moves an element visually without affecting document layout, making it ideal for animations and transitions. Changing <code class=\"inline\">top</code> or <code class=\"inline\">left</code> can trigger layout recalculations (reflow), making animations less efficient.</p>",
+    "tip": "For smooth animations, prefer <code class=\"inline\">transform</code> because browsers can optimize it using the GPU.",
+    "code": ".box {\n  transform: translateX(100px);\n  transition: transform .3s ease;\n}",
+    "lang": "css"
+  },
+  {
+    "id": "css-transition-vs-animation",
+    "category": "css",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "transition",
+      "animation"
+    ],
+    "question": "What is the difference between CSS Transition and CSS Animation?",
+    "answer": "<p><strong>Transition</strong> animates between two states when a property changes (for example on hover). <strong>Animation</strong> uses <code class=\"inline\">@keyframes</code> and can run automatically, repeat infinitely, or contain multiple stages without user interaction.</p>",
+    "tip": "Use Transition for simple state changes and Animation for complex or repeating effects.",
+    "code": "/* Transition */\n.button:hover {\n  background: blue;\n  transition: background .3s;\n}\n\n/* Animation */\n@keyframes spin {\n  to { transform: rotate(360deg); }\n}\n.loader {\n  animation: spin 1s linear infinite;\n}",
+    "lang": "css"
+  },
+  {
+    "id": "css-text-overflow-ellipsis",
+    "category": "css",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "text-overflow",
+      "ellipsis",
+      "overflow"
+    ],
+    "question": "How do you display an ellipsis (...) when text overflows?",
+    "answer": "<p>Use the combination of <code class=\"inline\">white-space: nowrap</code>, <code class=\"inline\">overflow: hidden</code>, and <code class=\"inline\">text-overflow: ellipsis</code>. All three properties are required for single-line text truncation.</p>",
+    "tip": "Many developers forget <code class=\"inline\">overflow:hidden</code>, causing ellipsis not to appear.",
+    "code": ".title {\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}",
+    "lang": "css"
+  },
+  {
+    "id": "css-triangle",
+    "category": "css",
+    "difficulty": "beginner",
+    "tags": [
+      "css-tricks",
+      "border",
+      "triangle"
+    ],
+    "question": "How do you create a triangle using only CSS?",
+    "answer": "<p>A CSS triangle is created by giving an element zero width and height, then applying transparent borders on three sides and a colored border on the remaining side.</p>",
+    "tip": "This technique is commonly used for tooltips, dropdown arrows and speech bubbles.",
+    "code": ".triangle {\n  width: 0;\n  height: 0;\n  border-left: 10px solid transparent;\n  border-right: 10px solid transparent;\n  border-bottom: 20px solid red;\n}",
+    "lang": "css"
+  },
+  {
+    "id": "css-display-visibility-opacity-pointer-events",
+    "category": "css",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "display",
+      "visibility",
+      "opacity",
+      "pointer-events"
+    ],
+    "question": "What is the difference between display:none, visibility:hidden, opacity:0 and pointer-events:none?",
+    "answer": "<ul><li><strong>display:none</strong> removes the element from the layout.</li><li><strong>visibility:hidden</strong> hides the element but still reserves its space.</li><li><strong>opacity:0</strong> makes the element invisible but it still occupies space and remains clickable.</li><li><strong>pointer-events:none</strong> disables mouse/touch interaction while keeping the element visible (or invisible).</li></ul>",
+    "tip": "An element with <code class=\"inline\">opacity:0</code> can still receive clicks unless <code class=\"inline\">pointer-events:none</code> is also applied.",
+    "code": ".hidden {\n  opacity: 0;\n  pointer-events: none;\n}\n\n.removed {\n  display: none;\n}",
+    "lang": "css"
+  }
+]

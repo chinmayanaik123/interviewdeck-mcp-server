@@ -1,0 +1,166 @@
+[
+    {
+  "id": "leetcode-two-sum",
+  "category": "leetcode",
+  "difficulty": "beginner",
+  "tags": [
+    "array",
+    "hashmap"
+  ],
+  "question": "Two Sum",
+  "answer": "<p>Given an array of integers <code class=\"inline\">nums</code> and an integer <code class=\"inline\">target</code>, return the indices of the two numbers such that they add up to the target.</p><p><strong>Optimal Approach:</strong> Use a <code class=\"inline\">HashMap</code> to store each number and its index while iterating. For each element, check if <code class=\"inline\">target - nums[i]</code> already exists in the map.</p><ul><li>Time Complexity: <strong>O(n)</strong></li><li>Space Complexity: <strong>O(n)</strong></li></ul>",
+  "tip": "Always think of HashMap whenever you need fast lookups in array problems.",
+  "code": "public int[] twoSum(int[] nums, int target) {\n    Map<Integer, Integer> map = new HashMap<>();\n    for (int i = 0; i < nums.length; i++) {\n        int complement = target - nums[i];\n        if (map.containsKey(complement)) {\n            return new int[]{map.get(complement), i};\n        }\n        map.put(nums[i], i);\n    }\n    return new int[]{};\n}",
+  "lang": "java",
+  "deep": "<h4>Problem intuition</h4><p>The goal is to find two numbers whose sum equals the target. The naive solution compares every pair, but that's inefficient. The key observation is that for every number <code class=\"inline\">x</code>, we only need to know whether <code class=\"inline\">target - x</code> has already been seen.</p><h4>Approaches</h4><ul><li><strong>Brute Force:</strong> Compare every pair using two loops. Time Complexity: <strong>O(n²)</strong>.</li><li><strong>Optimal:</strong> Store visited numbers in a <code class=\"inline\">HashMap</code>. Before inserting the current number, check if its complement already exists.</li></ul><pre><code>nums = [2,7,11,15]\ntarget = 9\n\nMap = {}\n2 → complement = 7 → not found\nStore 2\n\n7 → complement = 2 → found\nAnswer = [0,1]</code></pre><h4>Why HashMap works</h4><p>HashMap provides average <strong>O(1)</strong> lookup time. Instead of searching the remaining array for every element, we instantly know whether the required complement already exists.</p><h4>Common mistakes</h4><ul><li>Adding the current element to the map before checking its complement.</li><li>Returning the values instead of their indices.</li><li>Using nested loops after already creating a HashMap.</li></ul><h4>Interview tip</h4><p>Whenever you hear phrases like <strong>find a pair</strong>, <strong>target sum</strong>, or <strong>fast lookup</strong>, think of using a HashMap.</p>",
+  "youtube": "https://youtu.be/Yyyi12oaK94"
+},
+{
+  "id": "leetcode-valid-parentheses",
+  "category": "leetcode",
+  "difficulty": "beginner",
+  "tags": [
+    "stack",
+    "string"
+  ],
+  "question": "Valid Parentheses",
+  "answer": "<p>Given a string containing only <code class=\"inline\">()</code>, <code class=\"inline\">[]</code>, and <code class=\"inline\">{}</code>, determine if the input string is valid.</p><p><strong>Optimal Approach:</strong> Use a <code class=\"inline\">Stack</code>. Push opening brackets onto the stack. Whenever a closing bracket appears, check if it matches the top of the stack.</p><ul><li>Time Complexity: <strong>O(n)</strong></li><li>Space Complexity: <strong>O(n)</strong></li></ul>",
+  "tip": "Whenever the problem asks about matching pairs or nested structures, think of a Stack.",
+  "code": "public boolean isValid(String s) {\n    Stack<Character> stack = new Stack<>();\n    for (char c : s.toCharArray()) {\n        if (c == '(' || c == '{' || c == '[') {\n            stack.push(c);\n        } else {\n            if (stack.isEmpty()) return false;\n            char top = stack.pop();\n            if ((c == ')' && top != '(') ||\n                (c == '}' && top != '{') ||\n                (c == ']' && top != '[')) {\n                return false;\n            }\n        }\n    }\n    return stack.isEmpty();\n}",
+  "lang": "java",
+  "deep": "<h4>Problem intuition</h4><p>This problem asks whether every opening bracket has a matching closing bracket in the correct order. Since brackets must close in reverse order of opening, a <strong>Stack</strong> is the perfect data structure.</p><h4>Approaches</h4><ul><li><strong>Brute Force:</strong> Repeatedly remove matching pairs like <code class=\"inline\">()</code>, <code class=\"inline\">[]</code>, and <code class=\"inline\">{}</code> until nothing changes. This is inefficient.</li><li><strong>Optimal:</strong> Push every opening bracket onto a stack. Whenever a closing bracket appears, verify it matches the top of the stack.</li></ul><pre><code>Input: \"({[]})\"\n\nStack = []\n( → push\n{ → push\n[ → push\n] → pop [\n} → pop {\n) → pop (\n\nStack empty → Valid</code></pre><h4>Why Stack works</h4><p>A stack follows the <strong>Last In, First Out (LIFO)</strong> principle. The most recently opened bracket must always be closed first, making Stack the ideal choice.</p><h4>Common mistakes</h4><ul><li>Not checking if the stack is empty before popping.</li><li>Forgetting to verify the stack is empty after processing the entire string.</li><li>Trying to count brackets instead of checking their order.</li></ul><h4>Interview tip</h4><p>Whenever the problem involves <strong>nested structures</strong>, <strong>balanced symbols</strong>, or <strong>matching pairs</strong>, your first thought should be a Stack.</p>",
+  "youtube": "https://youtu.be/9kmUaXrjizQ"
+},
+{
+  "id": "leetcode-best-time-buy-sell-stock",
+  "category": "leetcode",
+  "difficulty": "beginner",
+  "tags": [
+    "array",
+    "greedy"
+  ],
+  "question": "Best Time to Buy and Sell Stock",
+  "answer": "<p>Given an array <code class=\"inline\">prices</code> where <code class=\"inline\">prices[i]</code> is the stock price on day <code class=\"inline\">i</code>, find the maximum profit by choosing one day to buy and one later day to sell.</p><p><strong>Optimal Approach:</strong> Traverse the array once while maintaining the minimum price seen so far. At each step, calculate the profit if you sold today and update the maximum profit.</p><ul><li>Time Complexity: <strong>O(n)</strong></li><li>Space Complexity: <strong>O(1)</strong></li></ul>",
+  "tip": "Track the minimum price so far, not every possible buy day. One pass is enough.",
+  "code": "public int maxProfit(int[] prices) {\n    int minPrice = Integer.MAX_VALUE;\n    int maxProfit = 0;\n\n    for (int price : prices) {\n        if (price < minPrice) {\n            minPrice = price;\n        } else {\n            maxProfit = Math.max(maxProfit, price - minPrice);\n        }\n    }\n\n    return maxProfit;\n}",
+  "lang": "java",
+  "deep": "<h4>Problem intuition</h4><p>You must buy before selling, and you can complete only one transaction. Instead of checking every buy-sell pair, keep track of the cheapest stock price seen so far.</p><h4>Brute Force</h4><p>Try every pair of buy and sell days using two loops.</p><ul><li>Time Complexity: <strong>O(n²)</strong></li><li>Space Complexity: <strong>O(1)</strong></li></ul><h4>Optimal Approach</h4><p>Maintain two variables:</p><ul><li><strong>minPrice</strong> → Lowest stock price seen so far.</li><li><strong>maxProfit</strong> → Best profit found so far.</li></ul><pre><code>prices = [7,1,5,3,6,4]\n\nDay 1: min=7 profit=0\nDay 2: min=1 profit=0\nDay 3: profit=5-1=4\nDay 4: profit=3-1=2\nDay 5: profit=6-1=5\nDay 6: profit=4-1=3\n\nMaximum Profit = 5</code></pre><h4>Why it works</h4><p>At every day, we know the cheapest buying price available before today. Selling today gives the best possible profit for that day. Taking the maximum over all days gives the answer.</p><h4>Common mistakes</h4><ul><li>Trying every buy-sell pair (O(n²)).</li><li>Selling before buying.</li><li>Returning negative profit when prices always decrease.</li></ul><h4>Interview Tip</h4><p>This is a classic <strong>Greedy</strong> problem. Whenever you need the best difference while scanning an array once, think of maintaining a running minimum or maximum.</p>",
+  "youtube": "https://youtu.be/1pkOgXD63yU"
+},
+  {
+    "id": "leetcode-longest-substring-without-repeating-characters",
+    "category": "leetcode",
+    "difficulty": "intermediate",
+    "tags": [
+      "string",
+      "sliding-window",
+      "hashmap",
+      "two-pointers"
+    ],
+    "question": "Longest Substring Without Repeating Characters",
+    "answer": "<p>Given a string <code class=\"inline\">s</code>, find the length of the longest substring without repeating characters.</p><p><strong>Optimal Approach:</strong> Use the <code class=\"inline\">Sliding Window</code> technique along with a <code class=\"inline\">HashMap</code> to store the last index of every character. Whenever a duplicate character is found inside the current window, move the left pointer just after its previous occurrence.</p><ul><li>Time Complexity: <strong>O(n)</strong></li><li>Space Complexity: <strong>O(min(n, charset))</strong></li></ul>",
+    "tip": "Whenever you hear <strong>longest/shortest substring</strong> with a condition, think <strong>Sliding Window</strong>.",
+    "code": "public int lengthOfLongestSubstring(String s) {\n    Map<Character, Integer> map = new HashMap<>();\n    int left = 0;\n    int maxLength = 0;\n\n    for (int right = 0; right < s.length(); right++) {\n        char ch = s.charAt(right);\n\n        if (map.containsKey(ch)) {\n            left = Math.max(left, map.get(ch) + 1);\n        }\n\n        map.put(ch, right);\n        maxLength = Math.max(maxLength, right - left + 1);\n    }\n\n    return maxLength;\n}",
+    "lang": "java",
+    "deep": "<h4>Problem intuition</h4><p>We need the longest contiguous substring where every character is unique. Instead of checking every possible substring, maintain a moving window that always contains unique characters.</p><h4>Approaches</h4><ul><li><strong>Brute Force:</strong> Generate every substring and check if it contains duplicates. Time Complexity: <strong>O(n³)</strong>.</li><li><strong>Better:</strong> Check uniqueness using a HashSet for every starting index. Time Complexity: <strong>O(n²)</strong>.</li><li><strong>Optimal:</strong> Use a Sliding Window with a HashMap storing each character's latest index.</li></ul><pre><code>s = \"abcabcbb\"\n\nleft = 0\nright = 0 → a → window = \"a\"\nright = 1 → b → window = \"ab\"\nright = 2 → c → window = \"abc\"\nright = 3 → a (duplicate)\nMove left to index after previous 'a'\nwindow = \"bca\"\nContinue...\n\nMaximum Length = 3</code></pre><h4>Why Sliding Window works</h4><p>The window always maintains unique characters. Whenever a duplicate is found, we shrink the window only as much as needed, ensuring every character is processed at most twice.</p><h4>Common mistakes</h4><ul><li>Moving the left pointer backwards instead of using <code class=\"inline\">Math.max()</code>.</li><li>Using a HashSet but removing characters one by one unnecessarily.</li><li>Checking all substrings instead of maintaining a valid window.</li></ul><h4>Interview Tip</h4><p>Whenever the problem mentions <strong>longest substring</strong>, <strong>unique characters</strong>, or <strong>contiguous sequence</strong>, your first thought should be <strong>Sliding Window</strong>.</p>",
+    "youtube": "https://youtu.be/wiGpQwVHdE0"
+  },
+  {
+    "id": "leetcode-contains-duplicate",
+    "category": "leetcode",
+    "difficulty": "beginner",
+    "tags": [
+      "array",
+      "hashset"
+    ],
+    "question": "Contains Duplicate",
+    "answer": "<p>Given an integer array <code class=\"inline\">nums</code>, return <code class=\"inline\">true</code> if any value appears at least twice in the array, and return <code class=\"inline\">false</code> if every element is distinct.</p><p><strong>Optimal Approach:</strong> Use a <code class=\"inline\">HashSet</code>. As you iterate through the array, check if the current element already exists in the set. If it does, a duplicate has been found.</p><ul><li>Time Complexity: <strong>O(n)</strong></li><li>Space Complexity: <strong>O(n)</strong></li></ul>",
+    "tip": "Whenever you need to detect duplicates quickly, think <strong>HashSet</strong>.",
+    "code": "public boolean containsDuplicate(int[] nums) {\n    Set<Integer> set = new HashSet<>();\n\n    for (int num : nums) {\n        if (!set.add(num)) {\n            return true;\n        }\n    }\n\n    return false;\n}",
+    "lang": "java",
+    "deep": "<h4>Problem intuition</h4><p>The task is simply to determine whether any number appears more than once. Instead of comparing every pair, remember the numbers you've already seen.</p><h4>Approaches</h4><ul><li><strong>Brute Force:</strong> Compare every pair using nested loops. Time Complexity: <strong>O(n²)</strong>.</li><li><strong>Sorting:</strong> Sort the array and check adjacent elements. Time Complexity: <strong>O(n log n)</strong>.</li><li><strong>Optimal:</strong> Store visited elements in a <code class=\"inline\">HashSet</code>. If insertion fails, a duplicate exists.</li></ul><pre><code>nums = [1,2,3,1]\n\nSet = {}\n1 → add\n2 → add\n3 → add\n1 → already exists\n\nAnswer = true</code></pre><h4>Why HashSet works</h4><p>A HashSet provides average <strong>O(1)</strong> insertion and lookup. This allows us to detect duplicates in a single pass through the array.</p><h4>Common mistakes</h4><ul><li>Using nested loops instead of a HashSet.</li><li>Sorting unnecessarily when only duplicate detection is required.</li><li>Using a List instead of a Set, resulting in slower lookups.</li></ul><h4>Interview Tip</h4><p>Whenever you hear phrases like <strong>contains duplicate</strong>, <strong>unique elements</strong>, or <strong>already seen</strong>, think of using a <strong>HashSet</strong>.</p>",
+    "youtube": "https://youtu.be/3OamzN90kPg"
+  },
+  {
+    "id": "leetcode-valid-anagram",
+    "category": "leetcode",
+    "difficulty": "beginner",
+    "tags": [
+      "string",
+      "hashing",
+      "array"
+    ],
+    "question": "Valid Anagram",
+    "answer": "<p>Given two strings <code class=\"inline\">s</code> and <code class=\"inline\">t</code>, return <code class=\"inline\">true</code> if <code class=\"inline\">t</code> is an anagram of <code class=\"inline\">s</code>, otherwise return <code class=\"inline\">false</code>.</p><p><strong>Optimal Approach:</strong> Since the strings contain only lowercase English letters, use an integer frequency array of size <code class=\"inline\">26</code>. Increment the count for each character in <code class=\"inline\">s</code> and decrement for each character in <code class=\"inline\">t</code>. If all counts become zero, the strings are anagrams.</p><ul><li>Time Complexity: <strong>O(n)</strong></li><li>Space Complexity: <strong>O(1)</strong></li></ul>",
+    "tip": "Whenever the input contains only lowercase English letters, prefer an <strong>int[26]</strong> over a HashMap.",
+    "code": "public boolean isAnagram(String s, String t) {\n    if (s.length() != t.length()) {\n        return false;\n    }\n\n    int[] count = new int[26];\n\n    for (int i = 0; i < s.length(); i++) {\n        count[s.charAt(i) - 'a']++;\n        count[t.charAt(i) - 'a']--;\n    }\n\n    for (int c : count) {\n        if (c != 0) {\n            return false;\n        }\n    }\n\n    return true;\n}",
+    "lang": "java",
+    "deep": "<h4>Problem intuition</h4><p>Two strings are anagrams if they contain exactly the same characters with the same frequencies. Instead of sorting both strings, simply count how many times each letter appears.</p><h4>Approaches</h4><ul><li><strong>Sorting:</strong> Sort both strings and compare. Time Complexity: <strong>O(n log n)</strong>.</li><li><strong>Optimal:</strong> Maintain a frequency array of size 26. Increase counts for one string and decrease for the other.</li></ul><pre><code>s = \"anagram\"\nt = \"nagaram\"\n\nCount['a']++ / Count['a']--\nCount['n']++ / Count['n']--\n...\n\nAll counts become 0\nAnswer = true</code></pre><h4>Why Frequency Array works</h4><p>Each increment is canceled by a matching decrement. If every character appears the same number of times, all values become zero.</p><h4>Common mistakes</h4><ul><li>Using HashMap when only lowercase letters are present.</li><li>Forgetting to compare string lengths first.</li><li>Sorting when an O(n) solution exists.</li></ul><h4>Interview Tip</h4><p>When the character set is fixed (26 lowercase letters), an array is almost always faster than a HashMap.</p>",
+    "youtube": "https://youtu.be/9UtInBqnCgA"
+  },
+  {
+    "id": "leetcode-merge-sorted-array",
+    "category": "leetcode",
+    "difficulty": "beginner",
+    "tags": [
+      "array",
+      "two-pointers"
+    ],
+    "question": "Merge Sorted Array",
+    "answer": "<p>You are given two sorted integer arrays <code class=\"inline\">nums1</code> and <code class=\"inline\">nums2</code>. Merge <code class=\"inline\">nums2</code> into <code class=\"inline\">nums1</code> as one sorted array.</p><p><strong>Optimal Approach:</strong> Use three pointers starting from the end of both arrays. Compare the largest remaining elements and place the larger one at the end of <code class=\"inline\">nums1</code>.</p><ul><li>Time Complexity: <strong>O(m+n)</strong></li><li>Space Complexity: <strong>O(1)</strong></li></ul>",
+    "tip": "Whenever you merge into an existing array, fill it from the end to avoid overwriting values.",
+    "code": "public void merge(int[] nums1, int m, int[] nums2, int n) {\n    int i = m - 1;\n    int j = n - 1;\n    int k = m + n - 1;\n\n    while (j >= 0) {\n        if (i >= 0 && nums1[i] > nums2[j]) {\n            nums1[k--] = nums1[i--];\n        } else {\n            nums1[k--] = nums2[j--];\n        }\n    }\n}",
+    "lang": "java",
+    "deep": "<h4>Problem intuition</h4><p>Since both arrays are already sorted, the largest element must always be at the end of one of the arrays. Filling from the end prevents overwriting valid values inside <code class=\"inline\">nums1</code>.</p><h4>Approaches</h4><ul><li><strong>Extra Array:</strong> Merge into a new array and copy back.</li><li><strong>Optimal:</strong> Use three pointers from the end.</li></ul><pre><code>nums1 = [1,2,3,0,0,0]\nnums2 = [2,5,6]\n\nCompare 3 and 6 → place 6\nCompare 3 and 5 → place 5\nCompare 3 and 2 → place 3\n...\n\nResult = [1,2,2,3,5,6]</code></pre><h4>Why it works</h4><p>The unused space is already at the end of <code class=\"inline\">nums1</code>, making backward traversal ideal.</p><h4>Common mistakes</h4><ul><li>Merging from the front and overwriting values.</li><li>Forgetting to copy remaining elements from <code class=\"inline\">nums2</code>.</li><li>Using unnecessary extra arrays.</li></ul><h4>Interview Tip</h4><p>Whenever merging into an existing array with extra space, think <strong>backward two pointers</strong>.</p>",
+    "youtube": "https://youtu.be/P1Ic85RarKY"
+  },
+  {
+    "id": "leetcode-squares-of-a-sorted-array",
+    "category": "leetcode",
+    "difficulty": "beginner",
+    "tags": [
+      "array",
+      "two-pointers"
+    ],
+    "question": "Squares of a Sorted Array",
+    "answer": "<p>Given a sorted integer array <code class=\"inline\">nums</code>, return an array of the squares of each number sorted in non-decreasing order.</p><p><strong>Optimal Approach:</strong> Use two pointers at the beginning and end of the array. Compare the absolute values and place the larger square at the end of the result array.</p><ul><li>Time Complexity: <strong>O(n)</strong></li><li>Space Complexity: <strong>O(n)</strong></li></ul>",
+    "tip": "Whenever negative and positive numbers are sorted, compare their absolute values using two pointers.",
+    "code": "public int[] sortedSquares(int[] nums) {\n    int n = nums.length;\n    int[] result = new int[n];\n\n    int left = 0;\n    int right = n - 1;\n\n    for (int i = n - 1; i >= 0; i--) {\n        if (Math.abs(nums[left]) > Math.abs(nums[right])) {\n            result[i] = nums[left] * nums[left];\n            left++;\n        } else {\n            result[i] = nums[right] * nums[right];\n            right--;\n        }\n    }\n\n    return result;\n}",
+    "lang": "java",
+    "deep": "<h4>Problem intuition</h4><p>Although the input array is sorted, squaring negative numbers changes their order. The largest square always comes from either the leftmost negative number or the rightmost positive number.</p><h4>Approaches</h4><ul><li><strong>Brute Force:</strong> Square every element and sort again. Time Complexity: <strong>O(n log n)</strong>.</li><li><strong>Optimal:</strong> Compare absolute values using two pointers.</li></ul><pre><code>nums = [-4,-1,0,3,10]\n\nCompare |-4| and |10| → 100\nCompare |-4| and |3| → 16\nCompare |-1| and |3| → 9\n...\n\nResult = [0,1,9,16,100]</code></pre><h4>Why Two Pointers work</h4><p>The maximum square always comes from one of the two ends of the sorted array. Fill the result array from right to left.</p><h4>Common mistakes</h4><ul><li>Squaring first and assuming the array remains sorted.</li><li>Sorting after squaring instead of using two pointers.</li><li>Comparing actual values instead of absolute values.</li></ul><h4>Interview Tip</h4><p>Whenever the input is sorted but a transformation changes the order, think about using <strong>two pointers</strong> instead of sorting again.</p>",
+    "youtube": "https://youtu.be/FPCZsG_AkUg"
+  },
+    {
+    "id": "leetcode-longest-repeating-character-replacement",
+    "category": "leetcode",
+    "difficulty": "intermediate",
+    "tags": [
+      "string",
+      "sliding-window",
+      "hashmap"
+    ],
+    "question": "Longest Repeating Character Replacement",
+    "answer": "<p>Given a string <code class=\"inline\">s</code> and an integer <code class=\"inline\">k</code>, you can replace at most <code class=\"inline\">k</code> characters. Return the length of the longest substring containing the same letter after performing at most <code class=\"inline\">k</code> replacements.</p><p><strong>Optimal Approach:</strong> Use a <code class=\"inline\">Sliding Window</code>. Maintain the frequency of characters inside the window and keep track of the highest frequency character. If the number of characters that need replacement exceeds <code class=\"inline\">k</code>, shrink the window from the left.</p><ul><li>Time Complexity: <strong>O(n)</strong></li><li>Space Complexity: <strong>O(1)</strong> (26 uppercase letters)</li></ul>",
+    "tip": "Whenever you hear <strong>longest substring with at most K changes</strong>, think <strong>Sliding Window</strong>.",
+    "code": "public int characterReplacement(String s, int k) {\n    int[] freq = new int[26];\n    int left = 0;\n    int maxFreq = 0;\n    int maxLength = 0;\n\n    for (int right = 0; right < s.length(); right++) {\n        maxFreq = Math.max(maxFreq, ++freq[s.charAt(right) - 'A']);\n\n        while ((right - left + 1) - maxFreq > k) {\n            freq[s.charAt(left) - 'A']--;\n            left++;\n        }\n\n        maxLength = Math.max(maxLength, right - left + 1);\n    }\n\n    return maxLength;\n}",
+    "lang": "java",
+    "deep": "<h4>Problem intuition</h4><p>Inside every window, we want to make all characters the same. The best choice is to keep the character that already appears the most and replace all the others.</p><h4>Approaches</h4><ul><li><strong>Brute Force:</strong> Check every substring and count character frequencies. Time Complexity: <strong>O(n²)</strong>.</li><li><strong>Optimal:</strong> Use Sliding Window with a frequency array.</li></ul><pre><code>s = \"AABABBA\", k = 1\n\nWindow = \"AABA\"\nMost frequent = A (3)\nWindow size = 4\nNeed replacements = 4 - 3 = 1\nValid window\n\nExpand...\nIf replacements > k,\nmove left pointer.</code></pre><h4>Why Sliding Window works</h4><p>The minimum replacements required for a window is <code class=\"inline\">windowSize - maxFrequency</code>. If this exceeds <code class=\"inline\">k</code>, the window becomes invalid and must shrink.</p><h4>Common mistakes</h4><ul><li>Recomputing the maximum frequency every time.</li><li>Using a HashMap when only uppercase English letters are present.</li><li>Shrinking the window too early.</li></ul><h4>Interview Tip</h4><p>Whenever you see <strong>longest substring</strong> with a constraint like <strong>at most K replacements</strong>, Sliding Window is usually the optimal solution.</p>",
+    "youtube": "https://youtu.be/gqXU1UyA8pk"
+  },
+  {
+    "id": "leetcode-maximum-average-subarray-i",
+    "category": "leetcode",
+    "difficulty": "beginner",
+    "tags": [
+      "array",
+      "sliding-window"
+    ],
+    "question": "Maximum Average Subarray I",
+    "answer": "<p>Given an integer array <code class=\"inline\">nums</code> consisting of <code class=\"inline\">n</code> elements and an integer <code class=\"inline\">k</code>, find the contiguous subarray of length <code class=\"inline\">k</code> that has the maximum average value and return that value.</p><p><strong>Optimal Approach:</strong> Compute the sum of the first window of size <code class=\"inline\">k</code>. Then slide the window by removing the leftmost element and adding the next element. Track the maximum window sum.</p><ul><li>Time Complexity: <strong>O(n)</strong></li><li>Space Complexity: <strong>O(1)</strong></li></ul>",
+    "tip": "Whenever you need a fixed-size contiguous subarray, think <strong>Sliding Window</strong>.",
+    "code": "public double findMaxAverage(int[] nums, int k) {\n    int sum = 0;\n\n    for (int i = 0; i < k; i++) {\n        sum += nums[i];\n    }\n\n    int maxSum = sum;\n\n    for (int i = k; i < nums.length; i++) {\n        sum = sum - nums[i - k] + nums[i];\n        maxSum = Math.max(maxSum, sum);\n    }\n\n    return (double) maxSum / k;\n}",
+    "lang": "java",
+    "deep": "<h4>Problem intuition</h4><p>Instead of recalculating the sum of every subarray of size <code class=\"inline\">k</code>, reuse the previous window's sum. Remove the outgoing element and add the incoming element.</p><h4>Approaches</h4><ul><li><strong>Brute Force:</strong> Compute every subarray sum separately. Time Complexity: <strong>O(n × k)</strong>.</li><li><strong>Optimal:</strong> Maintain a running window sum.</li></ul><pre><code>nums = [1,12,-5,-6,50,3], k = 4\n\nWindow1 = 1+12-5-6 = 2\nWindow2 = 2-1+50 = 51\nWindow3 = 51-12+3 = 42\n\nMaximum Sum = 51\nAverage = 51 / 4</code></pre><h4>Why Sliding Window works</h4><p>Each new window differs from the previous one by only one outgoing and one incoming element. Therefore, each update takes constant time.</p><h4>Common mistakes</h4><ul><li>Recalculating the entire window sum every iteration.</li><li>Forgetting to compute the first window separately.</li><li>Performing integer division instead of returning a double.</li></ul><h4>Interview Tip</h4><p>Whenever the problem asks for a <strong>fixed-size contiguous subarray</strong>, Sliding Window should be your first choice.</p>",
+    "youtube": "https://youtu.be/6jY2vD7rNfM"
+  }
+]

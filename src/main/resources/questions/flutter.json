@@ -1,0 +1,1217 @@
+[
+  {
+    "id": "flutter-what-is",
+    "category": "flutter",
+    "difficulty": "beginner",
+    "tags": [
+      "flutter",
+      "framework",
+      "basics"
+    ],
+    "question": "What is Flutter, and what are its advantages?",
+    "answer": "<p><strong>Flutter</strong> is Google's open-source UI toolkit for building natively compiled applications for Android, iOS, Web, Windows, macOS, and Linux from a single codebase using the <strong>Dart</strong> programming language.</p><p>Key advantages include <strong>Hot Reload</strong>, a single codebase for multiple platforms, high performance through native compilation, a rich widget library (Material & Cupertino), expressive UI, and excellent developer productivity.</p>",
+    "tip": "Mention Hot Reload, single codebase, native performance, and widgets—these are the biggest Flutter selling points.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-widget-types",
+    "category": "flutter",
+    "difficulty": "beginner",
+    "tags": [
+      "widgets",
+      "stateless",
+      "stateful",
+      "V.Imp"
+    ],
+    "question": "What is the difference between StatelessWidget and StatefulWidget?",
+    "answer": "<p>A <strong>StatelessWidget</strong> is immutable. Once built, its UI does not change unless its parent rebuilds it.</p><p>A <strong>StatefulWidget</strong> has mutable state managed by a separate <code class=\"inline\">State</code> object. Calling <code class=\"inline\">setState()</code> updates the state and rebuilds the widget.</p>",
+    "tip": "Use StatelessWidget when the UI never changes. Use StatefulWidget when the UI changes because of user interaction, API responses, or animations.",
+    "code": "import 'package:flutter/material.dart';\n\nclass CounterPage extends StatefulWidget {\n  const CounterPage({super.key});\n\n  @override\n  State<CounterPage> createState() => _CounterPageState();\n}\n\nclass _CounterPageState extends State<CounterPage> {\n  int count = 0;\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: const Text('Counter')),\n      body: Center(\n        child: Text('Count: $count'),\n      ),\n      floatingActionButton: FloatingActionButton(\n        onPressed: () {\n          setState(() {\n            count++;\n          });\n        },\n        child: const Icon(Icons.add),\n      ),\n    );\n  }\n}",
+    "deep": "<h4>What is a Widget?</h4><p>In Flutter, everything is a <strong>Widget</strong>. Buttons, Text, Images, Rows, Columns, and even the entire screen are widgets. Widgets describe what the UI should look like at any point in time.</p><h4>StatelessWidget</h4><p>A <strong>StatelessWidget</strong> is immutable. Once created, it cannot change its internal state. It is rebuilt only when its parent rebuilds it or when its constructor receives new values.</p><p><strong>Examples:</strong></p><ul><li>Logo</li><li>Static Text</li><li>Icons</li><li>About Screen</li></ul><pre><code>class Welcome extends StatelessWidget {\n  @override\n  Widget build(BuildContext context) {\n    return const Text('Welcome');\n  }\n}</code></pre><h4>StatefulWidget</h4><p>A <strong>StatefulWidget</strong> contains mutable state managed by a separate <code class=\"inline\">State</code> class. Whenever the state changes, calling <code class=\"inline\">setState()</code> tells Flutter to rebuild only that widget and its descendants.</p><pre><code>class CounterPage extends StatefulWidget {\n  @override\n  State&lt;CounterPage&gt; createState() =&gt; _CounterPageState();\n}\n\nclass _CounterPageState extends State&lt;CounterPage&gt; {\n  int count = 0;\n\n  void increment() {\n    setState(() {\n      count++;\n    });\n  }\n}</code></pre><h4>How setState() Works</h4><pre><code>User taps button\n       ↓\nsetState()\n       ↓\nState changes\n       ↓\nbuild() runs again\n       ↓\nUpdated UI appears</code></pre><p>Flutter does not redraw the entire application. Only the affected widget subtree is rebuilt, making rendering very efficient.</p><h4>Comparison</h4><table><tr><th>StatelessWidget</th><th>StatefulWidget</th></tr><tr><td>Immutable</td><td>Mutable State</td></tr><tr><td>No setState()</td><td>Uses setState()</td></tr><tr><td>Simple UI</td><td>Dynamic UI</td></tr><tr><td>Lightweight</td><td>Slightly heavier</td></tr><tr><td>No lifecycle for state</td><td>Has lifecycle methods like initState() and dispose()</td></tr></table><h4>Widget Lifecycle</h4><p><strong>StatelessWidget:</strong></p><pre><code>Constructor\n      ↓\nbuild()</code></pre><p><strong>StatefulWidget:</strong></p><pre><code>Constructor\n      ↓\ncreateState()\n      ↓\ninitState()\n      ↓\nbuild()\n      ↓\nsetState() (0..n times)\n      ↓\ndispose()</code></pre><h4>Real-world Examples</h4><ul><li><strong>StatelessWidget:</strong> Company logo, Terms & Conditions page, Settings title, Static card.</li><li><strong>StatefulWidget:</strong> Login form, Counter app, Shopping cart, Chat screen, Timer, Animation, API response screen.</li></ul><h4>When should you use StatefulWidget?</h4><p>Use StatefulWidget whenever the UI changes because of:</p><ul><li>User interaction (button click, checkbox, text input)</li><li>API response</li><li>Animation</li><li>Timer</li><li>Stream or WebSocket updates</li></ul><h4>Best Practice</h4><p>Prefer <strong>StatelessWidget</strong> whenever possible because it is simpler and easier to maintain. If the widget needs state, keep only the smallest possible part as StatefulWidget. In larger applications, business state is usually managed using Provider, Riverpod, Bloc, or GetX instead of relying heavily on setState().</p><h4>Interview Answer</h4><p><strong>\"A StatelessWidget is immutable and does not maintain any internal state. A StatefulWidget stores mutable state in a separate State object, and calling setState() rebuilds the widget to reflect changes. I use StatelessWidget for static UI and StatefulWidget for screens that respond to user interaction, API calls, animations, or any changing data.\"</strong></p>",
+    "lang": "dart",
+    "youtube": "https://youtu.be/BlUd-BAu0DM"
+  },
+  {
+    "id": "flutter-hot-reload",
+    "category": "flutter",
+    "difficulty": "beginner",
+    "tags": [
+      "hot-reload",
+      "development"
+    ],
+    "question": "What is Hot Reload, and how is it different from Hot Restart?",
+    "answer": "<p><strong>Hot Reload</strong> injects updated source code into the running application while preserving the current state. It is mainly used during UI development.</p><p><strong>Hot Restart</strong> restarts the Dart application, resets all state, and rebuilds the widget tree from scratch.</p>",
+    "tip": "Hot Reload keeps the app state. Hot Restart starts the application from the beginning.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-widget-tree",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": [
+      "widget-tree",
+      "ui",
+      "architecture"
+    ],
+    "question": "What is the Widget Tree in Flutter?",
+    "answer": "<p>Everything in Flutter is a <strong>Widget</strong>. The Widget Tree is a hierarchical structure that describes the application's UI. Parent widgets contain child widgets, and Flutter rebuilds only the affected parts of the tree when state changes, making rendering efficient.</p>",
+    "tip": "Remember: Widgets describe the UI; Elements manage widget instances; RenderObjects handle layout and painting.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-lifecycle",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": [
+      "lifecycle",
+      "statefulwidget",
+      "state"
+    ],
+    "question": "Explain the lifecycle of a StatefulWidget.",
+    "answer": "<p>The main lifecycle methods are: <code class=\"inline\">createState()</code> → <code class=\"inline\">initState()</code> → <code class=\"inline\">didChangeDependencies()</code> → <code class=\"inline\">build()</code>. During updates, Flutter may call <code class=\"inline\">didUpdateWidget()</code> and <code class=\"inline\">setState()</code> triggers another <code class=\"inline\">build()</code>. Before removal, <code class=\"inline\">dispose()</code> is called to clean up resources like controllers, streams, and animations.</p>",
+    "tip": "Always initialize resources in initState() and release them in dispose() to avoid memory leaks.",
+    "code": "",
+    "lang": "dart"
+  },
+  {
+    "id": "flutter-state-management",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": [
+      "state-management",
+      "provider",
+      "bloc",
+      "riverpod"
+    ],
+    "question": "What are the main state management approaches in Flutter, and how do you choose between them?",
+    "answer": "<p>Flutter offers several state management approaches: <strong>setState</strong> (local widget state), <strong>InheritedWidget/Provider</strong> (dependency injection + simple reactive state), <strong>Riverpod</strong> (compile-safe, testable Provider successor), <strong>BLoC/Cubit</strong> (event-driven, stream-based, great separation of business logic), and <strong>GetX/MobX</strong> (reactive, less boilerplate).</p><p>The choice depends on app size and team preference: small apps can use setState/Provider; large apps with complex business logic benefit from BLoC or Riverpod for testability and separation of concerns.</p>",
+    "tip": "Don't just name libraries—explain the tradeoff: boilerplate vs testability vs learning curve.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-keys",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": [
+      "keys",
+      "widget-tree",
+      "globalkey"
+    ],
+    "question": "What are Keys in Flutter, and when do you need them?",
+    "answer": "<p><strong>Keys</strong> help Flutter identify widgets across rebuilds when the widget tree is reordered or widgets of the same type are inserted/removed (e.g., items in a list). Without a key, Flutter may reuse the wrong widget's state.</p><p><strong>ValueKey</strong>/<strong>ObjectKey</strong> distinguish siblings by value/identity, while <strong>GlobalKey</strong> uniquely identifies a widget across the entire app and allows accessing its state or context from outside (e.g., <code class=\"inline\">GlobalKey&lt;FormState&gt;</code>).</p>",
+    "tip": "Use keys on list items whose order can change, and GlobalKey sparingly—it's relatively expensive and breaks widget encapsulation.",
+    "code": "ListView(children: [\n  for (final item in items)\n    ListTile(key: ValueKey(item.id), title: Text(item.name)),\n]);",
+    "lang": "dart"
+  },
+  {
+    "id": "flutter-inheritedwidget",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": [
+      "inheritedwidget",
+      "dependency-injection",
+      "architecture"
+    ],
+    "question": "What is InheritedWidget, and how does Provider build on it?",
+    "answer": "<p><strong>InheritedWidget</strong> lets data be efficiently passed down the widget tree without manual prop drilling. Descendants call <code class=\"inline\">context.dependOnInheritedWidgetOfExactType</code> to read it and automatically rebuild when it notifies of a change.</p><p><strong>Provider</strong> wraps InheritedWidget with a simpler API (<code class=\"inline\">Provider</code>, <code class=\"inline\">ChangeNotifierProvider</code>, <code class=\"inline\">context.watch/read/select</code>) and adds lifecycle management like automatic disposal.</p>",
+    "tip": "Explaining that Provider is 'sugar over InheritedWidget' is a strong signal of deep Flutter understanding.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-bloc-pattern",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": [
+      "bloc",
+      "cubit",
+      "architecture",
+      "state-management"
+    ],
+    "question": "Explain the BLoC pattern and the difference between Bloc and Cubit.",
+    "answer": "<p><strong>BLoC (Business Logic Component)</strong> separates business logic from UI using <strong>Streams</strong>: the UI dispatches <strong>Events</strong>, the Bloc processes them and emits <strong>States</strong>, and widgets rebuild via <code class=\"inline\">BlocBuilder</code>/<code class=\"inline\">BlocListener</code>.</p><p><strong>Cubit</strong> is a simplified Bloc without the event layer—you call methods directly that emit new states. Cubit is easier to learn; Bloc gives more traceability (every state change originates from an explicit event), useful for complex or auditable flows.</p>",
+    "tip": "Mention that Bloc is great for testing since events and states are just plain objects you can assert against.",
+    "code": "class CounterCubit extends Cubit<int> {\n  CounterCubit() : super(0);\n  void increment() => emit(state + 1);\n}",
+    "lang": "dart"
+  },
+  {
+    "id": "flutter-navigator-2",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": [
+      "navigation",
+      "router",
+      "navigator2"
+    ],
+    "question": "What is the difference between Navigator 1.0 and Navigator 2.0 (Router API)?",
+    "answer": "<p><strong>Navigator 1.0</strong> is imperative: you call <code class=\"inline\">Navigator.push/pop</code> to manage an internal stack of routes.</p><p><strong>Navigator 2.0</strong> (the Router API) is declarative: the navigation stack is derived from application state, enabling deep linking, web URL sync, and browser back-button support. Packages like <strong>go_router</strong> and <strong>auto_route</strong> wrap Navigator 2.0's complexity with a simpler declarative API.</p>",
+    "tip": "Mention go_router—almost every real project uses it instead of raw Navigator 2.0 because the raw API is verbose.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-futurebuilder-streambuilder",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": [
+      "futurebuilder",
+      "streambuilder",
+      "async",
+      "widgets"
+    ],
+    "question": "What is the difference between FutureBuilder and StreamBuilder?",
+    "answer": "<p><strong>FutureBuilder</strong> rebuilds once when a single <code class=\"inline\">Future</code> completes (or errors)—ideal for one-off async operations like an API call.</p><p><strong>StreamBuilder</strong> rebuilds every time a <code class=\"inline\">Stream</code> emits a new value—ideal for continuous data like real-time updates, sockets, or Firebase snapshots. Both expose <code class=\"inline\">AsyncSnapshot</code> with <code class=\"inline\">connectionState</code>, <code class=\"inline\">data</code>, and <code class=\"inline\">error</code>.</p>",
+    "tip": "Always handle ConnectionState.waiting and hasError in the builder—interviewers check for this.",
+    "code": "StreamBuilder<int>(\n  stream: counterStream,\n  builder: (context, snapshot) {\n    if (snapshot.hasError) return Text('Error');\n    if (!snapshot.hasData) return CircularProgressIndicator();\n    return Text('${snapshot.data}');\n  },\n);",
+    "lang": "dart"
+  },
+  {
+    "id": "flutter-performance-optimization",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": [
+      "performance",
+      "optimization",
+      "rendering"
+    ],
+    "question": "How do you optimize performance in a Flutter application?",
+    "answer": "<p>Key techniques: use <strong>const constructors</strong> so widgets skip unnecessary rebuilds; use <code class=\"inline\">ListView.builder</code>/<code class=\"inline\">SliverList</code> for lazy rendering of long lists; wrap expensive repaint areas with <strong>RepaintBoundary</strong>; avoid rebuilding large widget subtrees by narrowing <code class=\"inline\">setState</code> scope or using <code class=\"inline\">Selector</code>/<code class=\"inline\">context.select</code>; use <strong>DevTools</strong>' performance/timeline view to find jank; and move heavy CPU work off the UI thread with <code class=\"inline\">compute()</code>/isolates.</p>",
+    "tip": "Mention DevTools' 'Repaint Rainbow' and widget rebuild counters—shows hands-on profiling experience.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-const-constructor",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": [
+      "const",
+      "optimization",
+      "widgets"
+    ],
+    "question": "Why should widgets use const constructors whenever possible?",
+    "answer": "<p>A <code class=\"inline\">const</code> widget is built once at compile time and Flutter can skip rebuilding/reallocating it when its parent rebuilds, since the framework knows the instance can't change. This reduces widget tree diffing work and improves performance, especially for static UI like icons, text, or padding.</p>",
+    "tip": "Run 'flutter analyze' or enable the prefer_const_constructors lint—interviewers like hearing you rely on tooling, not memory.",
+    "code": "const Text('Hello');\nconst SizedBox(height: 16);",
+    "lang": "dart"
+  },
+  {
+    "id": "flutter-build-modes",
+    "category": "flutter",
+    "difficulty": "beginner",
+    "tags": [
+      "debug",
+      "release",
+      "profile",
+      "build-modes"
+    ],
+    "question": "What are Flutter's three build modes, and how do they differ?",
+    "answer": "<p><strong>Debug</strong> mode enables hot reload, assertions, and debugging tools but is slower (JIT compiled). <strong>Profile</strong> mode is close to release performance but keeps some tracing for performance analysis. <strong>Release</strong> mode is fully AOT-compiled, optimized, and stripped of debug information—used for production builds.</p>",
+    "tip": "Never profile performance in debug mode—always use 'flutter run --profile'.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-platform-channels",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": [
+      "platform-channel",
+      "native",
+      "methodchannel"
+    ],
+    "question": "What are Platform Channels, and when would you use them?",
+    "answer": "<p><strong>Platform Channels</strong> (<code class=\"inline\">MethodChannel</code>, <code class=\"inline\">EventChannel</code>, <code class=\"inline\">BasicMessageChannel</code>) let Dart code communicate with native Android (Kotlin/Java) or iOS (Swift/Objective-C) code. They're used when a plugin doesn't exist for a native API you need (e.g., a custom SDK), sending messages asynchronously across the bridge.</p>",
+    "tip": "Mention that MethodChannel is for one-off calls, while EventChannel is for continuous native event streams.",
+    "code": "static const platform = MethodChannel('com.example/battery');\nfinal int level = await platform.invokeMethod('getBatteryLevel');",
+    "lang": "dart"
+  },
+  {
+    "id": "flutter-isolates-compute",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": [
+      "isolates",
+      "concurrency",
+      "compute"
+    ],
+    "question": "What are Isolates in Flutter, and when should you use compute()?",
+    "answer": "<p>Dart is single-threaded per <strong>Isolate</strong>—each isolate has its own memory and event loop, so isolates don't share state and communicate via message passing. Flutter's UI runs on the main isolate; heavy CPU-bound work (JSON parsing large payloads, image processing) can block it and cause jank.</p><p><code class=\"inline\">compute()</code> spawns a new isolate to run a top-level function off the UI thread and returns the result via a Future, keeping the UI responsive.</p>",
+    "tip": "compute() only accepts top-level or static functions—not closures capturing state—because isolates don't share memory.",
+    "code": "final result = await compute(parseJson, responseBody);",
+    "lang": "dart"
+  },
+  {
+    "id": "flutter-animations",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": [
+      "animation",
+      "implicit",
+      "explicit"
+    ],
+    "question": "What is the difference between implicit and explicit animations in Flutter?",
+    "answer": "<p><strong>Implicit animations</strong> (e.g., <code class=\"inline\">AnimatedContainer</code>, <code class=\"inline\">AnimatedOpacity</code>) automatically animate between old and new values whenever their properties change—no controller required.</p><p><strong>Explicit animations</strong> use an <code class=\"inline\">AnimationController</code> with a <code class=\"inline\">Tween</code> and <code class=\"inline\">AnimatedBuilder</code>/<code class=\"inline\">AnimatedWidget</code>, giving full control over duration, curve, direction, and repeats—used for complex or coordinated animations.</p>",
+    "tip": "Mention that AnimationController needs a TickerProvider (SingleTickerProviderStateMixin) and must be disposed.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-layout-widgets",
+    "category": "flutter",
+    "difficulty": "beginner",
+    "tags": [
+      "layout",
+      "row",
+      "column",
+      "stack",
+      "expanded"
+    ],
+    "question": "Explain the difference between Expanded and Flexible, and how Stack differs from Row/Column.",
+    "answer": "<p><strong>Expanded</strong> forces a child to fill available space along the main axis (equivalent to Flexible with <code class=\"inline\">FlexFit.tight</code>). <strong>Flexible</strong> lets a child take up to the available space but allows it to be smaller (<code class=\"inline\">FlexFit.loose</code>).</p><p><strong>Row/Column</strong> lay children out linearly (horizontally/vertically) without overlap. <strong>Stack</strong> overlays children on top of each other, positioned with <code class=\"inline\">Positioned</code> or alignment—used for things like badges, overlays, or custom layered UI.</p>",
+    "tip": "A common gotcha: Row/Column throw 'unbounded height' errors when nested in a scrollable without Expanded/Flexible—know why.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-responsive-design",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": [
+      "responsive",
+      "mediaquery",
+      "layoutbuilder"
+    ],
+    "question": "How do you build a responsive UI in Flutter?",
+    "answer": "<p>Use <code class=\"inline\">MediaQuery.of(context).size</code> to read screen dimensions, <code class=\"inline\">LayoutBuilder</code> to adapt UI based on the parent's constraints (not just the screen), and <code class=\"inline\">OrientationBuilder</code> for portrait/landscape changes. Combine with breakpoints to switch between mobile/tablet/desktop layouts, and use flexible widgets (<code class=\"inline\">Expanded</code>, <code class=\"inline\">Wrap</code>, <code class=\"inline\">FittedBox</code>) instead of fixed sizes.</p>",
+    "tip": "LayoutBuilder reacts to the available space from the parent, which is more reliable than MediaQuery when building reusable widgets.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-theming",
+    "category": "flutter",
+    "difficulty": "beginner",
+    "tags": [
+      "theme",
+      "themedata",
+      "styling"
+    ],
+    "question": "How does theming work in Flutter?",
+    "answer": "<p><code class=\"inline\">ThemeData</code> defines app-wide colors, typography, and component styles, applied via <code class=\"inline\">MaterialApp(theme: ...)</code>. Widgets read it with <code class=\"inline\">Theme.of(context)</code>. Flutter also supports light/dark themes (<code class=\"inline\">theme</code> and <code class=\"inline\">darkTheme</code> with <code class=\"inline\">themeMode</code>) and custom theme extensions via <code class=\"inline\">ThemeExtension</code> for app-specific tokens.</p>",
+    "tip": "Mention ThemeExtension for adding custom design-system tokens beyond Material's built-in ColorScheme.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-forms-validation",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": [
+      "forms",
+      "validation",
+      "textformfield"
+    ],
+    "question": "How do you build and validate a form in Flutter?",
+    "answer": "<p>Wrap fields in a <code class=\"inline\">Form</code> widget with a <code class=\"inline\">GlobalKey&lt;FormState&gt;</code>. Each <code class=\"inline\">TextFormField</code> takes a <code class=\"inline\">validator</code> that returns an error string or null. Calling <code class=\"inline\">formKey.currentState!.validate()</code> runs all validators and returns whether the form is valid; <code class=\"inline\">save()</code> triggers each field's <code class=\"inline\">onSaved</code> callback.</p>",
+    "tip": "Remember to dispose TextEditingControllers in dispose() to avoid memory leaks.",
+    "code": "final formKey = GlobalKey<FormState>();\n\nForm(\n  key: formKey,\n  child: TextFormField(\n    validator: (v) => (v == null || v.isEmpty) ? 'Required' : null,\n  ),\n);\n\nif (formKey.currentState!.validate()) { /* submit */ }",
+    "lang": "dart"
+  },
+  {
+    "id": "flutter-networking",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": [
+      "http",
+      "dio",
+      "networking",
+      "api"
+    ],
+    "question": "How do you make network calls in Flutter, and how does Dio differ from the http package?",
+    "answer": "<p>The <strong>http</strong> package is a lightweight, low-level client for basic GET/POST requests with manual JSON decoding. <strong>Dio</strong> is a more feature-rich HTTP client offering interceptors (for auth tokens/logging), request/response transformation, timeouts, file upload/download with progress, and easier error handling via <code class=\"inline\">DioException</code>.</p>",
+    "tip": "Mention interceptors as Dio's killer feature—centralizing auth headers and refresh-token logic in one place.",
+    "code": "final dio = Dio();\ndio.interceptors.add(InterceptorsWrapper(\n  onRequest: (options, handler) {\n    options.headers['Authorization'] = 'Bearer $token';\n    handler.next(options);\n  },\n));",
+    "lang": "dart"
+  },
+  {
+    "id": "flutter-local-storage",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": [
+      "shared-preferences",
+      "hive",
+      "sqflite",
+      "storage"
+    ],
+    "question": "What are the common options for local data persistence in Flutter?",
+    "answer": "<p><strong>shared_preferences</strong> stores simple key-value pairs (settings, flags)—backed by NSUserDefaults/SharedPreferences natively. <strong>Hive</strong> is a fast, pure-Dart NoSQL key-value/object database, good for structured local data without native SQL. <strong>sqflite</strong> gives full SQL/relational storage for complex queries. <strong>Drift</strong> (formerly Moor) adds a type-safe query builder on top of sqflite.</p>",
+    "tip": "Match the option to the need: preferences for flags, Hive for simple objects, sqflite/Drift when you need relational queries.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-app-lifecycle",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": [
+      "lifecycle",
+      "widgetsbindingobserver",
+      "appstate"
+    ],
+    "question": "How do you observe and respond to the app lifecycle in Flutter?",
+    "answer": "<p>Mix in <code class=\"inline\">WidgetsBindingObserver</code> and override <code class=\"inline\">didChangeAppLifecycleState</code> to react to <code class=\"inline\">resumed</code>, <code class=\"inline\">inactive</code>, <code class=\"inline\">paused</code>, and <code class=\"inline\">detached</code> states—useful for pausing video/audio, refreshing data on resume, or saving state before backgrounding.</p>",
+    "tip": "Don't forget to register with WidgetsBinding.instance.addObserver(this) in initState and remove it in dispose.",
+    "code": "class _MyState extends State<MyWidget> with WidgetsBindingObserver {\n  @override\n  void didChangeAppLifecycleState(AppLifecycleState state) {\n    if (state == AppLifecycleState.paused) { /* save state */ }\n  }\n}",
+    "lang": "dart"
+  },
+  {
+    "id": "flutter-testing-types",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": [
+      "testing",
+      "unit-test",
+      "widget-test",
+      "integration-test"
+    ],
+    "question": "What types of testing does Flutter support?",
+    "answer": "<p><strong>Unit tests</strong> verify pure logic (functions, classes) using the <code class=\"inline\">test</code> package. <strong>Widget tests</strong> (<code class=\"inline\">flutter_test</code>) pump a widget into a test environment and verify UI/behavior without a real device, using <code class=\"inline\">WidgetTester</code> to tap, scroll, and assert. <strong>Integration tests</strong> (<code class=\"inline\">integration_test</code> package) run the full app on a real device/emulator to test end-to-end flows.</p>",
+    "tip": "Widget tests run fast because they use a fake binding rather than a real device—key selling point vs integration tests.",
+    "code": "testWidgets('counter increments', (tester) async {\n  await tester.pumpWidget(MyApp());\n  await tester.tap(find.byIcon(Icons.add));\n  await tester.pump();\n  expect(find.text('1'), findsOneWidget);\n});",
+    "lang": "dart"
+  },
+  {
+    "id": "flutter-slivers",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": [
+      "slivers",
+      "customscrollview",
+      "scrolling"
+    ],
+    "question": "What are Slivers, and why would you use CustomScrollView?",
+    "answer": "<p><strong>Slivers</strong> are scrollable areas that can be composed together inside a <code class=\"inline\">CustomScrollView</code>, allowing complex scroll effects—like a collapsing app bar (<code class=\"inline\">SliverAppBar</code>), mixed grids and lists, or sticky headers—that a plain <code class=\"inline\">ListView</code> can't achieve, since all slivers share one scroll position.</p>",
+    "tip": "SliverAppBar with 'floating' and 'pinned' properties is a very common real-world interview/demo scenario.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-materialapp-cupertino",
+    "category": "flutter",
+    "difficulty": "beginner",
+    "tags": ["materialapp", "cupertino", "widgets"],
+    "question": "What is the difference between MaterialApp and CupertinoApp?",
+    "answer": "<p><strong>MaterialApp</strong> configures an app to use Google's Material Design widgets, theming, and navigation conventions (Android-style). <strong>CupertinoApp</strong> configures an app to use iOS-style widgets and theming. Both provide a Navigator and a widget tree root, and you can mix Cupertino widgets inside a MaterialApp for a more iOS-native feel on iOS.</p>",
+    "tip": "Mention Platform.isIOS checks or adaptive widgets as a way to render the right style per platform from a single codebase.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-scaffold",
+    "category": "flutter",
+    "difficulty": "beginner",
+    "tags": ["scaffold", "layout", "material"],
+    "question": "What is Scaffold, and what structural pieces does it provide?",
+    "answer": "<p><code class=\"inline\">Scaffold</code> implements the basic Material Design visual layout: it provides slots for an <code class=\"inline\">appBar</code>, <code class=\"inline\">body</code>, <code class=\"inline\">floatingActionButton</code>, <code class=\"inline\">drawer</code>, <code class=\"inline\">bottomNavigationBar</code>, and <code class=\"inline\">SnackBar</code> display, wiring them together with correct z-ordering and insets automatically.</p>",
+    "tip": "Scaffold.of(context) (or a ScaffoldMessenger) is the classic way to show a SnackBar from a descendant widget.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-buildcontext",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": ["buildcontext", "widget-tree", "elements"],
+    "question": "What is BuildContext, and what does it actually represent?",
+    "answer": "<p><code class=\"inline\">BuildContext</code> is a handle to the location of a widget in the widget tree—concretely, it is the <strong>Element</strong> associated with that widget. It's used to look up inherited data (<code class=\"inline\">Theme.of(context)</code>), find ancestor widgets, and navigate. It is not the widget itself, and using a stale context (e.g., after the widget is disposed) throws errors.</p>",
+    "tip": "A classic gotcha: calling Navigator.of(context) after an async gap without checking 'mounted' can use a disposed context.",
+    "code": "",
+    "lang": "dart"
+  },
+  {
+    "id": "flutter-widget-element-renderobject",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["architecture", "elements", "renderobject"],
+    "question": "Explain the relationship between Widget, Element, and RenderObject.",
+    "answer": "<p><strong>Widget</strong> is an immutable configuration/blueprint. <strong>Element</strong> is the mutable instantiation of a widget in the tree—it persists across rebuilds and manages the widget's lifecycle, diffing old vs new widgets to decide whether to update, replace, or reuse a RenderObject. <strong>RenderObject</strong> handles the actual layout, painting, and hit-testing.</p><p>This three-tree architecture is why Flutter can be fast: Elements let cheap widget rebuilds be reconciled without necessarily re-laying-out or repainting.</p>",
+    "tip": "This question tests whether you understand WHY Flutter widgets are described as 'cheap to create'—because Widgets are just configuration, not the actual render machinery.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-setstate-internals",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["setstate", "rendering", "internals"],
+    "question": "What actually happens when you call setState()?",
+    "answer": "<p><code class=\"inline\">setState()</code> marks the associated Element as 'dirty' and schedules a frame via <code class=\"inline\">markNeedsBuild()</code>. On the next frame, Flutter calls <code class=\"inline\">build()</code> again for that widget (and only that subtree, not the whole app), diffs the returned widget tree against the previous one, and updates only the RenderObjects that actually changed.</p>",
+    "tip": "Emphasize that setState only rebuilds the widget subtree rooted at that State, not the entire app—useful when explaining why deeply-nested setState calls are still often fine.",
+    "code": "",
+    "lang": "dart"
+  },
+  {
+    "id": "flutter-inheritedmodel",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["inheritedmodel", "inheritedwidget", "optimization"],
+    "question": "What is InheritedModel, and how does it improve on InheritedWidget?",
+    "answer": "<p><strong>InheritedModel</strong> extends InheritedWidget to let dependents subscribe to only a specific <strong>aspect</strong> of the data rather than the whole object, so a widget only rebuilds when the particular aspect it cares about changes—reducing unnecessary rebuilds compared to a plain InheritedWidget, where every dependent rebuilds on any change.</p>",
+    "tip": "This is a deep-cut question—few Flutter devs use InheritedModel directly since Provider/Riverpod solve the same problem with 'select', but knowing it exists shows real depth.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-valuelistenablebuilder",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": ["valuenotifier", "valuelistenablebuilder", "state-management"],
+    "question": "What is ValueNotifier and ValueListenableBuilder, and when would you use them over setState?",
+    "answer": "<p><code class=\"inline\">ValueNotifier&lt;T&gt;</code> is a lightweight observable holding a single value that notifies listeners when it changes. <code class=\"inline\">ValueListenableBuilder</code> subscribes to it and rebuilds only its own small subtree—avoiding a full-widget <code class=\"inline\">setState()</code> rebuild when only one small part of the UI depends on that value.</p>",
+    "tip": "Great answer for 'how do you avoid rebuilding a whole screen for one counter value'—very common performance-minded interview question.",
+    "code": "final counter = ValueNotifier<int>(0);\n\nValueListenableBuilder<int>(\n  valueListenable: counter,\n  builder: (context, value, child) => Text('$value'),\n);",
+    "lang": "dart"
+  },
+  {
+    "id": "flutter-custompainter",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["custompainter", "canvas", "graphics"],
+    "question": "What is CustomPainter, and when would you use it?",
+    "answer": "<p><code class=\"inline\">CustomPainter</code> lets you draw directly on a <code class=\"inline\">Canvas</code> (lines, arcs, paths, text, images) for graphics that standard widgets can't express, like custom charts, gauges, or signature pads. It's used with a <code class=\"inline\">CustomPaint</code> widget, and <code class=\"inline\">shouldRepaint()</code> controls whether it repaints on rebuild.</p>",
+    "tip": "Always implement shouldRepaint to return false when nothing relevant changed—otherwise you repaint every frame unnecessarily.",
+    "code": "class LinePainter extends CustomPainter {\n  @override\n  void paint(Canvas canvas, Size size) {\n    canvas.drawLine(Offset.zero, Offset(size.width, size.height), Paint()..color = Colors.blue);\n  }\n  @override\n  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;\n}",
+    "lang": "dart"
+  },
+  {
+    "id": "flutter-mediaquery-deepdive",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": ["mediaquery", "safearea", "insets"],
+    "question": "What information does MediaQuery expose besides screen size?",
+    "answer": "<p>Beyond <code class=\"inline\">size</code>, <code class=\"inline\">MediaQuery.of(context)</code> exposes <code class=\"inline\">padding</code> (notches/status bar), <code class=\"inline\">viewInsets</code> (space taken by the on-screen keyboard), <code class=\"inline\">devicePixelRatio</code>, <code class=\"inline\">textScaleFactor</code>, and <code class=\"inline\">platformBrightness</code> (system light/dark mode).</p>",
+    "tip": "viewInsets.bottom is the standard way to detect the keyboard is open and adjust layout accordingly.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-safearea",
+    "category": "flutter",
+    "difficulty": "beginner",
+    "tags": ["safearea", "layout", "notch"],
+    "question": "What does the SafeArea widget do?",
+    "answer": "<p><code class=\"inline\">SafeArea</code> automatically insets its child to avoid operating-system UI intrusions like the notch, status bar, and home indicator, using the device's <code class=\"inline\">MediaQuery</code> padding so content isn't hidden behind system chrome.</p>",
+    "tip": "Only wrap the parts of the screen that need it (e.g. skip it for a full-bleed background image behind content).",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-overlay",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["overlay", "overlayentry"],
+    "question": "What is Overlay/OverlayEntry used for?",
+    "answer": "<p><code class=\"inline\">Overlay</code> manages a stack of entries painted above the rest of the app, independent of the normal widget tree layout—used for things like tooltips, custom dropdown menus, and in-app notifications that need to float above everything else regardless of where they were triggered from.</p>",
+    "tip": "SnackBars, Tooltips, and Dialogs are all built on top of Overlay internally.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-gesturedetector-inkwell",
+    "category": "flutter",
+    "difficulty": "beginner",
+    "tags": ["gesturedetector", "inkwell", "touch"],
+    "question": "What is the difference between GestureDetector and InkWell?",
+    "answer": "<p><strong>GestureDetector</strong> detects taps, drags, and other gestures on any widget without providing visual feedback. <strong>InkWell</strong> does the same but adds a Material ripple effect on tap—it must be a descendant of a <code class=\"inline\">Material</code> widget to render correctly.</p>",
+    "tip": "If you wrap a widget with InkWell and see no ripple, the fix is usually to wrap it (or an ancestor) in a Material widget.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-hero-animation",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": ["hero", "animation", "navigation"],
+    "question": "What is a Hero animation in Flutter?",
+    "answer": "<p>A <code class=\"inline\">Hero</code> widget animates a shared element (like an image) smoothly flying from one screen to another during navigation, as long as both screens use a Hero with the same <code class=\"inline\">tag</code>. Flutter automatically interpolates position and size during the page transition.</p>",
+    "tip": "Tags must be unique per screen—if you have a Hero in a list, use a unique tag per item (e.g. based on the item's id).",
+    "code": "Hero(tag: 'profile-pic', child: Image.network(url));",
+    "lang": "dart"
+  },
+  {
+    "id": "flutter-dismissible",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": ["dismissible", "swipe", "list"],
+    "question": "How does the Dismissible widget work for swipe-to-delete?",
+    "answer": "<p><code class=\"inline\">Dismissible</code> wraps a list item and detects horizontal (or vertical) swipe gestures, animating the item off-screen and calling <code class=\"inline\">onDismissed</code> once the swipe passes a threshold. It requires a unique <code class=\"inline\">key</code> per item so Flutter knows which item was removed.</p>",
+    "tip": "Use confirmDismiss to show an 'are you sure?' dialog before actually removing data—prevents accidental deletes.",
+    "code": "Dismissible(\n  key: ValueKey(item.id),\n  onDismissed: (direction) => removeItem(item),\n  child: ListTile(title: Text(item.name)),\n);",
+    "lang": "dart"
+  },
+  {
+    "id": "flutter-opacity-visibility-offstage",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": ["opacity", "visibility", "offstage", "performance"],
+    "question": "What is the difference between Opacity, Visibility, and Offstage widgets?",
+    "answer": "<p><strong>Opacity</strong> keeps the widget in the layout and just fades it, but is relatively expensive since it composites a separate layer. <strong>Visibility</strong> can fully remove the child from the tree (avoiding build/layout/paint cost) while optionally keeping its size reserved via <code class=\"inline\">maintainSize</code>. <strong>Offstage</strong> lays the child out (so its size is known) but doesn't paint or hit-test it.</p>",
+    "tip": "Prefer Visibility(visible: false) over Opacity(opacity: 0) when you don't need the widget's space reserved—it's cheaper.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-localization",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": ["localization", "intl", "i18n"],
+    "question": "How do you implement localization (i18n) in a Flutter app?",
+    "answer": "<p>Add the <code class=\"inline\">flutter_localizations</code> and <code class=\"inline\">intl</code> packages, define <code class=\"inline\">.arb</code> files per locale with translated strings, and configure <code class=\"inline\">localizationsDelegates</code> and <code class=\"inline\">supportedLocales</code> on <code class=\"inline\">MaterialApp</code>. The generated <code class=\"inline\">AppLocalizations</code> class then exposes translated strings via <code class=\"inline\">AppLocalizations.of(context)!.someKey</code>.</p>",
+    "tip": "Mention that intl also handles pluralization and date/number formatting per-locale, not just string translation.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-firebase-integration",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": ["firebase", "fcm", "firestore"],
+    "question": "What Firebase services are commonly integrated into Flutter apps?",
+    "answer": "<p>Common ones: <strong>Firebase Auth</strong> (email/social login), <strong>Cloud Firestore</strong>/<strong>Realtime Database</strong> (NoSQL data sync), <strong>Cloud Messaging (FCM)</strong> (push notifications), <strong>Crashlytics</strong> (crash reporting), <strong>Remote Config</strong> (feature flags), and <strong>Analytics</strong>. All are wired up via the <code class=\"inline\">firebase_core</code> plugin plus per-service packages.</p>",
+    "tip": "Mention that Firestore's snapshots() stream integrates naturally with StreamBuilder for real-time UI updates.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-deep-linking",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["deep-linking", "app-links", "navigation"],
+    "question": "How does deep linking work in Flutter?",
+    "answer": "<p>Deep linking lets a URL (web link, custom scheme, or App/Universal Link) open the app directly to a specific screen. It's configured natively (Android <code class=\"inline\">intent-filter</code>, iOS Associated Domains) and handled in Dart via Navigator 2.0/go_router parsing the incoming URI into a route, or a package like <code class=\"inline\">uni_links</code>/<code class=\"inline\">app_links</code> for legacy Navigator 1.0 apps.</p>",
+    "tip": "go_router has first-class deep link support out of the box—mention it as the modern recommended approach.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-flavors",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["flavors", "build-configuration", "environments"],
+    "question": "What are Flutter flavors, and why are they used?",
+    "answer": "<p><strong>Flavors</strong> (build variants) let you build different versions of the same app—e.g. dev, staging, production—each with a different API endpoint, app icon, or bundle ID, from one codebase. Configured via native flavor setup (Gradle product flavors on Android, Xcode schemes on iOS) combined with <code class=\"inline\">--flavor</code> and <code class=\"inline\">--dart-define</code> flags.</p>",
+    "tip": "Combine flavors with --dart-define-from-file for cleanly separating per-environment secrets/config out of source control.",
+    "code": "flutter run --flavor dev -t lib/main_dev.dart",
+    "lang": "bash"
+  },
+  {
+    "id": "flutter-app-size-optimization",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["app-size", "tree-shaking", "obfuscation"],
+    "question": "How do you reduce the size of a release Flutter app?",
+    "answer": "<p>Use <code class=\"inline\">flutter build --split-per-abi</code> to avoid shipping all CPU architectures in one APK, enable icon tree-shaking (automatic for Material Icons), remove unused assets/packages, use <code class=\"inline\">--obfuscate --split-debug-info</code> to shrink and protect release builds, and analyze size with <code class=\"inline\">flutter build apk --analyze-size</code>.</p>",
+    "tip": "Mention the App Bundle (.aab) format for Play Store—it lets Google Play generate per-device optimized APKs automatically.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-error-handling-zones",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["error-handling", "zones", "crashlytics"],
+    "question": "How do you globally catch errors in a Flutter app (including async errors)?",
+    "answer": "<p><code class=\"inline\">FlutterError.onError</code> catches framework/build errors, but uncaught errors in async code (outside the current build) need <code class=\"inline\">runZonedGuarded</code> to wrap <code class=\"inline\">runApp()</code>, catching anything that escapes a Future/Stream. Together, this lets you funnel all errors to a crash reporter like Crashlytics or Sentry.</p>",
+    "tip": "A very common production setup question—interviewers want to hear both FlutterError.onError AND runZonedGuarded, not just one.",
+    "code": "void main() {\n  runZonedGuarded(() {\n    FlutterError.onError = (details) => Crashlytics.recordFlutterError(details);\n    runApp(MyApp());\n  }, (error, stack) => Crashlytics.recordError(error, stack));\n}",
+    "lang": "dart"
+  },
+  {
+    "id": "flutter-accessibility-semantics",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": ["accessibility", "semantics", "a11y"],
+    "question": "How do you make a Flutter app accessible?",
+    "answer": "<p>Most Material/Cupertino widgets already expose reasonable semantics automatically. For custom widgets, wrap them in a <code class=\"inline\">Semantics</code> widget with a <code class=\"inline\">label</code>, mark decorative images as <code class=\"inline\">excludeSemantics</code>, ensure sufficient touch target size (48x48), color contrast, and test with the device's screen reader (TalkBack/VoiceOver) or Flutter's Accessibility Inspector in DevTools.</p>",
+    "tip": "Mention 'Semantics' explicitly by name—many candidates only say 'add labels' without knowing the actual widget.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-scrollphysics",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": ["scrollphysics", "scrolling"],
+    "question": "What is ScrollPhysics, and what's the difference between BouncingScrollPhysics and ClampingScrollPhysics?",
+    "answer": "<p><code class=\"inline\">ScrollPhysics</code> defines how a scrollable responds to user input at the boundaries and during flings. <strong>BouncingScrollPhysics</strong> (default on iOS) allows overscrolling with a bounce-back effect. <strong>ClampingScrollPhysics</strong> (default on Android) stops hard at the edges with a glow/stretch overscroll indicator instead.</p>",
+    "tip": "Use AlwaysScrollableScrollPhysics with a CustomScrollView when you need pull-to-refresh to work even if content doesn't fill the screen.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-showdialog-bottomsheet",
+    "category": "flutter",
+    "difficulty": "beginner",
+    "tags": ["dialog", "bottomsheet", "snackbar"],
+    "question": "What are the differences between showDialog, showModalBottomSheet, and SnackBar?",
+    "answer": "<p><code class=\"inline\">showDialog</code> shows a modal Material dialog that blocks interaction until dismissed. <code class=\"inline\">showModalBottomSheet</code> slides a panel up from the bottom, also modal, good for actions/menus. <code class=\"inline\">SnackBar</code> (via <code class=\"inline\">ScaffoldMessenger</code>) shows a brief, non-blocking message at the bottom that auto-dismisses.</p>",
+    "tip": "Use ScaffoldMessenger.of(context).showSnackBar so the SnackBar survives even if the current route is popped.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-dependency-injection",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["dependency-injection", "get_it", "architecture"],
+    "question": "How is Dependency Injection typically done in Flutter?",
+    "answer": "<p>Beyond widget-tree-based DI (Provider/Riverpod), a <strong>service locator</strong> like <code class=\"inline\">get_it</code> lets you register singletons/factories for services (API clients, repositories) once at startup and resolve them anywhere, including outside the widget tree (e.g. in a background isolate). <code class=\"inline\">injectable</code> adds code generation on top of get_it to reduce manual registration boilerplate.</p>",
+    "tip": "Contrast get_it (a locator, resolved imperatively) with Provider (resolved declaratively via BuildContext)—both solve DI but at different layers.",
+    "code": "final getIt = GetIt.instance;\ngetIt.registerLazySingleton<ApiClient>(() => ApiClient());\n\nfinal api = getIt<ApiClient>();",
+    "lang": "dart"
+  },
+  {
+    "id": "flutter-clean-architecture",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["architecture", "clean-architecture", "mvvm"],
+    "question": "How does Clean Architecture typically map onto a Flutter app?",
+    "answer": "<p>Flutter apps commonly split into layers: <strong>Presentation</strong> (widgets + state management/ViewModels), <strong>Domain</strong> (use cases and entities, framework-agnostic pure Dart), and <strong>Data</strong> (repositories, API/DB data sources, DTOs). Dependencies point inward—the domain layer knows nothing about Flutter or the data layer—making business logic independently testable.</p>",
+    "tip": "Emphasize the dependency rule: outer layers depend on inner layers, never the reverse—that's the core idea interviewers probe for.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-riverpod-provider-types",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["riverpod", "providers", "state-management"],
+    "question": "What are the main provider types in Riverpod, and when do you use each?",
+    "answer": "<p><code class=\"inline\">Provider</code> exposes a read-only computed value. <code class=\"inline\">StateProvider</code> exposes simple mutable state. <code class=\"inline\">FutureProvider</code>/<code class=\"inline\">StreamProvider</code> expose async data with built-in loading/error handling. <code class=\"inline\">NotifierProvider</code>/<code class=\"inline\">AsyncNotifierProvider</code> expose more complex state with custom methods, similar to a Bloc/Cubit but compile-safe and testable without BuildContext.</p>",
+    "tip": "Mention that Riverpod providers are declared outside the widget tree, so they can be read in tests or background code without a BuildContext—a key advantage over Provider.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-freezed",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["freezed", "immutability", "code-generation"],
+    "question": "What is the Freezed package used for?",
+    "answer": "<p><strong>Freezed</strong> generates immutable data classes with <code class=\"inline\">copyWith</code>, value equality (<code class=\"inline\">==</code>/<code class=\"inline\">hashCode</code>), <code class=\"inline\">toString</code>, and union/sealed-class-style state modeling from a compact annotated class—removing the boilerplate of writing all of that by hand for every model or state class.</p>",
+    "tip": "Freezed's 'union' feature is commonly used to model Bloc/Riverpod states (loading/data/error) with exhaustive pattern matching via .when()/.map().",
+    "code": "@freezed\nclass UserState with _$UserState {\n  const factory UserState({required String name, required int age}) = _UserState;\n}",
+    "lang": "dart"
+  },
+  {
+    "id": "flutter-json-serialization",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": ["json", "serialization", "json_serializable"],
+    "question": "How do you handle JSON serialization in a Flutter app?",
+    "answer": "<p>For small apps, write manual <code class=\"inline\">fromJson</code>/<code class=\"inline\">toJson</code> factory methods. For larger apps, <code class=\"inline\">json_serializable</code> (with <code class=\"inline\">build_runner</code>) generates this boilerplate from annotated model classes, reducing manual errors and keeping models in sync with the API contract.</p>",
+    "tip": "Mention that Dart has no runtime reflection in release/AOT builds, which is exactly why code generation (not mirrors) is used for JSON in Flutter.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-equatable",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": ["equatable", "equality"],
+    "question": "What problem does the Equatable package solve?",
+    "answer": "<p>By default, Dart objects use identity equality (<code class=\"inline\">==</code> compares references), so two objects with identical field values are considered different. <strong>Equatable</strong> lets a class override equality by listing its <code class=\"inline\">props</code>, so value-based comparisons work automatically—critical for Bloc states, since BlocBuilder skips rebuilds when the new state equals the old one.</p>",
+    "tip": "Explain why this matters specifically for Bloc: without value equality, emitting a state with unchanged values still triggers rebuilds.",
+    "code": "class UserState extends Equatable {\n  final String name;\n  const UserState(this.name);\n  @override\n  List<Object?> get props => [name];\n}",
+    "lang": "dart"
+  },
+  {
+    "id": "flutter-hooks",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["flutter_hooks", "state-management"],
+    "question": "What is flutter_hooks, and what problem does it solve?",
+    "answer": "<p><strong>flutter_hooks</strong> (inspired by React Hooks) lets you reuse stateful logic (like an AnimationController or TextEditingController with automatic disposal) inside a <code class=\"inline\">HookWidget</code> without needing a StatefulWidget's boilerplate. Hooks like <code class=\"inline\">useState</code> and <code class=\"inline\">useEffect</code> manage lifecycle automatically.</p>",
+    "tip": "The killer feature to mention: hooks like useAnimationController auto-dispose themselves, eliminating a very common memory-leak source.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-runapp-widgetsbinding",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": ["runapp", "widgetsbinding", "startup"],
+    "question": "What do runApp() and WidgetsFlutterBinding.ensureInitialized() do?",
+    "answer": "<p><code class=\"inline\">runApp()</code> takes a widget and attaches it as the root of the widget tree, inflating it and attaching it to the screen. <code class=\"inline\">WidgetsFlutterBinding.ensureInitialized()</code> initializes the binding between the Flutter engine and the framework and must be called first if you need to use platform channels or async work (e.g. Firebase.initializeApp()) before runApp().</p>",
+    "tip": "Forgetting WidgetsFlutterBinding.ensureInitialized() before an async main() is a very common 'why does my plugin crash on startup' bug.",
+    "code": "void main() async {\n  WidgetsFlutterBinding.ensureInitialized();\n  await Firebase.initializeApp();\n  runApp(MyApp());\n}",
+    "lang": "dart"
+  },
+  {
+    "id": "flutter-crash-reporting",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": ["crashlytics", "sentry", "monitoring"],
+    "question": "How do you set up crash reporting in a production Flutter app?",
+    "answer": "<p>Integrate <strong>Firebase Crashlytics</strong> or <strong>Sentry</strong>: initialize the SDK at startup, route <code class=\"inline\">FlutterError.onError</code> and <code class=\"inline\">PlatformDispatcher.instance.onError</code> (or <code class=\"inline\">runZonedGuarded</code>) to the SDK's error recorder, and optionally attach custom logs/breadcrumbs and user identifiers for better triage.</p>",
+    "tip": "Mention non-fatal error logging too (e.g. recordError for caught exceptions), not just unhandled crashes—shows production maturity.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-custom-fonts",
+    "category": "flutter",
+    "difficulty": "beginner",
+    "tags": ["fonts", "pubspec", "styling"],
+    "question": "How do you add and use custom fonts in Flutter?",
+    "answer": "<p>Add the font files under an assets folder and declare them under the <code class=\"inline\">fonts</code> section of <code class=\"inline\">pubspec.yaml</code> with a family name and font weight/style variants, then reference the family in a <code class=\"inline\">TextStyle(fontFamily: ...)</code> or set it globally via <code class=\"inline\">ThemeData(fontFamily: ...)</code>.</p>",
+    "tip": "",
+    "code": "flutter:\n  fonts:\n    - family: Poppins\n      fonts:\n        - asset: fonts/Poppins-Regular.ttf\n        - asset: fonts/Poppins-Bold.ttf\n          weight: 700",
+    "lang": "yaml"
+  },
+  {
+    "id": "flutter-splash-screen",
+    "category": "flutter",
+    "difficulty": "beginner",
+    "tags": ["splash-screen", "native-splash"],
+    "question": "How do you configure a native splash screen in Flutter?",
+    "answer": "<p>Flutter shows a native splash screen (defined in native Android/iOS launch resources) before the Dart engine even starts, since Dart isn't running yet. The <code class=\"inline\">flutter_native_splash</code> package generates the correct native assets/configuration from a single image and color defined in <code class=\"inline\">pubspec.yaml</code>, keeping Android/iOS in sync.</p>",
+    "tip": "Clarify that a splash screen widget built in Dart only appears AFTER the engine starts—the true first screen is always native.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-package-vs-plugin",
+    "category": "flutter",
+    "difficulty": "beginner",
+    "tags": ["package", "plugin", "pub"],
+    "question": "What is the difference between a Dart package and a Flutter plugin?",
+    "answer": "<p>A <strong>Dart package</strong> contains pure Dart code with no native dependency (e.g. a utility/formatting library) and works on any platform including server-side Dart. A <strong>Flutter plugin</strong> additionally contains platform-specific native code (Kotlin/Swift) and uses platform channels to bridge Dart calls to native APIs (e.g. camera, GPS).</p>",
+    "tip": "If asked to build one: a package is just Dart; a plugin needs an android/ and ios/ folder with native implementation.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-ffi",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["ffi", "native", "c-interop"],
+    "question": "What is dart:ffi, and when would you use it?",
+    "answer": "<p><code class=\"inline\">dart:ffi</code> (Foreign Function Interface) lets Dart call native C libraries directly, without going through the platform-channel message bridge—useful for CPU-intensive native code (image/audio processing, existing C/C++/Rust libraries) where the overhead of serializing platform channel messages would be too costly.</p>",
+    "tip": "Contrast with platform channels: FFI is synchronous and lower overhead but limited to C-compatible ABIs, while platform channels are async and can call any native API (Kotlin/Swift, not just C).",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-webview",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": ["webview", "webview_flutter"],
+    "question": "How do you embed a web page inside a Flutter app?",
+    "answer": "<p>The <code class=\"inline\">webview_flutter</code> plugin embeds a native platform WebView (Android WebView/WKWebView on iOS) inside the widget tree via a <code class=\"inline\">WebViewController</code>, letting you load URLs/HTML, inject JavaScript, and listen for navigation events—commonly used for payment gateways or legacy web content.</p>",
+    "tip": "",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-permission-handling",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": ["permissions", "permission_handler"],
+    "question": "How do you request runtime permissions (camera, location) in Flutter?",
+    "answer": "<p>The <code class=\"inline\">permission_handler</code> package provides a cross-platform API to check and request runtime permissions, wrapping Android's runtime permission model and iOS's Info.plist-declared usage descriptions. Always check the current status first and gracefully handle 'denied' and 'permanentlyDenied' (which requires sending the user to app settings).</p>",
+    "tip": "Don't forget the native side: iOS requires an NSCameraUsageDescription (etc.) string in Info.plist or the app crashes silently on request.",
+    "code": "final status = await Permission.camera.request();\nif (status.isGranted) { /* open camera */ }",
+    "lang": "dart"
+  },
+  {
+    "id": "flutter-rendering-pipeline",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["rendering-pipeline", "build", "layout", "paint"],
+    "question": "Describe Flutter's rendering pipeline from build to pixels on screen.",
+    "answer": "<p>Each frame goes through: <strong>Build</strong> (widgets describe UI by calling build()), <strong>Layout</strong> (each RenderObject is given constraints by its parent and reports back a size—a single-pass, parent-to-child-to-parent walk), <strong>Paint</strong> (RenderObjects record painting instructions into layers), and <strong>Compositing/Rasterization</strong> (layers are composited and rasterized by the engine, using Skia or Impeller, into actual pixels on the GPU).</p>",
+    "tip": "Mentioning 'constraints go down, sizes go up, parent sets position' is the single sentence that shows you understand Flutter's layout model.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-skia-impeller",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["skia", "impeller", "rendering-engine"],
+    "question": "What is Impeller, and how does it differ from Skia in Flutter?",
+    "answer": "<p><strong>Skia</strong> was Flutter's original general-purpose 2D rendering engine, which compiled shaders at runtime, sometimes causing visible jank ('shader compilation jank') the first time a new visual effect appeared. <strong>Impeller</strong> is Flutter's newer rendering engine that precompiles shaders ahead of time, eliminating that jank, and is now the default on iOS (and rolling out on Android).</p>",
+    "tip": "Shader jank was one of Flutter's most cited performance complaints—knowing Impeller fixes it shows you're current on the framework's evolution.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-engine-architecture",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["architecture", "engine", "embedder"],
+    "question": "What are the three main architectural layers of Flutter?",
+    "answer": "<p><strong>Framework</strong> (Dart): the widgets, rendering, and animation libraries you write against. <strong>Engine</strong> (C++): implements Flutter's core—Skia/Impeller graphics, Dart runtime, text layout—and exposes it to the framework via dart:ui. <strong>Embedder</strong> (platform-specific): the entry point per platform (Android/iOS/desktop) that provides the surface, input, and native plugin access.</p>",
+    "tip": "This layered architecture is why the same Dart framework code runs on every platform—only the thin embedder layer changes.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-devtools",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": ["devtools", "debugging", "profiling"],
+    "question": "What can you do with Flutter DevTools?",
+    "answer": "<p>DevTools offers: the <strong>Widget Inspector</strong> (visualize/select widget tree, see layout constraints), the <strong>Performance/Timeline view</strong> (find jank, see frame build/raster times), the <strong>Memory view</strong> (track allocations, find leaks), the <strong>Network view</strong> (inspect HTTP calls), and <strong>Logging</strong> (structured log stream).</p>",
+    "tip": "Mention 'Track Widget Rebuilds' specifically—it's the single most useful feature for diagnosing unnecessary setState-driven rebuilds.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-memory-leaks",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["memory-leaks", "dispose", "debugging"],
+    "question": "What are common causes of memory leaks in a Flutter app?",
+    "answer": "<p>Common causes: forgetting to call <code class=\"inline\">dispose()</code> on <code class=\"inline\">AnimationController</code>, <code class=\"inline\">TextEditingController</code>, or <code class=\"inline\">ScrollController</code>; not cancelling <code class=\"inline\">StreamSubscription</code>s; holding a reference to a disposed <code class=\"inline\">BuildContext</code>; and registering listeners (e.g. <code class=\"inline\">WidgetsBindingObserver</code>) without removing them in dispose.</p>",
+    "tip": "The pattern to state out loud: 'whatever you create/register in initState, tear down in dispose.'",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-globalkey-pitfalls",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["globalkey", "pitfalls", "performance"],
+    "question": "What are the downsides of overusing GlobalKey?",
+    "answer": "<p>GlobalKeys are relatively expensive (they require a global registry lookup), can only be used by one widget at a time in the tree (duplicating one throws an assertion error), and break encapsulation by letting external code reach into a widget's internal state—making the widget harder to reason about and reuse.</p>",
+    "tip": "The rule of thumb to state: use a GlobalKey only when there's no other way to reach the needed state/context (e.g. Form validation)—not as a default communication mechanism.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-fastlane-cicd",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["cicd", "fastlane", "deployment"],
+    "question": "How do you set up CI/CD for a Flutter app?",
+    "answer": "<p>A typical pipeline (GitHub Actions, Codemagic, Bitrise) runs <code class=\"inline\">flutter analyze</code> and <code class=\"inline\">flutter test</code> on every PR, then on merge/tag builds signed release artifacts (<code class=\"inline\">flutter build appbundle</code>/<code class=\"inline\">ipa</code>) and uses <strong>Fastlane</strong> to automate versioning, code signing, and uploading to the Play Store/TestFlight.</p>",
+    "tip": "Mention caching the pub and Gradle/CocoaPods dependencies in CI—it's the single biggest lever for faster pipeline runs.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-analyze-lints",
+    "category": "flutter",
+    "difficulty": "beginner",
+    "tags": ["flutter-analyze", "lints", "tooling"],
+    "question": "What does flutter analyze do, and how do custom lint rules help?",
+    "answer": "<p><code class=\"inline\">flutter analyze</code> statically checks Dart/Flutter code for errors, type issues, and lint-rule violations defined in <code class=\"inline\">analysis_options.yaml</code>. Enabling stricter rule sets (like <code class=\"inline\">flutter_lints</code> or <code class=\"inline\">very_good_analysis</code>) catches issues like missing const constructors, unused imports, or unsafe null checks before code review.</p>",
+    "tip": "",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-mocking-tests",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": ["mockito", "mocktail", "testing"],
+    "question": "How do you mock dependencies when unit testing Flutter/Dart code?",
+    "answer": "<p><strong>mocktail</strong> (null-safety friendly, no code generation) or <strong>mockito</strong> (with <code class=\"inline\">build_runner</code> code generation) let you create fake implementations of interfaces/abstract classes, stub method return values, and verify interactions—so tests for a ViewModel/Bloc can run without hitting a real API or database.</p>",
+    "tip": "Mention that mocktail is preferred in newer codebases since it avoids the build_runner code-gen step mockito needs.",
+    "code": "class MockApi extends Mock implements ApiClient {}\n\ntest('returns users', () async {\n  final api = MockApi();\n  when(() => api.fetchUsers()).thenAnswer((_) async => [User('John')]);\n  expect(await api.fetchUsers(), [User('John')]);\n});",
+    "lang": "dart"
+  },
+  {
+    "id": "flutter-golden-tests",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["golden-tests", "testing", "ui-regression"],
+    "question": "What are Golden Tests in Flutter?",
+    "answer": "<p><strong>Golden tests</strong> render a widget and compare the output pixel-for-pixel against a previously saved reference image ('golden'). They catch unintended visual regressions that logic-only widget tests would miss, at the cost of being sensitive to font/platform rendering differences across machines.</p>",
+    "tip": "Mention that golden tests should run in CI on a consistent environment (e.g. Docker) since font rendering can differ across OSes, causing false failures.",
+    "code": "testWidgets('button matches golden', (tester) async {\n  await tester.pumpWidget(MyButton());\n  await expectLater(find.byType(MyButton), matchesGoldenFile('button.png'));\n});",
+    "lang": "dart"
+  },
+  {
+    "id": "flutter-integration-test-package",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["integration_test", "e2e", "testing"],
+    "question": "How does the integration_test package differ from widget tests, and how do you run it?",
+    "answer": "<p>Widget tests run in a simulated environment (no real device/engine rendering). <code class=\"inline\">integration_test</code> runs the full app on a real device or emulator, driving it exactly like a user (tap, scroll, wait for network), which is essential for verifying true end-to-end flows like login, checkout, or native plugin behavior.</p>",
+    "tip": "It can also be used for performance testing—capturing real frame timings on a physical device via IntegrationTestWidgetsFlutterBinding.",
+    "code": "flutter test integration_test/app_test.dart",
+    "lang": "bash"
+  },
+  {
+    "id": "flutter-tabbar-pageview",
+    "category": "flutter",
+    "difficulty": "beginner",
+    "tags": ["tabbar", "pageview", "tabcontroller"],
+    "question": "How do TabBar and PageView work together?",
+    "answer": "<p>A <code class=\"inline\">TabController</code> synchronizes a <code class=\"inline\">TabBar</code> (the tab headers) with a <code class=\"inline\">TabBarView</code> or <code class=\"inline\">PageView</code> (the swipeable content)—tapping a tab animates the view to that page, and swiping the view updates the selected tab, since both listen to the same controller.</p>",
+    "tip": "Remember TabController needs a 'vsync: this' from a SingleTickerProviderStateMixin (or TickerProviderStateMixin for multiple controllers).",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-draggable-dragtarget",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": ["draggable", "dragtarget", "drag-and-drop"],
+    "question": "How do you implement drag-and-drop in Flutter?",
+    "answer": "<p><code class=\"inline\">Draggable&lt;T&gt;</code> wraps a widget that can be dragged, carrying a typed <code class=\"inline\">data</code> payload and a <code class=\"inline\">feedback</code> widget shown while dragging. <code class=\"inline\">DragTarget&lt;T&gt;</code> wraps a drop zone, exposing <code class=\"inline\">onWillAccept</code>/<code class=\"inline\">onAccept</code> callbacks that fire when a matching Draggable is dropped on it.</p>",
+    "tip": "",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-refreshindicator",
+    "category": "flutter",
+    "difficulty": "beginner",
+    "tags": ["refreshindicator", "pull-to-refresh"],
+    "question": "How do you implement pull-to-refresh in Flutter?",
+    "answer": "<p>Wrap a scrollable (ListView/CustomScrollView) in a <code class=\"inline\">RefreshIndicator</code>, providing an <code class=\"inline\">onRefresh</code> callback that returns a Future. The indicator shows a spinner while the Future is pending and hides automatically once it completes.</p>",
+    "tip": "The list must be scrollable (or use AlwaysScrollableScrollPhysics) even when content is short, or the pull gesture won't register.",
+    "code": "RefreshIndicator(\n  onRefresh: () => viewModel.loadData(),\n  child: ListView(children: items),\n);",
+    "lang": "dart"
+  },
+  {
+    "id": "flutter-nestedscrollview",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["nestedscrollview", "slivers", "scrolling"],
+    "question": "What problem does NestedScrollView solve?",
+    "answer": "<p><code class=\"inline\">NestedScrollView</code> coordinates an outer scrollable (e.g. a collapsing SliverAppBar/header) with an inner scrollable (e.g. a TabBarView of lists), so scrolling the inner content also drives the outer header's collapse—something that plain nested ListViews can't do correctly since they'd compete for scroll gestures.</p>",
+    "tip": "",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-clip-widgets",
+    "category": "flutter",
+    "difficulty": "beginner",
+    "tags": ["cliprrect", "clippath", "clipping"],
+    "question": "What are ClipRRect, ClipOval, and ClipPath used for?",
+    "answer": "<p>These widgets clip a child to a shape: <code class=\"inline\">ClipRRect</code> clips to rounded rectangle corners, <code class=\"inline\">ClipOval</code> clips to an ellipse/circle (common for circular avatars), and <code class=\"inline\">ClipPath</code> clips to an arbitrary custom-drawn path via a <code class=\"inline\">CustomClipper</code>—useful for non-rectangular banners or shaped containers.</p>",
+    "tip": "Clipping is not free—it disables certain rendering fast paths, so avoid clipping in performance-critical, frequently-rebuilt widgets when possible.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-fittedbox-aspectratio",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": ["fittedbox", "aspectratio", "layout"],
+    "question": "What do FittedBox and AspectRatio do?",
+    "answer": "<p><code class=\"inline\">FittedBox</code> scales and positions its child to fit the available space according to a <code class=\"inline\">BoxFit</code> (contain, cover, fill...), similar to how CSS object-fit works for images. <code class=\"inline\">AspectRatio</code> tries to size its child to a given width/height ratio within the constraints given by its parent.</p>",
+    "tip": "",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-provider-select",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["provider", "context-select", "performance"],
+    "question": "What does context.select do in Provider, and why use it over context.watch?",
+    "answer": "<p><code class=\"inline\">context.watch</code> rebuilds a widget whenever any part of the provided object changes. <code class=\"inline\">context.select</code> lets you subscribe to only a specific field/computed value, so the widget rebuilds only when that particular piece of data actually changes—avoiding unnecessary rebuilds for large models with many fields.</p>",
+    "tip": "This is Provider's answer to the same problem Riverpod solves with '.select' on a provider—good to draw the parallel in an interview.",
+    "code": "final name = context.select<UserModel, String>((m) => m.name);",
+    "lang": "dart"
+  },
+  {
+    "id": "flutter-bloclistener-blocconsumer",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["bloc", "bloclistener", "blocconsumer"],
+    "question": "What is the difference between BlocBuilder, BlocListener, and BlocConsumer?",
+    "answer": "<p><code class=\"inline\">BlocBuilder</code> rebuilds UI in response to new states. <code class=\"inline\">BlocListener</code> runs one-off side effects (navigation, showing a SnackBar) without rebuilding UI. <code class=\"inline\">BlocConsumer</code> combines both, exposing a <code class=\"inline\">builder</code> and a <code class=\"inline\">listener</code> in one widget when you need both behaviors for the same Bloc.</p>",
+    "tip": "A common bug: putting a Navigator.push inside BlocBuilder's builder—that's a side effect and belongs in BlocListener instead.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-riverpod-vs-provider",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["riverpod", "provider", "comparison"],
+    "question": "What are the key technical differences between Riverpod and Provider?",
+    "answer": "<p>Riverpod providers are declared as global final variables outside the widget tree, so they don't need a <code class=\"inline\">BuildContext</code> to read/test and can't throw <code class=\"inline\">ProviderNotFoundException</code> at runtime (a common Provider footgun). Riverpod also supports provider composition/overriding (great for testing) and code-generation via <code class=\"inline\">riverpod_generator</code>, whereas Provider relies purely on InheritedWidget lookups through context.</p>",
+    "tip": "The single strongest selling point to mention: Riverpod catches missing-provider errors at compile time in many cases, Provider only at runtime.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-notificationlistener",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["notificationlistener", "scrollnotification"],
+    "question": "What is NotificationListener, and how is it used with scroll events?",
+    "answer": "<p><code class=\"inline\">NotificationListener&lt;T&gt;</code> lets an ancestor widget listen for notifications bubbling up from descendants without a direct reference to them—commonly used with <code class=\"inline\">ScrollNotification</code> to detect scroll position/direction (e.g. to hide an AppBar on scroll-down) without attaching a ScrollController.</p>",
+    "tip": "",
+    "code": "NotificationListener<ScrollNotification>(\n  onNotification: (notification) {\n    if (notification is ScrollEndNotification) loadMore();\n    return false;\n  },\n  child: ListView(...),\n);",
+    "lang": "dart"
+  },
+  {
+    "id": "flutter-orientation-systemchrome",
+    "category": "flutter",
+    "difficulty": "beginner",
+    "tags": ["orientation", "systemchrome"],
+    "question": "How do you lock screen orientation or control system UI overlays in Flutter?",
+    "answer": "<p><code class=\"inline\">SystemChrome.setPreferredOrientations</code> restricts the app to specific orientations (e.g. portrait-only). <code class=\"inline\">SystemChrome.setEnabledSystemUIMode</code> controls status bar/navigation bar visibility (e.g. immersive full-screen mode), and <code class=\"inline\">SystemChrome.setSystemUIOverlayStyle</code> controls status bar icon brightness/color.</p>",
+    "tip": "",
+    "code": "SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);",
+    "lang": "dart"
+  },
+  {
+    "id": "flutter-app-icons",
+    "category": "flutter",
+    "difficulty": "beginner",
+    "tags": ["app-icons", "flutter_launcher_icons"],
+    "question": "How do you configure app icons across platforms in Flutter?",
+    "answer": "<p>The <code class=\"inline\">flutter_launcher_icons</code> package generates all required icon sizes for Android (adaptive icons) and iOS from a single source image, based on configuration in <code class=\"inline\">pubspec.yaml</code>, avoiding manually exporting dozens of resolution variants by hand.</p>",
+    "tip": "",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-pubspec-pub-get",
+    "category": "flutter",
+    "difficulty": "beginner",
+    "tags": ["pubspec", "pub-get", "dependencies"],
+    "question": "What is the difference between flutter pub get and flutter pub upgrade, and what is pubspec.lock for?",
+    "answer": "<p><code class=\"inline\">pub get</code> installs dependencies matching the version constraints in <code class=\"inline\">pubspec.yaml</code>, respecting the existing <code class=\"inline\">pubspec.lock</code> if present. <code class=\"inline\">pub upgrade</code> ignores the lock file and fetches the newest versions allowed by the constraints, then rewrites the lock file. <strong>pubspec.lock</strong> pins exact resolved versions so builds are reproducible across machines/CI.</p>",
+    "tip": "Always commit pubspec.lock for apps (not for published packages)—so every developer and CI build gets identical dependency versions.",
+    "code": "",
+    "lang": "bash"
+  },
+  {
+    "id": "flutter-pubspec-structure",
+    "category": "flutter",
+    "difficulty": "beginner",
+    "tags": ["pubspec", "configuration"],
+    "question": "What are the main sections of a pubspec.yaml file?",
+    "answer": "<p>Key sections: <code class=\"inline\">name</code>/<code class=\"inline\">description</code>/<code class=\"inline\">version</code> (package metadata), <code class=\"inline\">environment</code> (SDK version constraints), <code class=\"inline\">dependencies</code> (runtime packages), <code class=\"inline\">dev_dependencies</code> (test/build-only tools), and <code class=\"inline\">flutter</code> (assets, fonts, and the <code class=\"inline\">uses-material-design</code> flag).</p>",
+    "tip": "",
+    "code": "",
+    "lang": "yaml"
+  },
+  {
+    "id": "flutter-create-structure",
+    "category": "flutter",
+    "difficulty": "beginner",
+    "tags": ["flutter-create", "project-structure"],
+    "question": "What does flutter create generate, and what's in each folder?",
+    "answer": "<p><code class=\"inline\">lib/</code> holds your Dart source (entry point <code class=\"inline\">main.dart</code>). <code class=\"inline\">android/</code> and <code class=\"inline\">ios/</code> hold native platform projects for building/signing. <code class=\"inline\">test/</code> holds unit/widget tests. <code class=\"inline\">pubspec.yaml</code> declares dependencies and assets. Optional <code class=\"inline\">web/</code>, <code class=\"inline\">windows/</code>, <code class=\"inline\">macos/</code>, <code class=\"inline\">linux/</code> folders exist if those platforms are enabled.</p>",
+    "tip": "",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-dart-define",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["dart-define", "environment-variables", "configuration"],
+    "question": "How do you pass environment-specific configuration into a Flutter build?",
+    "answer": "<p><code class=\"inline\">--dart-define=KEY=value</code> passes compile-time constants readable via <code class=\"inline\">String.fromEnvironment</code>/<code class=\"inline\">bool.fromEnvironment</code>, letting a single codebase build against different API URLs or feature flags per environment without hardcoding values or committing secrets to source control. <code class=\"inline\">--dart-define-from-file</code> reads many values from a JSON file at once.</p>",
+    "tip": "These values are baked in at compile time, not read at runtime—so switching environments requires a rebuild, not just a restart.",
+    "code": "flutter build apk --dart-define=API_URL=https://api.prod.com",
+    "lang": "bash"
+  },
+  {
+    "id": "flutter-obfuscation",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["obfuscation", "security", "release-build"],
+    "question": "What does --obfuscate do in a Flutter release build, and why use it?",
+    "answer": "<p><code class=\"inline\">--obfuscate --split-debug-info=&lt;dir&gt;</code> renames Dart symbols to meaningless names in the compiled release binary, making reverse-engineering harder, while saving a debug symbol map separately so crash stack traces can still be de-obfuscated later using that saved map.</p>",
+    "tip": "Warn that you must keep the split-debug-info output safely archived per release version—without it, obfuscated crash reports are unreadable.",
+    "code": "flutter build apk --obfuscate --split-debug-info=build/debug-info",
+    "lang": "bash"
+  },
+  {
+    "id": "flutter-web-considerations",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["flutter-web", "cross-platform"],
+    "question": "What special considerations apply when targeting Flutter Web?",
+    "answer": "<p>Flutter Web renders via CanvasKit (Skia compiled to WASM, pixel-perfect but heavier download) or the HTML renderer (lighter, uses DOM/CSS, less consistent visuals)—choose based on whether visual fidelity or initial load size matters more. Also consider SEO limitations (content is canvas-rendered, not real DOM text, hurting crawlability), URL-based routing, and that some plugins (camera, native storage) aren't available or behave differently on web.</p>",
+    "tip": "",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-desktop-considerations",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["flutter-desktop", "cross-platform"],
+    "question": "What special considerations apply when targeting Flutter Desktop (Windows/macOS/Linux)?",
+    "answer": "<p>Desktop apps need to handle window resizing/multiple window sizes gracefully (no fixed mobile-sized layouts), support mouse-specific interactions (hover states, right-click context menus, scroll wheel) in addition to touch, and often need keyboard shortcuts/focus traversal that mobile apps don't require.</p>",
+    "tip": "",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-nullsafety-migration",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["null-safety", "migration"],
+    "question": "What does migrating a legacy Flutter codebase to null safety involve?",
+    "answer": "<p>Migration means auditing every variable/parameter to decide if it can truly be null, adding <code class=\"inline\">?</code> to genuinely nullable types, adding <code class=\"inline\">required</code> or default values to non-nullable named parameters, and using <code class=\"inline\">late</code> for fields initialized after declaration. The <code class=\"inline\">dart migrate</code> tool can suggest an initial pass, but the result usually needs manual review since it tends to over-use <code class=\"inline\">!</code> non-null assertions.</p>",
+    "tip": "Flag that a mechanically migrated codebase full of ! assertions has null safety syntax but not real null safety benefits—manual review matters.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-background-tasks",
+    "category": "flutter",
+    "difficulty": "advanced",
+    "tags": ["background-tasks", "workmanager"],
+    "question": "How do you run background tasks in a Flutter app (e.g. periodic sync)?",
+    "answer": "<p>The <code class=\"inline\">workmanager</code> package (Android WorkManager / iOS BGTaskScheduler under the hood) schedules deferred or periodic background work that survives app termination and respects OS battery/scheduling constraints. For simple in-app-lifetime timers, a plain <code class=\"inline\">Timer.periodic</code> is enough, but it stops once the app is fully killed.</p>",
+    "tip": "Clarify the distinction: Timer.periodic only runs while the app process is alive; true background execution after the user closes the app needs a native scheduler like WorkManager.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-camera-image-picker",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": ["camera", "image_picker"],
+    "question": "How do you capture or pick an image in Flutter?",
+    "answer": "<p>The <code class=\"inline\">image_picker</code> plugin provides a simple API to pick an image/video from the gallery or capture one with the camera, returning an <code class=\"inline\">XFile</code>. For a fully custom camera UI (live preview, manual capture controls), the lower-level <code class=\"inline\">camera</code> plugin gives direct access to the device's camera stream.</p>",
+    "tip": "",
+    "code": "final picker = ImagePicker();\nfinal image = await picker.pickImage(source: ImageSource.camera);",
+    "lang": "dart"
+  },
+  {
+    "id": "flutter-image-caching",
+    "category": "flutter",
+    "difficulty": "intermediate",
+    "tags": ["image-caching", "cached_network_image"],
+    "question": "How does Flutter cache network images, and when would you use cached_network_image?",
+    "answer": "<p><code class=\"inline\">Image.network</code> caches decoded images only in memory for the current session via Flutter's <code class=\"inline\">ImageCache</code>—it re-downloads on a fresh app launch. <strong>cached_network_image</strong> adds a persistent disk cache, placeholder/error widgets, and fade-in transitions, avoiding repeated downloads across app restarts.</p>",
+    "tip": "",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "flutter-textstyle-richtext",
+    "category": "flutter",
+    "difficulty": "beginner",
+    "tags": ["textstyle", "richtext", "textspan"],
+    "question": "How do you style part of a text string differently within the same line?",
+    "answer": "<p>Use <code class=\"inline\">RichText</code> (or <code class=\"inline\">Text.rich</code>) with a tree of <code class=\"inline\">TextSpan</code>s, where each span can have its own <code class=\"inline\">TextStyle</code> and even its own tap gesture recognizer—letting you mix bold, colored, or tappable segments within a single paragraph.</p>",
+    "tip": "",
+    "code": "Text.rich(TextSpan(\n  text: 'Hello ',\n  children: [TextSpan(text: 'World', style: TextStyle(fontWeight: FontWeight.bold))],\n));",
+    "lang": "dart"
+  }
+]

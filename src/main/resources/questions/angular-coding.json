@@ -1,0 +1,335 @@
+[
+  {
+    "id": "ngc-debounced-search",
+    "category": "ngcoding",
+    "difficulty": "intermediate",
+    "tags": [
+      "rxjs",
+      "search",
+      "forms"
+    ],
+    "question": "Build a search box that calls an API while typing without making unnecessary requests.",
+    "answer": "<p>Create a <code class=\"inline\">FormControl</code> for the search input and listen to its <code class=\"inline\">valueChanges</code>. Use <code class=\"inline\">debounceTime()</code> to wait until the user pauses typing, <code class=\"inline\">distinctUntilChanged()</code> to ignore duplicate searches, and <code class=\"inline\">switchMap()</code> to cancel previous API requests and send only the latest one. Display the results using the <code class=\"inline\">async</code> pipe.</p>",
+    "tip": "<code class=\"inline\">switchMap()</code> is the most important operator because it automatically cancels outdated API requests.",
+    "code": "search = new FormControl('');\n\nresults$ = this.search.valueChanges.pipe(\n  debounceTime(300),\n  distinctUntilChanged(),\n  switchMap(term => this.api.search(term ?? ''))\n);",
+    "lang": "ts",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests your understanding of Reactive Forms, RxJS operators, HTTP requests, and user experience optimization.</p><h4>How It Works</h4><ol><li>User types into the search box.</li><li><code class=\"inline\">valueChanges</code> emits every keystroke.</li><li><code class=\"inline\">debounceTime(300)</code> waits until typing pauses.</li><li><code class=\"inline\">distinctUntilChanged()</code> ignores duplicate values.</li><li><code class=\"inline\">switchMap()</code> cancels any previous request and starts a new one.</li><li>The latest results are displayed using the <code class=\"inline\">async</code> pipe.</li></ol><h4>Why Use switchMap?</h4><p>Without <code class=\"inline\">switchMap()</code>, slow API responses can arrive after newer ones and display outdated results. <code class=\"inline\">switchMap()</code> ensures that only the latest search request is processed.</p><h4>Common Interview Follow-ups</h4><ul><li>Why not call the API on every key press?</li><li>Why use <code class=\"inline\">switchMap()</code> instead of <code class=\"inline\">mergeMap()</code>?</li><li>How would you show a loading spinner while searching?</li><li>How would you handle API errors?</li><li>What if the search term is empty?</li></ul><h4>How to say it in an interview</h4><p><strong>\"I use a Reactive Form control and listen to <code class=\"inline\">valueChanges</code>. I apply <code class=\"inline\">debounceTime()</code> to reduce API calls, <code class=\"inline\">distinctUntilChanged()</code> to avoid duplicate searches, and <code class=\"inline\">switchMap()</code> so only the latest request is processed. This improves both performance and user experience.\"</strong></p>"
+  },
+  {
+    "id": "ngc-pagination",
+    "category": "ngcoding",
+    "difficulty": "intermediate",
+    "tags": [
+      "pagination",
+      "list"
+    ],
+    "question": "Display a list with client-side pagination (10 items per page).",
+    "answer": "<p>Store the complete list in memory and maintain the current page number and page size. Calculate the items for the current page using <code class=\"inline\">slice()</code>. Generate page numbers dynamically and provide Previous and Next buttons while preventing navigation beyond the first or last page. Never modify the original data; always derive the visible items from it.</p>",
+    "tip": "Keep the full dataset unchanged. Use <code class=\"inline\">slice()</code> to derive the current page instead of modifying the array.",
+    "code": "page = 1;\npageSize = 10;\n\nget totalPages() {\n  return Math.ceil(this.items.length / this.pageSize);\n}\n\nget pagedItems() {\n  const start = (this.page - 1) * this.pageSize;\n  return this.items.slice(start, start + this.pageSize);\n}\n\nnext() {\n  if (this.page < this.totalPages) {\n    this.page++;\n  }\n}\n\nprevious() {\n  if (this.page > 1) {\n    this.page--;\n  }\n}",
+    "lang": "ts",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests your understanding of array manipulation, state management, event handling, and rendering lists efficiently.</p><h4>How It Works</h4><ol><li>Keep the original list unchanged.</li><li>Track the current page number.</li><li>Calculate the starting index.</li><li>Use <code class=\"inline\">slice()</code> to get only the current page.</li><li>Render Previous, Next, and page number buttons.</li></ol><h4>Formula</h4><pre><code>startIndex = (page - 1) * pageSize\nendIndex = startIndex + pageSize</code></pre><h4>Common Interview Follow-ups</h4><ul><li>How would you disable Previous and Next buttons at the boundaries?</li><li>How would you implement page size selection?</li><li>How would you highlight the active page?</li><li>When would you use server-side pagination instead?</li><li>How would you preserve the current page after refreshing the browser?</li></ul><h4>Client-side vs Server-side Pagination</h4><table><thead><tr><th>Client-side</th><th>Server-side</th></tr></thead><tbody><tr><td>All data loaded once.</td><td>Only current page is fetched.</td></tr><tr><td>Good for small datasets.</td><td>Better for large datasets.</td></tr><tr><td>Faster page navigation.</td><td>Lower memory usage.</td></tr></tbody></table><h4>How to say it in an interview</h4><p><strong>\"I keep the complete dataset unchanged and derive the current page using <code class=\"inline\">slice()</code>. The page number and page size determine the visible records. This approach is simple, efficient for small datasets, and avoids mutating the original array.\"</strong></p>"
+  },
+  {
+    "id": "ngc-infinite-scroll",
+    "category": "ngcoding",
+    "difficulty": "advanced",
+    "tags": [
+      "infinite-scroll",
+      "intersectionobserver"
+    ],
+    "question": "Load more data automatically as the user scrolls to the bottom of the page.",
+    "answer": "<p>Implement infinite scrolling using an <code class=\"inline\">IntersectionObserver</code>. Place a sentinel element at the end of the list and observe when it enters the viewport. When triggered, fetch the next page of data, append it to the existing list, and continue observing until all records have been loaded. Disconnect the observer in <code class=\"inline\">ngOnDestroy()</code> to prevent memory leaks.</p>",
+    "tip": "<code class=\"inline\">IntersectionObserver</code> is more efficient than listening to scroll events because the browser handles visibility detection without continuous scroll calculations.",
+    "code": "@ViewChild('sentinel') sentinel!: ElementRef;\n\nngAfterViewInit() {\n  this.observer = new IntersectionObserver(([entry]) => {\n    if (entry.isIntersecting && !this.loading) {\n      this.loadMore();\n    }\n  });\n\n  this.observer.observe(this.sentinel.nativeElement);\n}\n\nngOnDestroy() {\n  this.observer.disconnect();\n}",
+    "lang": "ts",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests lazy loading, pagination, browser APIs, performance optimization, and Angular lifecycle hooks.</p><h4>How It Works</h4><ol><li>Render the current page of items.</li><li>Place a sentinel element at the bottom of the list.</li><li>Observe the sentinel using <code class=\"inline\">IntersectionObserver</code>.</li><li>When it becomes visible, request the next page from the server.</li><li>Append the new items to the existing list.</li><li>Repeat until there are no more records.</li></ol><h4>Why Use IntersectionObserver?</h4><p>Unlike scroll event listeners, <code class=\"inline\">IntersectionObserver</code> is optimized by the browser and avoids frequent scroll calculations, making it more efficient for infinite scrolling.</p><h4>Common Interview Follow-ups</h4><ul><li>How would you prevent duplicate API requests?</li><li>How would you stop loading when there is no more data?</li><li>How would you show a loading spinner while fetching the next page?</li><li>How would you handle API errors?</li><li>When would you choose Angular CDK Virtual Scroll instead of infinite scrolling?</li></ul><h4>Infinite Scroll vs Virtual Scroll</h4><table><thead><tr><th>Infinite Scroll</th><th>Virtual Scroll</th></tr></thead><tbody><tr><td>Continuously appends new data.</td><td>Renders only visible items.</td></tr><tr><td>Good for social feeds and product lists.</td><td>Best for very large datasets.</td></tr><tr><td>DOM grows as more data is loaded.</td><td>DOM size remains nearly constant.</td></tr></tbody></table><h4>How to say it in an interview</h4><p><strong>\"I implement infinite scrolling using an <code class=\"inline\">IntersectionObserver</code> that watches a sentinel element at the bottom of the list. When it enters the viewport, I fetch the next page of data, append it to the existing list, and stop requesting data when all records have been loaded. This approach is more efficient than listening to scroll events.\"</strong></p>"
+  },
+  {
+    "id": "ngc-star-rating",
+    "category": "ngcoding",
+    "difficulty": "intermediate",
+    "tags": [
+      "component",
+      "input",
+      "output"
+    ],
+    "question": "Create a reusable 5-star rating component.",
+    "answer": "<p>Create a reusable component that renders five clickable stars. Accept the current rating using <code class=\"inline\">@Input()</code> and notify the parent of changes using <code class=\"inline\">@Output()</code>. Highlight the selected stars based on the current rating. For Reactive Forms support, implement <code class=\"inline\">ControlValueAccessor</code> so the component behaves like a standard Angular form control.</p>",
+    "tip": "Start with <code class=\"inline\">@Input()</code> and <code class=\"inline\">@Output()</code>. Implement <code class=\"inline\">ControlValueAccessor</code> only when the component needs to work inside Angular forms.",
+    "code": "stars = [1, 2, 3, 4, 5];\n\n@Input() value = 0;\n@Output() valueChange = new EventEmitter<number>();\n\nsetRating(rating: number) {\n  this.value = rating;\n  this.valueChange.emit(rating);\n}",
+    "lang": "ts",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests component communication, event handling, reusable component design, and optionally custom form controls.</p><h4>Typical Requirements</h4><ul><li>Display five clickable stars.</li><li>Highlight the selected rating.</li><li>Allow the parent component to provide the initial value.</li><li>Notify the parent when the rating changes.</li><li>Optionally preview the rating on hover.</li></ul><h4>Implementation Flow</h4><ol><li>Render the stars using <code class=\"inline\">*ngFor</code>.</li><li>Compare each star with the current rating.</li><li>Update the rating when a star is clicked.</li><li>Emit the new value to the parent component.</li></ol><h4>Common Interview Follow-ups</h4><ul><li>How would you add hover preview?</li><li>How would you make the component read-only?</li><li>How would you allow a configurable number of stars?</li><li>How would you integrate it with Reactive Forms?</li><li>When should you implement <code class=\"inline\">ControlValueAccessor</code>?</li></ul><h4>Using ControlValueAccessor</h4><p>If the component needs to work with <code class=\"inline\">formControl</code>, <code class=\"inline\">formControlName</code>, or <code class=\"inline\">[(ngModel)]</code>, implement <code class=\"inline\">ControlValueAccessor</code>. This allows Angular forms to read and update the component value automatically.</p><h4>How to say it in an interview</h4><p><strong>\"I would create a reusable component that exposes its value through <code class=\"inline\">@Input()</code> and emits changes using <code class=\"inline\">@Output()</code>. If the component needs to participate in Angular forms, I'd implement <code class=\"inline\">ControlValueAccessor</code> so it behaves like any built-in form control.\"</strong></p>"
+  },
+  {
+    "id": "ngc-modal",
+    "category": "ngcoding",
+    "difficulty": "intermediate",
+    "tags": [
+      "modal",
+      "content-projection"
+    ],
+    "question": "Create a reusable modal/dialog component.",
+    "answer": "<p>Create a reusable modal component that can be opened and closed by its parent. Accept the open state using <code class=\"inline\">@Input()</code>, notify the parent when it closes using <code class=\"inline\">@Output()</code>, and display custom content with <code class=\"inline\">ng-content</code>. Close the modal when the user clicks the backdrop or presses the <code class=\"inline\">Esc</code> key.</p>",
+    "tip": "Use <code class=\"inline\">ng-content</code> so the modal can display any content instead of being tied to a specific layout.",
+    "code": "@Input() open = false;\n@Output() closed = new EventEmitter<void>();\n\n@HostListener('document:keydown.escape')\nonEscape() {\n  if (this.open) {\n    this.close();\n  }\n}\n\nclose() {\n  this.open = false;\n  this.closed.emit();\n}",
+    "lang": "ts",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests reusable component design, parent-child communication, event handling, and content projection.</p><h4>Typical Requirements</h4><ul><li>Open and close the modal.</li><li>Close when the backdrop is clicked.</li><li>Prevent closing when clicking inside the modal.</li><li>Display dynamic content using <code class=\"inline\">ng-content</code>.</li><li>Close the modal when the <code class=\"inline\">Esc</code> key is pressed.</li></ul><h4>Implementation Flow</h4><ol><li>Control visibility with an <code class=\"inline\">open</code> property.</li><li>Project content using <code class=\"inline\">ng-content</code>.</li><li>Emit a close event so the parent updates its state.</li><li>Use <code class=\"inline\">stopPropagation()</code> to prevent clicks inside the modal from closing it.</li></ol><h4>Common Interview Follow-ups</h4><ul><li>How would you animate the modal?</li><li>How would you prevent background scrolling?</li><li>How would you trap keyboard focus for accessibility?</li><li>How would you support multiple modals?</li><li>Would you use Angular CDK Dialog or build your own?</li></ul><h4>Accessibility</h4><p>For production applications, add focus trapping, restore focus when the modal closes, use appropriate ARIA attributes, and support keyboard navigation.</p><h4>How to say it in an interview</h4><p><strong>\"I would create a reusable modal that receives its open state through <code class=\"inline\">@Input()</code>, emits a close event using <code class=\"inline\">@Output()</code>, and displays dynamic content with <code class=\"inline\">ng-content</code>. I'd also support closing via the backdrop and the Escape key, while considering accessibility features like focus management for production use.\"</strong></p>"
+  },
+  {
+    "id": "ngc-todo",
+    "category": "ngcoding",
+    "difficulty": "beginner",
+    "tags": [
+      "crud",
+      "list",
+      "immutable"
+    ],
+    "question": "Build a todo list (add / toggle / delete / filter).",
+    "answer": "<p>Create a todo array where each item contains <code class=\"inline\">id</code>, <code class=\"inline\">text</code>, and <code class=\"inline\">done</code>. Implement CRUD operations using immutable array updates: add with a new object, toggle using <code class=\"inline\">map()</code>, delete using <code class=\"inline\">filter()</code>, and derive filtered views (All, Active, Completed) without modifying the original array. Use <code class=\"inline\">trackBy</code> with <code class=\"inline\">*ngFor</code> to avoid unnecessary DOM updates. Immutable updates also work well with <code class=\"inline\">OnPush</code> change detection.</p>",
+    "tip": "Interviewers usually expect immutable updates using <code class=\"inline\">map()</code>, <code class=\"inline\">filter()</code>, and the spread operator instead of mutating the original array.",
+    "code": "interface Todo {\n  id: number;\n  text: string;\n  done: boolean;\n}\n\ntodos: Todo[] = [];\nfilter: 'all' | 'active' | 'completed' = 'all';\nprivate seq = 0;\n\nadd(text: string) {\n  this.todos = [\n    ...this.todos,\n    { id: ++this.seq, text, done: false }\n  ];\n}\n\ntoggle(id: number) {\n  this.todos = this.todos.map(todo =>\n    todo.id === id\n      ? { ...todo, done: !todo.done }\n      : todo\n  );\n}\n\nremove(id: number) {\n  this.todos = this.todos.filter(todo => todo.id !== id);\n}\n\ntrackById(index: number, todo: Todo) {\n  return todo.id;\n}\n\nget visibleTodos() {\n  switch (this.filter) {\n    case 'active':\n      return this.todos.filter(t => !t.done);\n    case 'completed':\n      return this.todos.filter(t => t.done);\n    default:\n      return this.todos;\n  }\n}",
+    "lang": "ts",
+    "deep": "<h4>What the Interviewer Expects</h4><p>A Todo application tests your understanding of component state, CRUD operations, event binding, list rendering, and immutable updates.</p><h4>Typical Features</h4><ul><li>Add a new todo.</li><li>Mark a todo as completed.</li><li>Delete a todo.</li><li>Filter by All, Active, or Completed.</li></ul><h4>Why Immutable Updates?</h4><p>Instead of modifying the existing array, create a new one using <code class=\"inline\">map()</code>, <code class=\"inline\">filter()</code>, and the spread operator. This makes change detection more predictable and works well with <code class=\"inline\">OnPush</code>.</p><table><thead><tr><th>Operation</th><th>Method</th></tr></thead><tbody><tr><td>Add</td><td><code class=\"inline\">spread (...)</code></td></tr><tr><td>Toggle</td><td><code class=\"inline\">map()</code></td></tr><tr><td>Delete</td><td><code class=\"inline\">filter()</code></td></tr><tr><td>Filter View</td><td>Derived getter</td></tr></tbody></table><h4>Common Interview Follow-ups</h4><ul><li>How would you persist todos using Local Storage or an API?</li><li>How would you move the state into a service?</li><li>How would you optimize the list using <code class=\"inline\">trackBy</code>?</li><li>How would you implement editing a todo?</li><li>How would you implement 'Mark All as Completed'?</li></ul><h4>How to say it in an interview</h4><p><strong>\"I keep the todo list as component state and perform all updates immutably using <code class=\"inline\">map()</code>, <code class=\"inline\">filter()</code>, and the spread operator. The filtered list is derived from the original array instead of modifying it, and I use <code class=\"inline\">trackBy</code> for efficient rendering. This approach keeps the state predictable and works efficiently with Angular's <code class=\"inline\">OnPush</code> change detection.\"</strong></p>"
+  },
+  {
+    "id": "ngc-data-table",
+    "category": "ngcoding",
+    "difficulty": "advanced",
+    "tags": [
+      "table",
+      "sorting",
+      "ng-template"
+    ],
+    "question": "Build a reusable data table with dynamic columns and sorting.",
+    "answer": "<p>Create a reusable table component that accepts column definitions and row data as inputs. Generate headers and cells dynamically, support sorting when a column header is clicked, and allow custom cell rendering using <code class=\"inline\">ng-template</code> and <code class=\"inline\">ngTemplateOutlet</code>. Perform sorting on an immutable copy of the data and use <code class=\"inline\">trackBy</code> for efficient rendering.</p>",
+    "tip": "Separate the table structure from cell rendering. <code class=\"inline\">ng-template</code> makes the component flexible enough to display any type of data.",
+    "code": "@Input() columns!: Column[];\n@Input() rows: any[] = [];\n\nsortKey = '';\ndir: 'asc' | 'desc' = 'asc';\n\nsort(column: string) {\n  this.dir =\n    this.sortKey === column && this.dir === 'asc'\n      ? 'desc'\n      : 'asc';\n\n  this.sortKey = column;\n\n  this.rows = [...this.rows].sort((a, b) => {\n    const result = a[column] > b[column] ? 1 : -1;\n    return this.dir === 'asc' ? result : -result;\n  });\n}",
+    "lang": "ts",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests reusable component design, dynamic rendering, sorting, template customization, and Angular performance techniques.</p><h4>Typical Requirements</h4><ul><li>Generate columns dynamically.</li><li>Render rows using <code class=\"inline\">*ngFor</code>.</li><li>Sort by clicking column headers.</li><li>Toggle ascending and descending order.</li><li>Support custom cell templates.</li></ul><h4>How It Works</h4><ol><li>Pass column definitions and row data as inputs.</li><li>Generate table headers dynamically.</li><li>Sort an immutable copy of the data.</li><li>Render custom cells with <code class=\"inline\">ngTemplateOutlet</code>.</li><li>Use <code class=\"inline\">trackBy</code> to minimize DOM updates.</li></ol><h4>Common Interview Follow-ups</h4><ul><li>How would you add pagination?</li><li>How would you implement filtering?</li><li>How would you support row selection?</li><li>How would you make columns resizable?</li><li>How would you add server-side sorting?</li></ul><h4>Production Enhancements</h4><ul><li>Pagination</li><li>Column filtering</li><li>Sticky headers</li><li>Resizable columns</li><li>Row selection</li><li>Virtual scrolling</li><li>Server-side sorting</li></ul><h4>How to say it in an interview</h4><p><strong>\"I would build a reusable table that receives column definitions and row data as inputs. The component generates the headers dynamically, supports sorting by clicking column headers, allows custom cell rendering using <code class=\"inline\">ng-template</code>, and uses immutable updates with <code class=\"inline\">trackBy</code> for better performance.\"</strong></p>"
+  },
+  {
+    "id": "ngc-tabs",
+    "category": "ngcoding",
+    "difficulty": "intermediate",
+    "tags": [
+      "tabs",
+      "content-projection",
+      "contentchildren"
+    ],
+    "question": "Create a reusable tabs component using content projection.",
+    "answer": "<p>Create a <code class=\"inline\">TabComponent</code> that accepts a title and projects its content using <code class=\"inline\">ng-content</code>. Build a parent <code class=\"inline\">TabsComponent</code> that discovers all child tabs using <code class=\"inline\">@ContentChildren</code>, renders the tab headers, tracks the active tab, and displays only the selected tab's content.</p>",
+    "tip": "<code class=\"inline\">@ContentChildren</code> lets a parent component discover projected child components, making it ideal for reusable components like tabs, accordions, and steppers.",
+    "code": "@ContentChildren(TabComponent)\ntabs!: QueryList<TabComponent>;\n\nngAfterContentInit() {\n  this.select(this.tabs.first);\n}\n\nselect(tab: TabComponent) {\n  this.tabs.forEach(t => t.active = t === tab);\n}",
+    "lang": "ts",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests content projection, component communication, Angular queries, and reusable component design.</p><h4>Typical Requirements</h4><ul><li>Create reusable <code class=\"inline\">TabComponent</code> and <code class=\"inline\">TabsComponent</code>.</li><li>Project tab content using <code class=\"inline\">ng-content</code>.</li><li>Display tab headers dynamically.</li><li>Switch the active tab when a header is clicked.</li><li>Show only the active tab's content.</li></ul><h4>How It Works</h4><ol><li>Each <code class=\"inline\">TabComponent</code> exposes a title.</li><li>The parent discovers all projected tabs using <code class=\"inline\">@ContentChildren</code>.</li><li>The parent renders the headers.</li><li>Clicking a header changes the active tab.</li><li>Only the active tab's projected content is displayed.</li></ol><h4>Common Interview Follow-ups</h4><ul><li>Why use <code class=\"inline\">@ContentChildren</code> instead of <code class=\"inline\">@ViewChildren</code>?</li><li>How would you support dynamically added or removed tabs?</li><li>How would you lazy-load tab content?</li><li>How would you animate tab transitions?</li><li>How would you make the tabs keyboard accessible?</li></ul><h4>Related Angular Concepts</h4><table><thead><tr><th>Concept</th><th>Purpose</th></tr></thead><tbody><tr><td><code class=\"inline\">ng-content</code></td><td>Projects content into a component.</td></tr><tr><td><code class=\"inline\">@ContentChildren</code></td><td>Accesses projected child components.</td></tr><tr><td><code class=\"inline\">QueryList</code></td><td>Represents the collection of projected tabs.</td></tr><tr><td><code class=\"inline\">ngAfterContentInit</code></td><td>Runs after projected content becomes available.</td></tr></tbody></table><h4>How to say it in an interview</h4><p><strong>\"I would create individual <code class=\"inline\">TabComponent</code>s that project their content using <code class=\"inline\">ng-content</code>. The parent <code class=\"inline\">TabsComponent</code> collects them with <code class=\"inline\">@ContentChildren</code>, renders the tab headers, tracks the active tab, and displays only the selected tab's content.\"</strong></p>"
+  },
+  {
+    "id": "ngc-countdown",
+    "category": "ngcoding",
+    "difficulty": "intermediate",
+    "tags": [
+      "rxjs",
+      "timer"
+    ],
+    "question": "Build a countdown timer that updates every second.",
+    "answer": "<p>Use RxJS <code class=\"inline\">timer()</code> or <code class=\"inline\">interval()</code> to emit a value every second. Calculate the remaining time, stop the stream when it reaches zero using <code class=\"inline\">takeWhile()</code>, and display the value with the <code class=\"inline\">async</code> pipe. This avoids manual subscription management and works well with Angular change detection.</p>",
+    "tip": "Use the <code class=\"inline\">async</code> pipe with RxJS operators like <code class=\"inline\">takeWhile()</code> to avoid manual subscription cleanup.",
+    "code": "duration = 60;\n\nremaining$ = timer(0, 1000).pipe(\n  map(elapsed => this.duration - elapsed),\n  takeWhile(time => time >= 0)\n);",
+    "lang": "ts",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests your understanding of RxJS streams, time-based operators, and Angular's <code class=\"inline\">async</code> pipe.</p><h4>How It Works</h4><ol><li>Create a timer that emits every second.</li><li>Calculate the remaining time.</li><li>Stop emitting when the countdown reaches zero.</li><li>Display the remaining time using the <code class=\"inline\">async</code> pipe.</li></ol><h4>Why Use RxJS?</h4><p>Using RxJS eliminates the need for <code class=\"inline\">setInterval()</code>, manual cleanup, and explicit subscriptions. The <code class=\"inline\">async</code> pipe automatically subscribes and unsubscribes.</p><h4>Common Interview Follow-ups</h4><ul><li>How would you add Start, Pause, and Reset functionality?</li><li>How would you restart the timer?</li><li>How would you display the timer in <code class=\"inline\">mm:ss</code> format?</li><li>How would you implement a Resend OTP timer?</li><li>When would you use <code class=\"inline\">interval()</code> instead of <code class=\"inline\">timer()</code>?</li></ul><h4>timer() vs interval()</h4><table><thead><tr><th>Operator</th><th>Behavior</th></tr></thead><tbody><tr><td><code class=\"inline\">timer(0, 1000)</code></td><td>Emits immediately, then every second.</td></tr><tr><td><code class=\"inline\">interval(1000)</code></td><td>Waits one second before the first emission.</td></tr></tbody></table><h4>How to say it in an interview</h4><p><strong>\"I would use RxJS <code class=\"inline\">timer()</code> to emit values every second, calculate the remaining time using <code class=\"inline\">map()</code>, stop the stream with <code class=\"inline\">takeWhile()</code>, and bind it to the template using the <code class=\"inline\">async</code> pipe. This avoids manual subscription management and integrates cleanly with Angular.\"</strong></p>"
+  },
+  {
+    "id": "ngc-dynamic-form",
+    "category": "ngcoding",
+    "difficulty": "advanced",
+    "tags": [
+      "forms",
+      "formarray",
+      "dynamic"
+    ],
+    "question": "Build a dynamic form from a JSON configuration.",
+    "answer": "<p>Create a form dynamically from a configuration object. Generate <code class=\"inline\">FormControl</code>s and <code class=\"inline\">FormGroup</code>s based on the field definitions, apply validators from the configuration, and render the appropriate input component using <code class=\"inline\">*ngFor</code> and <code class=\"inline\">ngSwitch</code>. This approach allows forms to be generated without changing the component code.</p>",
+    "tip": "The key idea is that the UI is driven by metadata rather than hardcoded form controls.",
+    "code": "fields = [\n  {\n    name: 'firstName',\n    type: 'text',\n    required: true\n  },\n  {\n    name: 'email',\n    type: 'email',\n    required: true\n  }\n];\n\nform = this.fb.group({});\n\nngOnInit() {\n  this.fields.forEach(field => {\n    this.form.addControl(\n      field.name,\n      this.fb.control(\n        '',\n        field.required ? Validators.required : []\n      )\n    );\n  });\n}",
+    "lang": "ts",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests Reactive Forms, dynamic component rendering, metadata-driven UI, and scalable form design.</p><h4>Typical Requirements</h4><ul><li>Read form fields from a JSON configuration.</li><li>Create controls dynamically.</li><li>Apply validators from the configuration.</li><li>Render different input types.</li><li>Submit the generated form.</li></ul><h4>Common Interview Follow-ups</h4><ul><li>How would you support dropdowns and checkboxes?</li><li>How would you implement conditional fields?</li><li>How would you load the schema from an API?</li><li>How would you add custom validators?</li><li>How would you render custom components?</li></ul><h4>How to say it in an interview</h4><p><strong>\"Instead of hardcoding controls, I generate the form from a configuration object. The metadata defines the fields, validators, and input types, making the form reusable and easy to extend.\"</strong></p>"
+  },
+  {
+    "id": "ngc-radio-divs",
+    "category": "ngcoding",
+    "difficulty": "beginner",
+    "tags": [
+      "forms",
+      "ngmodel",
+      "conditional"
+    ],
+    "question": "Display different content based on a radio button selection.",
+    "answer": "<p>Bind all radio buttons to a single property using <code class=\"inline\">[(ngModel)]</code>. When the selected value changes, Angular automatically updates the model. Use <code class=\"inline\">@if</code>, <code class=\"inline\">*ngIf</code>, or <code class=\"inline\">@switch</code> to conditionally render the appropriate content based on the selected option.</p>",
+    "tip": "Use a single model property as the source of truth. The selected radio button and the displayed content should always be driven by the same value.",
+    "code": "selected = 'A';",
+    "lang": "ts",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests two-way data binding, template-driven forms, and conditional rendering in Angular.</p><h4>Typical Requirements</h4><ul><li>Display multiple radio buttons.</li><li>Bind them using <code class=\"inline\">[(ngModel)]</code>.</li><li>Show different content based on the selected option.</li><li>Keep the UI synchronized with the component state.</li></ul><h4>Example</h4><pre><code>&lt;input\n  type=\"radio\"\n  name=\"option\"\n  value=\"A\"\n  [(ngModel)]=\"selected\"\n&gt; Option A\n\n&lt;input\n  type=\"radio\"\n  name=\"option\"\n  value=\"B\"\n  [(ngModel)]=\"selected\"\n&gt; Option B\n\n@if (selected === 'A') {\n  &lt;div&gt;Content for Option A&lt;/div&gt;\n} @else {\n  &lt;div&gt;Content for Option B&lt;/div&gt;\n}</code></pre><h4>Real-world Examples</h4><ul><li>Payment method selection (UPI, Card, Net Banking).</li><li>User type (Customer or Admin).</li><li>Delivery option (Pickup or Home Delivery).</li><li>Personal vs Business account.</li></ul><h4>Common Interview Follow-ups</h4><ul><li>How would you implement this using Reactive Forms?</li><li>When would you use <code class=\"inline\">@switch</code> instead of multiple <code class=\"inline\">@if</code> blocks?</li><li>Can each section be a separate Angular component?</li><li>How would you preserve the state of hidden sections?</li></ul><h4>How to say it in an interview</h4><p><strong>\"I bind all radio buttons to a single model property using <code class=\"inline\">[(ngModel)]</code>. Based on the selected value, I conditionally render the appropriate section using <code class=\"inline\">@if</code>, <code class=\"inline\">*ngIf</code>, or <code class=\"inline\">@switch</code>. This ensures the UI always stays synchronized with the component state.\"</strong></p>"
+  },
+  {
+    "id": "ngc-transform-list",
+    "category": "ngcoding",
+    "difficulty": "intermediate",
+    "tags": [
+      "rxjs",
+      "map",
+      "transform"
+    ],
+    "question": "Fetch employees from an API and display only their id and name.",
+    "answer": "<p>Call the employee API and use the RxJS <code class=\"inline\">map()</code> operator to transform the response before it reaches the component. Inside the RxJS <code class=\"inline\">map()</code>, use JavaScript's <code class=\"inline\">Array.map()</code> to create a new array containing only the required fields.</p>",
+    "tip": "Remember that RxJS <code class=\"inline\">map()</code> transforms the Observable, while <code class=\"inline\">Array.map()</code> transforms the items inside the array.",
+    "code": "employees$ = this.employeeService.getEmployees().pipe(\n  map(employees =>\n    employees.map(employee => ({\n      id: employee.id,\n      name: employee.name\n    }))\n  )\n);",
+    "lang": "ts",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests your understanding of HTTP requests, RxJS operators, and data transformation before rendering it in the UI.</p><h4>How It Works</h4><ol><li>Fetch employee data from an API.</li><li>Use RxJS <code class=\"inline\">map()</code> to transform the Observable.</li><li>Use JavaScript <code class=\"inline\">Array.map()</code> to reshape each employee object.</li><li>Display the transformed data in the template.</li></ol><h4>Common Interview Follow-ups</h4><ul><li>Why transform data in the service instead of the component?</li><li>What's the difference between RxJS <code class=\"inline\">map()</code> and JavaScript <code class=\"inline\">Array.map()</code>?</li><li>When would you use <code class=\"inline\">switchMap()</code> instead of <code class=\"inline\">map()</code>?</li></ul><h4>How to say it in an interview</h4><p><strong>\"I use the RxJS <code class=\"inline\">map()</code> operator to transform the API response before it reaches the component. Inside it, I use JavaScript's <code class=\"inline\">Array.map()</code> to reshape each object into the format required by the UI.\"</strong></p>"
+  },
+  {
+    "id": "ngc-dependent-api",
+    "category": "ngcoding",
+    "difficulty": "advanced",
+    "tags": [
+      "rxjs",
+      "switchMap",
+      "http"
+    ],
+    "question": "Fetch user details, then load the user's orders.",
+    "answer": "<p>When one API depends on the result of another, use <code class=\"inline\">switchMap()</code>. The first request retrieves the user details, and the returned user ID is passed to the second request to fetch the user's orders. <code class=\"inline\">switchMap()</code> automatically cancels any previous in-progress request if a new one starts.</p>",
+    "tip": "Use <code class=\"inline\">switchMap()</code> for dependent API calls. Use <code class=\"inline\">concatMap()</code> when every request must complete in order without cancellation.",
+    "code": "this.userService.getUser(userId).pipe(\n  switchMap(user =>\n    this.orderService.getOrders(user.id)\n  )\n).subscribe(orders => {\n  this.orders = orders;\n});",
+    "lang": "ts",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests HTTP requests, RxJS flattening operators, asynchronous programming, and dependent API execution.</p><h4>How It Works</h4><ol><li>Fetch the user details.</li><li>Extract the user ID from the response.</li><li>Pass the ID to the second API.</li><li>Display the user's orders after both requests complete.</li></ol><h4>Why Use switchMap?</h4><p><code class=\"inline\">switchMap()</code> automatically cancels any previous inner Observable when a new outer emission occurs. This prevents outdated requests from updating the UI and is ideal for user-driven actions such as searches or route changes.</p><h4>Common Interview Follow-ups</h4><ul><li>Why use <code class=\"inline\">switchMap()</code> instead of nested subscriptions?</li><li>When would you use <code class=\"inline\">concatMap()</code>?</li><li>When would <code class=\"inline\">mergeMap()</code> be a better choice?</li><li>How would you handle errors from either API?</li><li>How would you load three dependent APIs?</li></ul><h4>switchMap vs concatMap</h4><table><thead><tr><th><code class=\"inline\">switchMap()</code></th><th><code class=\"inline\">concatMap()</code></th></tr></thead><tbody><tr><td>Cancels previous requests.</td><td>Queues requests and preserves order.</td></tr><tr><td>Best for searches and route changes.</td><td>Best when every request must complete.</td></tr></tbody></table><h4>How to say it in an interview</h4><p><strong>\"When one API depends on the result of another, I use <code class=\"inline\">switchMap()</code> to flatten the Observable chain. It avoids nested subscriptions, keeps the code readable, and automatically cancels stale requests when a new operation begins.\"</strong></p>"
+  },
+  {
+    "id": "ngc-forkjoin",
+    "category": "ngcoding",
+    "difficulty": "intermediate",
+    "tags": [
+      "rxjs",
+      "forkJoin",
+      "parallel"
+    ],
+    "question": "Load data from multiple APIs in parallel and display the page after all responses are received.",
+    "answer": "<p>Use <code class=\"inline\">forkJoin()</code> to execute multiple independent API calls at the same time. It waits until every Observable completes, then emits a single object or array containing all responses. This is ideal for loading dashboard or page data that depends on multiple APIs.</p>",
+    "tip": "<code class=\"inline\">forkJoin()</code> emits only once after every Observable completes, making it similar to <code class=\"inline\">Promise.all()</code>.",
+    "code": "forkJoin({\n  profile: this.userService.getProfile(),\n  orders: this.orderService.getOrders(),\n  notifications: this.notificationService.getNotifications()\n}).subscribe(({ profile, orders, notifications }) => {\n  this.profile = profile;\n  this.orders = orders;\n  this.notifications = notifications;\n});",
+    "lang": "ts",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests your understanding of parallel API execution, RxJS combinators, and coordinating multiple asynchronous operations.</p><h4>How It Works</h4><ol><li>Start multiple independent HTTP requests.</li><li>Execute them in parallel.</li><li>Wait until every request completes.</li><li>Receive all responses together.</li><li>Update the UI once with the combined data.</li></ol><h4>When to Use</h4><ul><li>Dashboard pages.</li><li>User profile with related data.</li><li>Loading multiple dropdown values.</li><li>Initial page data from several APIs.</li></ul><h4>Common Interview Follow-ups</h4><ul><li>What happens if one API request fails?</li><li>What's the difference between <code class=\"inline\">forkJoin()</code> and <code class=\"inline\">combineLatest()</code>?</li><li>When would you use <code class=\"inline\">zip()</code> instead?</li><li>How would you handle errors without failing the entire request?</li><li>Why is <code class=\"inline\">forkJoin()</code> similar to <code class=\"inline\">Promise.all()</code>?</li></ul><h4>forkJoin vs combineLatest</h4><table><thead><tr><th><code class=\"inline\">forkJoin()</code></th><th><code class=\"inline\">combineLatest()</code></th></tr></thead><tbody><tr><td>Emits once after all Observables complete.</td><td>Emits whenever any source emits after all have emitted once.</td></tr><tr><td>Ideal for HTTP requests.</td><td>Ideal for long-lived streams such as form controls or WebSockets.</td></tr></tbody></table><h4>How to say it in an interview</h4><p><strong>\"I use <code class=\"inline\">forkJoin()</code> when multiple API calls are independent and the page should render only after all responses are available. It executes the requests in parallel and emits a single result once every Observable completes.\"</strong></p>"
+  },
+  {
+    "id": "ngc-shared-service",
+    "category": "ngcoding",
+    "difficulty": "advanced",
+    "tags": [
+      "service",
+      "behaviorsubject",
+      "caching"
+    ],
+    "question": "Load data once and share it across multiple components without making duplicate API calls.",
+    "answer": "<p>Create a shared service that fetches the data only once and exposes it as an Observable. Cache the result using <code class=\"inline\">shareReplay(1)</code> or store it in a <code class=\"inline\">BehaviorSubject</code>. Multiple components subscribe to the same stream, ensuring that the HTTP request is executed only once.</p>",
+    "tip": "<code class=\"inline\">shareReplay(1)</code> is ideal for caching HTTP responses. Use <code class=\"inline\">BehaviorSubject</code> when components also need to update the shared state.",
+    "code": "@Injectable({ providedIn: 'root' })\nexport class UserService {\n\n  private users$?: Observable<User[]>;\n\n  getUsers() {\n    if (!this.users$) {\n      this.users$ = this.http\n        .get<User[]>('/api/users')\n        .pipe(shareReplay(1));\n    }\n\n    return this.users$;\n  }\n}",
+    "lang": "ts",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests service design, HTTP caching, state sharing, RxJS multicasting, and Angular dependency injection.</p><h4>Typical Requirements</h4><ul><li>Call the API only once.</li><li>Share the same data across multiple components.</li><li>Avoid duplicate HTTP requests.</li><li>Keep the data synchronized.</li></ul><h4>Approaches</h4><table><thead><tr><th>Approach</th><th>Best For</th></tr></thead><tbody><tr><td><code class=\"inline\">shareReplay(1)</code></td><td>Caching HTTP responses.</td></tr><tr><td><code class=\"inline\">BehaviorSubject</code></td><td>Shared mutable application state.</td></tr></tbody></table><h4>Common Interview Follow-ups</h4><ul><li>When would you choose <code class=\"inline\">BehaviorSubject</code> over <code class=\"inline\">shareReplay(1)</code>?</li><li>How would you refresh the cached data?</li><li>How would you invalidate the cache after an update?</li><li>What happens if the API request fails?</li><li>How would you implement this using Angular Signals?</li></ul><h4>How to say it in an interview</h4><p><strong>\"I keep the shared data inside a singleton service. For HTTP caching I prefer <code class=\"inline\">shareReplay(1)</code> because it shares one request across all subscribers. If the data needs to be updated by multiple components, I use a <code class=\"inline\">BehaviorSubject</code> to manage the shared state.\"</strong></p>"
+  },
+  {
+    "id": "ngc-custom-autocomplete",
+    "category": "ngcoding",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "autocomplete",
+      "rxjs",
+      "forms"
+    ],
+    "question": "Build an autocomplete search component without using Angular Material.",
+    "answer": "<p>Create an input backed by a <code class=\"inline\">FormControl</code> and listen to <code class=\"inline\">valueChanges</code>. Use <code class=\"inline\">debounceTime()</code>, <code class=\"inline\">distinctUntilChanged()</code>, and <code class=\"inline\">switchMap()</code> to fetch matching suggestions from an API. Display the suggestions in a dropdown, allow the user to select an item, and hide the dropdown when an item is selected or the input loses focus.</p>",
+    "tip": "The important parts are debouncing input, cancelling stale requests with <code class=\"inline\">switchMap()</code>, and correctly managing the dropdown state.",
+    "code": "search = new FormControl('');\n\noptions$ = this.search.valueChanges.pipe(\n  debounceTime(300),\n  distinctUntilChanged(),\n  switchMap(value => this.api.search(value ?? ''))\n);\n\nselect(option: User) {\n  this.search.setValue(option.name, { emitEvent: false });\n  this.selected = option;\n}",
+    "lang": "ts",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests Reactive Forms, RxJS, HTTP requests, reusable component design, and user interaction.</p><h4>Typical Requirements</h4><ul><li>Search while typing.</li><li>Debounce user input.</li><li>Cancel previous API requests.</li><li>Display matching suggestions.</li><li>Select an item from the dropdown.</li><li>Hide the dropdown when appropriate.</li></ul><h4>How It Works</h4><ol><li>Listen to <code class=\"inline\">valueChanges</code>.</li><li>Wait briefly using <code class=\"inline\">debounceTime()</code>.</li><li>Ignore duplicate values using <code class=\"inline\">distinctUntilChanged()</code>.</li><li>Fetch suggestions using <code class=\"inline\">switchMap()</code>.</li><li>Render the dropdown.</li><li>Update the input when an option is selected.</li></ol><h4>Common Interview Follow-ups</h4><ul><li>How would you support keyboard navigation (↑ ↓ Enter)?</li><li>How would you highlight the matching text?</li><li>How would you display a loading indicator?</li><li>How would you cache previous search results?</li><li>How would you convert this into a reusable form control using <code class=\"inline\">ControlValueAccessor</code>?</li></ul><h4>Production Enhancements</h4><ul><li>Minimum character limit before searching.</li><li>Loading spinner.</li><li>No results message.</li><li>Keyboard accessibility.</li><li>Click outside to close.</li><li>Result caching.</li><li>Highlighted matching text.</li></ul><h4>How to say it in an interview</h4><p><strong>\"I use a Reactive Form control with <code class=\"inline\">valueChanges</code>, apply <code class=\"inline\">debounceTime()</code>, <code class=\"inline\">distinctUntilChanged()</code>, and <code class=\"inline\">switchMap()</code> to fetch suggestions efficiently. The component manages the dropdown state, supports item selection, and avoids unnecessary API calls.\"</strong></p>"
+  },
+  {
+    "id": "ngc-drag-drop",
+    "category": "ngcoding",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "angular-cdk",
+      "drag-drop"
+    ],
+    "question": "Reorder a list using Angular CDK Drag & Drop.",
+    "answer": "<p>Use Angular CDK's <code class=\"inline\">cdkDropList</code> and <code class=\"inline\">cdkDrag</code> directives to make list items draggable. Handle the <code class=\"inline\">cdkDropListDropped</code> event and reorder the array using <code class=\"inline\">moveItemInArray()</code>. For dragging items between different lists, use <code class=\"inline\">transferArrayItem()</code>.</p>",
+    "tip": "Use <code class=\"inline\">moveItemInArray()</code> for reordering within the same list and <code class=\"inline\">transferArrayItem()</code> when moving items between lists.",
+    "code": "drop(event: CdkDragDrop<string[]>) {\n  if (event.previousContainer === event.container) {\n    moveItemInArray(\n      this.items,\n      event.previousIndex,\n      event.currentIndex\n    );\n  } else {\n    transferArrayItem(\n      event.previousContainer.data,\n      event.container.data,\n      event.previousIndex,\n      event.currentIndex\n    );\n  }\n}",
+    "lang": "ts",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests your understanding of Angular CDK, event handling, list rendering, and state management.</p><h4>Typical Requirements</h4><ul><li>Display a draggable list.</li><li>Reorder items within the same list.</li><li>Optionally move items between multiple lists.</li><li>Update the underlying array after dropping an item.</li></ul><h4>How It Works</h4><ol><li>Apply <code class=\"inline\">cdkDropList</code> to the container.</li><li>Apply <code class=\"inline\">cdkDrag</code> to each item.</li><li>Listen for <code class=\"inline\">cdkDropListDropped</code>.</li><li>Update the array using <code class=\"inline\">moveItemInArray()</code> or <code class=\"inline\">transferArrayItem()</code>.</li></ol><h4>Common Interview Follow-ups</h4><ul><li>How would you drag items between two lists?</li><li>How would you save the new order to the backend?</li><li>How would you disable dragging for specific items?</li><li>How would you implement a Trello-style board?</li><li>What advantages does Angular CDK provide over the native HTML5 Drag & Drop API?</li></ul><h4>Important APIs</h4><table><thead><tr><th>API</th><th>Purpose</th></tr></thead><tbody><tr><td><code class=\"inline\">cdkDropList</code></td><td>Defines a drop zone.</td></tr><tr><td><code class=\"inline\">cdkDrag</code></td><td>Makes an element draggable.</td></tr><tr><td><code class=\"inline\">moveItemInArray()</code></td><td>Reorders items within the same list.</td></tr><tr><td><code class=\"inline\">transferArrayItem()</code></td><td>Moves items between different lists.</td></tr></tbody></table><h4>How to say it in an interview</h4><p><strong>\"I use Angular CDK Drag & Drop by applying <code class=\"inline\">cdkDropList</code> to the container and <code class=\"inline\">cdkDrag</code> to each item. On drop, I update the underlying array using <code class=\"inline\">moveItemInArray()</code> for reordering or <code class=\"inline\">transferArrayItem()</code> when moving items between lists.\"</strong></p>"
+  },
+  {
+    "id": "ngc-tree-view",
+    "category": "ngcoding",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "tree",
+      "recursion"
+    ],
+    "question": "Build a recursive Tree View component to display nested comments or folders.",
+    "answer": "<p>Create a reusable recursive component that accepts a node as an input. Display the current node and recursively render its child nodes using the same component. Use <code class=\"inline\">*ngFor</code> to iterate through the children and stop recursion when a node has no children.</p>",
+    "tip": "The key idea is that a component can render itself recursively until there are no more child nodes.",
+    "code": "export interface TreeNode {\n  id: number;\n  text: string;\n  children?: TreeNode[];\n}\n\n@Input() node!: TreeNode;\n\n<ul>\n  <li>\n    {{ node.text }}\n\n    <app-tree-node\n      *ngFor=\"let child of node.children\"\n      [node]=\"child\">\n    </app-tree-node>\n  </li>\n</ul>",
+    "lang": "ts",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests recursive components, hierarchical data rendering, component communication, and Angular template recursion.</p><h4>Typical Requirements</h4><ul><li>Display hierarchical data.</li><li>Render child nodes recursively.</li><li>Stop recursion when there are no children.</li><li>Keep the component reusable.</li></ul><h4>Real-world Examples</h4><ul><li>Nested comments (Reddit, YouTube).</li><li>Folder/File explorer.</li><li>Organization charts.</li><li>Category trees.</li><li>Navigation menus.</li></ul><h4>Common Interview Follow-ups</h4><ul><li>How would you expand/collapse nodes?</li><li>How would you lazy-load child nodes?</li><li>How would you highlight the selected node?</li><li>How would you add drag-and-drop support?</li><li>How would you optimize rendering for very large trees?</li></ul><h4>Production Enhancements</h4><ul><li>Expand/Collapse support.</li><li>Lazy loading of child nodes.</li><li>Search and highlight matching nodes.</li><li>Checkbox selection.</li><li>Virtual scrolling for large trees.</li><li>TrackBy for better performance.</li></ul><h4>How to say it in an interview</h4><p><strong>\"I create a reusable component that accepts a tree node as input. The component displays the current node and recursively renders each child using the same component until there are no more child nodes. This approach naturally fits hierarchical data like comments, folders, and menus.\"</strong></p>"
+  },
+  {
+    "id": "ngc-kanban-board",
+    "category": "ngcoding",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "angular-cdk",
+      "drag-drop"
+    ],
+    "question": "Build a Kanban board where users can drag tasks between columns.",
+    "answer": "<p>Create multiple <code class=\"inline\">cdkDropList</code> containers (Todo, In Progress, Done) and render tasks inside each column using <code class=\"inline\">cdkDrag</code>. Allow users to reorder tasks within a column using <code class=\"inline\">moveItemInArray()</code> and move tasks between columns using <code class=\"inline\">transferArrayItem()</code>. Update the underlying state whenever a task is moved.</p>",
+    "tip": "Interviewers expect you to use Angular CDK Drag & Drop and correctly update the data model after each drag operation.",
+    "code": "drop(event: CdkDragDrop<Task[]>) {\n  if (event.previousContainer === event.container) {\n    moveItemInArray(\n      event.container.data,\n      event.previousIndex,\n      event.currentIndex\n    );\n  } else {\n    transferArrayItem(\n      event.previousContainer.data,\n      event.container.data,\n      event.previousIndex,\n      event.currentIndex\n    );\n  }\n}",
+    "lang": "ts",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests Angular CDK Drag & Drop, component interaction, state management, and handling complex UI interactions.</p><h4>Typical Requirements</h4><ul><li>Create multiple draggable columns.</li><li>Allow reordering tasks within a column.</li><li>Allow moving tasks between columns.</li><li>Update the application state after each drag operation.</li></ul><h4>Real-world Examples</h4><ul><li>Trello</li><li>Jira</li><li>Azure DevOps Boards</li><li>GitHub Projects</li></ul><h4>Common Interview Follow-ups</h4><ul><li>How would you persist changes to the backend?</li><li>How would you support drag handles?</li><li>How would you prevent dropping into certain columns?</li><li>How would you implement optimistic updates?</li><li>How would you handle thousands of cards efficiently?</li></ul><h4>Production Enhancements</h4><ul><li>Persist board changes via an API.</li><li>Drag handles.</li><li>Column WIP limits.</li><li>Auto-scroll while dragging.</li><li>Keyboard accessibility.</li><li>Virtual scrolling for large boards.</li><li>Undo/Redo support.</li></ul><h4>How to say it in an interview</h4><p><strong>\"I would use Angular CDK Drag & Drop to create draggable columns. Tasks can be reordered within a column using <code class=\"inline\">moveItemInArray()</code> and moved across columns using <code class=\"inline\">transferArrayItem()</code>. After each drag event, I update the application state and optionally persist the changes to the backend.\"</strong></p>"
+  },
+  {
+    "id": "ngc-theme-switcher",
+    "category": "ngcoding",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "theme",
+      "dark-mode"
+    ],
+    "question": "Implement a Light / Dark theme switcher with persistent user preference.",
+    "answer": "<p>Create a <code class=\"inline\">ThemeService</code> to manage the application's current theme. Toggle a CSS class on the document body or root element, save the selected theme in <code class=\"inline\">localStorage</code>, and restore the saved preference when the application starts.</p>",
+    "tip": "Keep theme logic inside a service so every component can react to theme changes without duplicating code.",
+    "code": "@Injectable({ providedIn: 'root' })\nexport class ThemeService {\n  toggleTheme() {\n    const dark = document.body.classList.toggle('dark-theme');\n    localStorage.setItem('theme', dark ? 'dark' : 'light');\n  }\n\n  initializeTheme() {\n    if (localStorage.getItem('theme') === 'dark') {\n      document.body.classList.add('dark-theme');\n    }\n  }\n}",
+    "lang": "ts",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests state management, service design, DOM manipulation, persistence, and application initialization.</p><h4>Typical Requirements</h4><ul><li>Switch between Light and Dark themes.</li><li>Apply the selected theme to the entire application.</li><li>Persist the user's preference.</li><li>Restore the theme after refreshing the page.</li></ul><h4>How It Works</h4><ol><li>User clicks the theme toggle.</li><li>The service updates the current theme.</li><li>A CSS class is added or removed from the application's root element.</li><li>The selected theme is stored in <code class=\"inline\">localStorage</code>.</li><li>The saved theme is restored during application startup.</li></ol><h4>Common Interview Follow-ups</h4><ul><li>Why use a service instead of putting the logic in a component?</li><li>How would you detect the user's preferred system theme?</li><li>How would you synchronize the theme across browser tabs?</li><li>How would you support multiple themes instead of just light and dark?</li><li>Would you use CSS variables or separate stylesheets?</li></ul><h4>Production Considerations</h4><ul><li>Respect the system preference using <code class=\"inline\">prefers-color-scheme</code>.</li><li>Avoid the initial flash of the wrong theme by applying the saved theme before the app renders.</li><li>Prefer CSS variables for scalable theming.</li></ul><h4>How to say it in an interview</h4><p><strong>\"I keep the theme state inside a shared service. When the user changes the theme, I update a CSS class on the application's root element, persist the preference in <code class=\"inline\">localStorage</code>, and restore it during application initialization so the user's choice is preserved across sessions.\"</strong></p>"
+  },
+  {
+    "id": "ngc-login-form",
+    "category": "ngcoding",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "forms",
+      "reactive-forms"
+    ],
+    "question": "Build a Login Page with username and password validation.",
+    "answer": "<p>Create a Reactive Form with username and password controls. Apply validators such as <code class=\"inline\">required</code>, <code class=\"inline\">email</code>, and <code class=\"inline\">minLength</code>. Display validation errors only after the user interacts with a field or submits the form. On successful validation, process the login request.</p>",
+    "tip": "Most Angular interviews expect Reactive Forms because they are easier to validate, test, and maintain.",
+    "code": "loginForm = this.fb.group({\n  username: ['', [Validators.required, Validators.email]],\n  password: ['', [Validators.required, Validators.minLength(6)]]\n});\n\nsubmitted = false;\n\nsubmit() {\n  this.submitted = true;\n\n  if (this.loginForm.invalid) {\n    return;\n  }\n\n  console.log(this.loginForm.value);\n}",
+    "lang": "ts",
+    "deep": "<h4>What the Interviewer Expects</h4><p>This question tests your understanding of Reactive Forms, validators, error handling, event binding, and form submission.</p><h4>Typical Requirements</h4><ul><li>Username (or email) is required.</li><li>Password is required.</li><li>Password must have a minimum length.</li><li>Show validation messages only after the field is touched or the form is submitted.</li><li>Disable the Login button until the form is valid (optional).</li></ul><h4>Validation Example</h4><pre><code>&lt;input formControlName=\"username\"&gt;\n@if ((submitted || loginForm.controls.username.touched) && loginForm.controls.username.hasError('required')) {\n  &lt;small&gt;Username is required&lt;/small&gt;\n}\n\n&lt;input type=\"password\" formControlName=\"password\"&gt;\n@if ((submitted || loginForm.controls.password.touched) && loginForm.controls.password.hasError('minlength')) {\n  &lt;small&gt;Minimum 6 characters&lt;/small&gt;\n}</code></pre><h4>Common Interview Follow-ups</h4><ul><li>How would you call a login API after validation?</li><li>How would you display backend validation errors?</li><li>How would you disable the Login button while the request is in progress?</li><li>How would you implement Remember Me?</li></ul><h4>How to say it in an interview</h4><p><strong>\"I use Reactive Forms with built-in validators like <code class=\"inline\">required</code>, <code class=\"inline\">email</code>, and <code class=\"inline\">minLength</code>. Validation messages are shown only after user interaction or form submission. Once the form is valid, I send the credentials to the backend for authentication.\"</strong></p>"
+  }
+]

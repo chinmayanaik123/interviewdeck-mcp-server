@@ -1,0 +1,327 @@
+[
+  {
+    "id": "uia-selenium-webdriver",
+    "category": "ui-automation",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "selenium",
+      "webdriver",
+      "java"
+    ],
+    "question": "What is Selenium WebDriver? How does it work at a high level?",
+    "answer": "<p><strong>Selenium WebDriver</strong> is a tool/API for automating browsers. Your test code (e.g. Java) sends commands to a browser driver (ChromeDriver, GeckoDriver), which controls the real browser to click, type, navigate, and assert UI behaviour.</p>",
+    "tip": "WebDriver automates real browsers — great for E2E UI confidence, but keep the suite lean.",
+    "code": "WebDriver driver = new ChromeDriver();\ndriver.get(\"https://example.com/login\");\ndriver.findElement(By.id(\"email\")).sendKeys(\"a@b.com\");\ndriver.findElement(By.id(\"password\")).sendKeys(\"secret\");\ndriver.findElement(By.id(\"loginBtn\")).click();",
+    "lang": "java",
+    "deep": "<h4>Beginner mental model</h4><pre><code>Test (Java + Selenium) → WebDriver API → Browser Driver → Browser</code></pre><p>You write steps a user would take. Selenium executes them in Chrome/Firefox/Edge.</p><h4>What it is good for</h4><ul><li>Critical user journeys (login, checkout, order search).</li><li>Cross-browser checks when required.</li></ul><h4>What it is not</h4><p>Not the best tool for every check — API/unit tests are faster for business rules. UI automation should focus on high-value paths.</p><h4>How to say it in an interview</h4><p>“Selenium WebDriver drives a real browser from test code. I use Java bindings to automate critical ecommerce journeys, and I keep UI coverage focused because these tests are slower than API tests.”</p>"
+  },
+  {
+    "id": "uia-locators",
+    "category": "ui-automation",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "locators",
+      "selenium"
+    ],
+    "question": "What are Selenium locators? Which ones do you prefer and why?",
+    "answer": "<p>Locators tell WebDriver how to find an element: <code class=\"inline\">id</code>, <code class=\"inline\">name</code>, <code class=\"inline\">cssSelector</code>, <code class=\"inline\">xpath</code>, <code class=\"inline\">linkText</code>, etc.</p><p>Prefer stable attributes: <code class=\"inline\">id</code> or dedicated test ids (<code class=\"inline\">data-testid</code>). Avoid long absolute XPaths tied to layout — they break when UI changes.</p>",
+    "tip": "Stable locator strategy reduces flaky failures more than fancy waits alone.",
+    "code": "By.id(\"loginBtn\")\nBy.cssSelector(\"[data-testid='submit-order']\")\nBy.xpath(\"//button[normalize-space()='Place Order']\")",
+    "lang": "java",
+    "deep": "<h4>Practical preference order</h4><ol><li><code class=\"inline\">id</code> / <code class=\"inline\">data-testid</code> (best if unique and stable)</li><li>CSS selector (readable, fast)</li><li>XPath when you need text/DOM relationships</li></ol><h4>Bad vs good</h4><pre><code>// brittle\n/html/body/div[2]/div[1]/button[3]\n\n// better\nBy.cssSelector(\"[data-testid='place-order']\")</code></pre><h4>How to say it in an interview</h4><p>“I choose locators for stability first. IDs or test ids beat absolute XPath. If the UI is unstable, I collaborate with developers to add test-friendly attributes.”</p>"
+  },
+  {
+    "id": "uia-waits",
+    "category": "ui-automation",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "waits",
+      "flaky",
+      "selenium"
+    ],
+    "question": "Implicit wait vs Explicit wait vs Thread.sleep — which should you use?",
+    "answer": "<p><strong>Thread.sleep</strong> always waits a fixed time — slow and flaky; avoid in real suites.</p><p><strong>Implicit wait</strong> sets a global timeout for findElement polling — easy but blunt; can hide issues and slow failures.</p><p><strong>Explicit wait</strong> (<code class=\"inline\">WebDriverWait</code> + expected conditions) waits for a specific condition (visible, clickable, text present) — preferred for reliable UI tests.</p>",
+    "tip": "Wait for a condition, not for a number of seconds.",
+    "code": "WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));\nWebElement btn = wait.until(\n  ExpectedConditions.elementToBeClickable(By.id(\"placeOrder\"))\n);\nbtn.click();",
+    "lang": "java",
+    "deep": "<h4>Why sleeps create flaky tests</h4><p>2 seconds may pass on your laptop and fail on a slow Jenkins agent. Explicit waits retry until ready or timeout — adaptive and clearer failures.</p><h4>Common expected conditions</h4><ul><li><code class=\"inline\">visibilityOfElementLocated</code></li><li><code class=\"inline\">elementToBeClickable</code></li><li><code class=\"inline\">presenceOfElementLocated</code></li><li><code class=\"inline\">textToBePresentInElement</code></li></ul><h4>How to say it in an interview</h4><p>“I avoid Thread.sleep. I use explicit waits for the exact UI state I need — for example, button clickable after order summary loads — so tests are faster and more stable in CI.”</p>"
+  },
+  {
+    "id": "uia-pom",
+    "category": "ui-automation",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "pom",
+      "framework",
+      "design"
+    ],
+    "question": "What is the Page Object Model (POM)? Why use it?",
+    "answer": "<p><strong>Page Object Model</strong> is a design pattern where each page/component has a class that stores its locators and user actions (login, search, add to cart). Tests call those methods instead of raw Selenium calls.</p><p>Benefits: less duplication, easier maintenance when UI changes, and more readable tests.</p>",
+    "tip": "Tests should read like business steps; page classes hide Selenium details.",
+    "code": "public class LoginPage {\n  private By email = By.id(\"email\");\n  private By password = By.id(\"password\");\n  private By loginBtn = By.id(\"loginBtn\");\n  private WebDriver driver;\n\n  public LoginPage(WebDriver driver) { this.driver = driver; }\n\n  public HomePage login(String user, String pass) {\n    driver.findElement(email).sendKeys(user);\n    driver.findElement(password).sendKeys(pass);\n    driver.findElement(loginBtn).click();\n    return new HomePage(driver);\n  }\n}",
+    "lang": "java",
+    "deep": "<h4>Before vs after</h4><pre><code>// without POM — duplicated everywhere\ndriver.findElement(By.id(\"email\")).sendKeys(...);\n\n// with POM — one place to update\nloginPage.login(\"a@b.com\", \"secret\");</code></pre><h4>Good POM rules</h4><ul><li>No assertions inside page objects (or keep them minimal) — assertions belong in tests.</li><li>Methods return the next page when navigation happens.</li><li>Keep locators private to the page class.</li></ul><h4>How to say it in an interview</h4><p>“I use POM so UI changes update in one class. Tests stay business-readable — login, create order, verify status — while Selenium details stay in page objects.”</p>"
+  },
+  {
+    "id": "uia-testng",
+    "category": "ui-automation",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "testng",
+      "java",
+      "maven"
+    ],
+    "question": "What is TestNG and how do you use it with Selenium?",
+    "answer": "<p><strong>TestNG</strong> is a Java testing framework used to organise and run automated tests. With Selenium you write test methods annotated with <code class=\"inline\">@Test</code>, use annotations like <code class=\"inline\">@BeforeMethod</code>/<code class=\"inline\">@AfterMethod</code> for setup/teardown, and configure suites via <code class=\"inline\">testng.xml</code>.</p><p>It supports assertions, groups, dependencies, data providers, and parallel execution — commonly run through Maven.</p>",
+    "tip": "Mention annotations, assertions, suite XML, and parallel runs — that is what interviewers expect.",
+    "code": "public class LoginTest {\n  WebDriver driver;\n\n  @BeforeMethod\n  public void setUp() {\n    driver = new ChromeDriver();\n  }\n\n  @Test\n  public void validLogin_showsHomePage() {\n    new LoginPage(driver).login(\"a@b.com\", \"secret\");\n    Assert.assertTrue(new HomePage(driver).isLoaded());\n  }\n\n  @AfterMethod\n  public void tearDown() {\n    driver.quit();\n  }\n}",
+    "lang": "java",
+    "deep": "<h4>Annotations you should know</h4><ul><li><code class=\"inline\">@BeforeSuite</code> / <code class=\"inline\">@AfterSuite</code></li><li><code class=\"inline\">@BeforeMethod</code> / <code class=\"inline\">@AfterMethod</code> (browser per test is common)</li><li><code class=\"inline\">@Test</code>, <code class=\"inline\">groups</code>, <code class=\"inline\">priority</code></li><li><code class=\"inline\">@DataProvider</code> for data-driven tests</li></ul><h4>Maven connection</h4><p>Maven manages dependencies (Selenium, TestNG) and can run suites in CI with Surefire/Failsafe plugins.</p><h4>How to say it in an interview</h4><p>“I structure Selenium tests with TestNG: setup/teardown annotations, clear @Test methods with assertions, and suite XML for smoke vs regression packs. Maven runs the same suites locally and in Jenkins.”</p>"
+  },
+  {
+    "id": "uia-flaky-tests",
+    "category": "ui-automation",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "flaky",
+      "stability",
+      "ci"
+    ],
+    "question": "Why do UI automated tests become flaky, and how do you reduce flakiness?",
+    "answer": "<p>Flaky tests pass/fail without code changes. Common causes: timing races, unstable locators, shared test data, environment issues, animations, and order-dependent tests.</p><p>Reduce flakiness with explicit waits, stable locators, isolated data, idempotent setup/cleanup, avoiding sleeps, and quarantining/fixing flakes instead of re-running until green.</p>",
+    "tip": "A flaky suite trains the team to ignore failures — treat flakes as defects.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Top causes</h4><ul><li>Element not ready → click intercepted / stale element.</li><li>Brittle XPath after UI redesign.</li><li>Two tests share the same user/order and collide.</li><li>Hard-coded sleeps that are too short in CI.</li></ul><h4>Practical fixes</h4><ul><li>Explicit waits for clickable/visible.</li><li><code class=\"inline\">data-testid</code> locators.</li><li>Unique test data per run (timestamp/UUID).</li><li>Retry only as a temporary signal, not a strategy.</li></ul><h4>How to say it in an interview</h4><p>“Flakes usually come from sync and data issues. I fix root causes with explicit waits, stable locators, and isolated data. Re-running until green hides quality problems, so I treat flaky tests as bugs.”</p>"
+  },
+  {
+    "id": "uia-find-elements",
+    "category": "ui-automation",
+    "difficulty": "beginner",
+    "tags": [
+      "findelement",
+      "selenium",
+      "basics"
+    ],
+    "question": "findElement vs findElements in Selenium?",
+    "answer": "<p><code class=\"inline\">findElement</code> returns the first matching element or throws <code class=\"inline\">NoSuchElementException</code> if none. <code class=\"inline\">findElements</code> returns a list (empty if none) — useful to check presence without try/catch.</p>",
+    "tip": "Use findElements().isEmpty() for optional elements.",
+    "code": "List<WebElement> errors = driver.findElements(By.cssSelector(\".error\"));\nif (!errors.isEmpty()) { /* assert message */ }",
+    "lang": "java",
+    "deep": "<h4>How to say it in an interview</h4><p>“findElement is for required elements; findElements is safer when the element may not exist because it returns an empty list instead of throwing.”</p>"
+  },
+  {
+    "id": "uia-alerts-frames-windows",
+    "category": "ui-automation",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "alerts",
+      "frames",
+      "windows"
+    ],
+    "question": "How do you handle alerts, frames, and multiple windows in Selenium?",
+    "answer": "<ul><li><strong>Alerts</strong>: <code class=\"inline\">driver.switchTo().alert()</code> then accept/dismiss/getText/sendKeys.</li><li><strong>Frames</strong>: switch by index/name/WebElement, then switch back to default content.</li><li><strong>Windows</strong>: store parent handle, switch to new handle from <code class=\"inline\">getWindowHandles()</code>.</li></ul>",
+    "tip": "Many 'element not found' bugs are actually wrong frame/window context.",
+    "code": "String parent = driver.getWindowHandle();\nfor (String h : driver.getWindowHandles()) {\n  if (!h.equals(parent)) driver.switchTo().window(h);\n}",
+    "lang": "java",
+    "deep": "<h4>Example</h4><p>Payment opens a 3-D Secure window — you must switch window, complete auth, then switch back to verify order success.</p><h4>How to say it in an interview</h4><p>“I always confirm context first — alert, iframe, or new window — before interacting. Wrong context is a common false failure.”</p>"
+  },
+  {
+    "id": "uia-actions-class",
+    "category": "ui-automation",
+    "difficulty": "intermediate",
+    "tags": [
+      "actions",
+      "hover",
+      "drag-drop"
+    ],
+    "question": "When do you use the Actions class in Selenium?",
+    "answer": "<p>Use <code class=\"inline\">Actions</code> for complex user gestures: hover, double-click, right-click, drag-and-drop, key chords. Ordinary click/sendKeys cover most flows; Actions is for advanced interactions.</p>",
+    "tip": "Prefer simple clicks when possible — Actions can be more brittle.",
+    "code": "Actions a = new Actions(driver);\na.moveToElement(menu).perform();\na.dragAndDrop(source, target).perform();",
+    "lang": "java",
+    "deep": "<h4>How to say it in an interview</h4><p>“I use Actions for hover menus or drag-and-drop. For standard forms I stick to normal WebElement interactions because they’re simpler and usually more stable.”</p>"
+  },
+  {
+    "id": "uia-select-dropdown",
+    "category": "ui-automation",
+    "difficulty": "beginner",
+    "tags": [
+      "dropdown",
+      "select"
+    ],
+    "question": "How do you handle dropdowns in Selenium?",
+    "answer": "<p>For HTML <code class=\"inline\">&lt;select&gt;</code>, use Selenium’s <code class=\"inline\">Select</code> helper (by visible text/value/index). For custom dropdowns (divs), click the control, wait for options, then click the option element.</p>",
+    "tip": "Custom dropdowns are not Select — automate them like menus.",
+    "code": "Select country = new Select(driver.findElement(By.id(\"country\")));\ncountry.selectByVisibleText(\"India\");",
+    "lang": "java",
+    "deep": "<h4>How to say it in an interview</h4><p>“Native selects use the Select class. Custom UI dropdowns need click + wait + option click, often with a stable option locator.”</p>"
+  },
+  {
+    "id": "uia-stale-element",
+    "category": "ui-automation",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "stale-element",
+      "exceptions"
+    ],
+    "question": "What is StaleElementReferenceException and how do you fix it?",
+    "answer": "<p>It means the element you found is no longer attached to the DOM (page refreshed/re-rendered). Fix by re-finding the element after the update, using waits for the new DOM state, and avoiding long-lived WebElement references across navigations.</p>",
+    "tip": "Don’t cache elements across page changes — re-locate them.",
+    "code": "wait.until(ExpectedConditions.refreshed(\n  ExpectedConditions.elementToBeClickable(By.id(\"save\"))\n)).click();",
+    "lang": "java",
+    "deep": "<h4>Common cause</h4><p>Find element → AJAX re-renders table → click old reference → stale.</p><h4>How to say it in an interview</h4><p>“Stale element means my reference died after a DOM refresh. I re-locate after waiting for the new state instead of reusing old WebElement objects.”</p>"
+  },
+  {
+    "id": "uia-screenshots",
+    "category": "ui-automation",
+    "difficulty": "beginner",
+    "tags": [
+      "screenshot",
+      "reporting",
+      "debug"
+    ],
+    "question": "How and when do you capture screenshots in UI automation?",
+    "answer": "<p>Capture on failure (and optionally on key checkpoints) using <code class=\"inline\">TakesScreenshot</code>, save with test name + timestamp, and attach to reports/CI artifacts. Screenshots make Jenkins failures diagnosable.</p>",
+    "tip": "Always screenshot on fail in CI — logs alone are often not enough.",
+    "code": "File src = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);\nFileUtils.copyFile(src, new File(\"screenshots/\" + testName + \".png\"));",
+    "lang": "java",
+    "deep": "<h4>How to say it in an interview</h4><p>“I hook screenshots into TestNG failure listeners so every CI failure includes visual evidence and the page URL/logs.”</p>"
+  },
+  {
+    "id": "uia-dataprovider",
+    "category": "ui-automation",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "dataprovider",
+      "testng",
+      "ddt"
+    ],
+    "question": "How do you do data-driven testing with TestNG DataProvider?",
+    "answer": "<p>A <code class=\"inline\">@DataProvider</code> supplies rows of input data to a <code class=\"inline\">@Test</code> method so the same flow runs with multiple datasets (valid login, invalid password, locked user). Data can be hardcoded or read from Excel/CSV/JSON.</p>",
+    "tip": "Keep data intent obvious — each row should represent a clear scenario.",
+    "code": "@DataProvider(name=\"loginData\")\npublic Object[][] loginData() {\n  return new Object[][] {\n    {\"valid@test.com\", \"Valid@123\", true},\n    {\"valid@test.com\", \"wrong\", false}\n  };\n}\n\n@Test(dataProvider=\"loginData\")\npublic void login(String user, String pass, boolean ok) { /* ... */ }",
+    "lang": "java",
+    "deep": "<h4>How to say it in an interview</h4><p>“I use DataProviders for data-driven login/order scenarios so one test flow covers many inputs without duplicated methods.”</p>"
+  },
+  {
+    "id": "uia-parallel",
+    "category": "ui-automation",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "parallel",
+      "testng",
+      "threadlocal"
+    ],
+    "question": "How do you run Selenium tests in parallel safely?",
+    "answer": "<p>Enable TestNG parallel methods/classes and isolate WebDriver per thread (often with <code class=\"inline\">ThreadLocal&lt;WebDriver&gt;</code>). Tests must not share mutable state/users. Use Selenium Grid/cloud for multiple browsers/nodes.</p>",
+    "tip": "Shared static WebDriver is the #1 parallel failure cause.",
+    "code": "parallel=\"methods\" thread-count=\"4\"",
+    "lang": "xml",
+    "deep": "<h4>Checklist</h4><ul><li>Driver per thread.</li><li>Unique test data.</li><li>No dependency on test order.</li><li>Thread-safe reporting.</li></ul><h4>How to say it in an interview</h4><p>“For parallel runs I isolate driver and data per thread. Shared driver or shared users make suites randomly fail under load.”</p>"
+  },
+  {
+    "id": "uia-grid",
+    "category": "ui-automation",
+    "difficulty": "advanced",
+    "tags": [
+      "selenium-grid",
+      "remotewebdriver",
+      "cross-browser"
+    ],
+    "question": "What is Selenium Grid? When do you use it?",
+    "answer": "<p><strong>Selenium Grid</strong> runs tests on remote machines/browsers via <code class=\"inline\">RemoteWebDriver</code>. Use it for cross-browser coverage and scale (many nodes) in CI instead of only local Chrome.</p>",
+    "tip": "Grid helps scale; it doesn’t fix bad locators or sleeps.",
+    "code": "WebDriver driver = new RemoteWebDriver(gridUrl, chromeOptions);",
+    "lang": "java",
+    "deep": "<h4>How to say it in an interview</h4><p>“I use Grid/RemoteWebDriver when we need parallel cross-browser execution in CI. Local runs stay on Chrome for fast feedback; Grid covers the support matrix.”</p>"
+  },
+  {
+    "id": "uia-maven-surefire",
+    "category": "ui-automation",
+    "difficulty": "intermediate",
+    "tags": [
+      "maven",
+      "surefire",
+      "build"
+    ],
+    "question": "How does Maven fit into a Selenium + TestNG framework?",
+    "answer": "<p>Maven manages dependencies (Selenium, TestNG, WebDriverManager) and runs tests via Surefire/Failsafe, often pointing at a <code class=\"inline\">testng.xml</code>. The same <code class=\"inline\">mvn test</code> command runs locally and in Jenkins.</p>",
+    "tip": "Know where dependencies and suite XML are configured — interviewers ask.",
+    "code": "mvn clean test -DsuiteXmlFile=smoke.xml",
+    "lang": "bash",
+    "deep": "<h4>How to say it in an interview</h4><p>“Maven standardises the project: dependencies, plugins, and suite execution. Jenkins just runs Maven targets for smoke or regression.”</p>"
+  },
+  {
+    "id": "uia-webdrivermanager",
+    "category": "ui-automation",
+    "difficulty": "beginner",
+    "tags": [
+      "webdrivermanager",
+      "chromedriver"
+    ],
+    "question": "How do you manage browser drivers (ChromeDriver) today?",
+    "answer": "<p>Use Selenium Manager (Selenium 4.6+) or WebDriverManager to resolve matching drivers automatically instead of manually downloading ChromeDriver binaries. Manual driver paths break often after browser updates.</p>",
+    "tip": "Prefer automatic driver management in modern frameworks.",
+    "code": "// Selenium 4.6+ often needs no manual driver setup\nWebDriver driver = new ChromeDriver();",
+    "lang": "java",
+    "deep": "<h4>How to say it in an interview</h4><p>“I avoid hardcoding driver binaries. Selenium Manager/WebDriverManager keeps ChromeDriver aligned with the installed browser, which reduces CI setup failures.”</p>"
+  },
+  {
+    "id": "uia-assertions",
+    "category": "ui-automation",
+    "difficulty": "beginner",
+    "tags": [
+      "assertions",
+      "testng",
+      "hard-soft"
+    ],
+    "question": "Hard assert vs soft assert in TestNG?",
+    "answer": "<p><strong>Hard assert</strong> fails the test immediately on mismatch. <strong>Soft assert</strong> collects failures and continues, then reports all at <code class=\"inline\">assertAll()</code> — useful when checking multiple independent fields on one page.</p>",
+    "tip": "Don’t soft-assert a precondition you need for later steps.",
+    "code": "SoftAssert soft = new SoftAssert();\nsoft.assertEquals(title, \"Order Details\");\nsoft.assertTrue(status.contains(\"CREATED\"));\nsoft.assertAll();",
+    "lang": "java",
+    "deep": "<h4>How to say it in an interview</h4><p>“I use hard asserts for blockers like login success, and soft asserts when I want to collect multiple UI field mismatches in one go.”</p>"
+  },
+  {
+    "id": "uia-framework-layers",
+    "category": "ui-automation",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "framework",
+      "architecture"
+    ],
+    "question": "How would you structure a maintainable Selenium framework?",
+    "answer": "<p>Typical layers: <strong>tests</strong> (TestNG scenarios), <strong>pages</strong> (POM), <strong>components/services</strong> (reusable flows), <strong>utilities</strong> (waits, screenshots, config), <strong>testdata</strong>, and <strong>driver factory</strong>. Keep business-readable tests and push Selenium details downward.</p>",
+    "tip": "Interviewers hire for framework thinking, not only record/playback scripts.",
+    "code": "tests/ → pages/ → utils/driver/ → testdata/",
+    "lang": "text",
+    "deep": "<h4>Example flow</h4><p><code class=\"inline\">OrderTest</code> calls <code class=\"inline\">LoginPage</code> + <code class=\"inline\">CheckoutPage</code>; driver created by factory; config from properties; failures screenshot via listener.</p><h4>How to say it in an interview</h4><p>“I separate tests, page objects, driver lifecycle, and data. That keeps suites readable and makes UI changes cheap to maintain.”</p>"
+  },
+  {
+    "id": "uia-robot-vs-selenium",
+    "category": "ui-automation",
+    "difficulty": "intermediate",
+    "tags": [
+      "strategy",
+      "when-to-automate"
+    ],
+    "question": "What should you automate in UI vs leave manual?",
+    "answer": "<p>Automate stable, high-value, repetitive paths (smoke, regression critical journeys). Leave exploratory, frequently changing UX experiments, and one-off edge visuals more manual. If a check is cheaper/faster at API level, prefer API automation.</p>",
+    "tip": "ROI matters — don’t automate everything just because you can.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Good UI automation candidates</h4><ul><li>Login + place order + cancel order.</li><li>Role-based navigation smoke.</li></ul><h4>Poor candidates</h4><ul><li>Pixel-perfect marketing banners changing weekly.</li><li>Hundreds of validation message permutations (do via API/unit).</li></ul><h4>How to say it in an interview</h4><p>“I automate high-value stable journeys and keep exploratory/volatile UX manual. Business rules go to API tests whenever possible.”</p>"
+  }
+]

@@ -1,0 +1,77 @@
+[
+  {
+    "id": "swift-what-is",
+    "category": "swift",
+    "difficulty": "beginner",
+    "tags": [
+      "swift",
+      "ios",
+      "basics"
+    ],
+    "question": "What is Swift, and why is it used for iOS development?",
+    "answer": "<p><strong>Swift</strong> is Apple's modern, open-source programming language used to develop applications for iOS, macOS, watchOS, and tvOS. It is designed to be fast, safe, and expressive, offering features like type inference, optionals, automatic memory management (ARC), and strong compile-time safety.</p>",
+    "tip": "Mention that Swift replaced Objective-C for most modern Apple application development.",
+    "code": "",
+    "lang": "swift"
+  },
+  {
+    "id": "swift-var-let",
+    "category": "swift",
+    "difficulty": "beginner",
+    "tags": [
+      "variables",
+      "constants",
+      "syntax"
+    ],
+    "question": "What is the difference between var and let in Swift?",
+    "answer": "<p><strong>var</strong> declares a mutable variable whose value can change after initialization.</p><p><strong>let</strong> declares an immutable constant whose value cannot be changed once assigned.</p>",
+    "tip": "Prefer <code class=\"inline\">let</code> whenever possible for safer and more predictable code.",
+    "code": "var age = 25\nage = 26\n\nlet name = \"John\"\n// name = \"Mike\" // Error",
+    "lang": "swift"
+  },
+  {
+    "id": "swift-optionals",
+    "category": "swift",
+    "difficulty": "intermediate",
+    "tags": [
+      "optionals",
+      "nil",
+      "safety"
+    ],
+    "question": "What are Optionals in Swift?",
+    "answer": "<p>An <strong>Optional</strong> represents a value that may either contain a value or be <code class=\"inline\">nil</code>. Swift uses optionals to prevent null pointer exceptions by forcing developers to safely unwrap values before using them.</p><p>Common unwrapping techniques include optional binding (<code class=\"inline\">if let</code>, <code class=\"inline\">guard let</code>) and the nil-coalescing operator (<code class=\"inline\">??</code>).</p>",
+    "tip": "Avoid force unwrapping (<code class=\"inline\">!</code>) unless you are absolutely certain the value is not nil.",
+    "code": "var username: String?\nif let name = username {\n    print(name)\n}",
+    "lang": "swift"
+  },
+  {
+    "id": "swift-arc",
+    "category": "swift",
+    "difficulty": "intermediate",
+    "tags": [
+      "arc",
+      "memory",
+      "performance"
+    ],
+    "question": "What is ARC (Automatic Reference Counting) in Swift?",
+    "answer": "<p><strong>ARC (Automatic Reference Counting)</strong> automatically manages memory by keeping track of object references. When an object's reference count becomes zero, Swift automatically deallocates it.</p><p>To avoid retain cycles, Swift provides <code class=\"inline\">weak</code> and <code class=\"inline\">unowned</code> references.</p>",
+    "tip": "One of the most common Swift interview questions is explaining retain cycles and when to use weak references.",
+    "code": "",
+    "lang": "swift"
+  },
+  {
+    "id": "swift-struct-class",
+    "category": "swift",
+    "difficulty": "intermediate",
+    "tags": [
+      "struct",
+      "class",
+      "oop"
+    ],
+    "question": "What is the difference between a Struct and a Class in Swift?",
+    "answer": "<p><strong>Structs</strong> are value types. They are copied when assigned or passed to functions.</p><p><strong>Classes</strong> are reference types. Multiple variables can reference the same object instance.</p><p>Classes support inheritance, deinitializers, and reference counting, while structs do not.</p>",
+    "tip": "Apple recommends using structs by default unless you specifically need reference semantics or inheritance.",
+    "code": "struct User {\n    var name: String\n}\n\nclass Person {\n    var name = \"John\"\n}",
+    "lang": "swift"
+  }
+]

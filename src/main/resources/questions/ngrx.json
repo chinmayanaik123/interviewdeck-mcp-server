@@ -1,0 +1,564 @@
+[
+  {
+    "id": "ngrx-flow",
+    "category": "ngrx",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "store",
+      "action",
+      "reducer",
+      "selector",
+      "effect"
+    ],
+    "question": "Explain the NgRx flow: store, action, reducer, selector, effect.",
+    "answer": "<p>A Redux pattern with <strong>one-way data flow</strong>:</p><ul><li><strong>Store</strong> — single immutable source of truth.</li><li><strong>Action</strong> — a plain event describing what happened.</li><li><strong>Reducer</strong> — pure function <code class=\"inline\">(state, action) → new state</code>, no side effects.</li><li><strong>Selector</strong> — memoised query to read a slice of state.</li><li><strong>Effect</strong> — handles side effects (API calls); listens for an action, does async work, dispatches success/failure.</li></ul><p>Component dispatches → effect calls API → dispatches success → reducer updates store → selector pushes the new value to the component.</p>",
+    "tip": "Draw the loop on the whiteboard — dispatch → effect → reducer → selector.",
+    "code": "// 1. Component dispatches\nthis.store.dispatch(loadUsers());\n\n// 2. Effect hears it, calls the API, dispatches the result\nloadUsers$ = createEffect(() => this.actions$.pipe(\n  ofType(loadUsers),\n  switchMap(() => this.api.getUsers().pipe(\n    map(users => loadUsersSuccess({ users })),\n    catchError(error => of(loadUsersFailure({ error })))\n  ))\n));\n\n// 3. Reducer folds the success action into new state\non(loadUsersSuccess, (state, { users }) => ({ ...state, users, loading: false }))\n\n// 4. Selector pushes it back to the component\nusers$ = this.store.select(selectUsers);",
+    "lang": "ts",
+    "deep": "<h4>The loop, in order</h4><p>Draw this — interviewers ask for the whiteboard version:</p><pre><code>Component --dispatch(action)--&gt; Store\n                                  |\n                        +---------+---------+\n                        |                   |\n                    Reducer             Effect\n                (pure, sync)        (side effects, async)\n                        |                   |\n                   new state          dispatch(successAction)\n                        |                   |\n                    Selector &lt;--------------+\n                        |\n                   Component (async pipe)</code></pre><p><strong>Key subtlety:</strong> an action goes to the reducer <em>and</em> the effects — simultaneously, not one then the other. Reducers run first (synchronously), then effects react. Both see every action.</p><h4>The five pieces and their one job</h4><table><thead><tr><th>Piece</th><th>Job</th><th>Rule</th></tr></thead><tbody><tr><td><strong>Store</strong></td><td>single source of truth</td><td>one immutable state tree</td></tr><tr><td><strong>Action</strong></td><td>describes what <em>happened</em></td><td>an event, never a command</td></tr><tr><td><strong>Reducer</strong></td><td><code class=\"inline\">(state, action) =&gt; newState</code></td><td>pure, sync, no I/O</td></tr><tr><td><strong>Selector</strong></td><td>query/derive state</td><td>pure, memoised</td></tr><tr><td><strong>Effect</strong></td><td>everything impure</td><td>action in, action out</td></tr></tbody></table><h4>Why the indirection exists</h4><p>The point is <strong>one-way data flow</strong>. State can only change by dispatching an action, so every change is described by a serialisable object. That single constraint buys you:</p><ul><li><strong>Traceability</strong> — DevTools shows an ordered log of everything that happened.</li><li><strong>Time-travel</strong> — replay actions from initial state to reproduce any bug.</li><li><strong>Testability</strong> — reducers are pure functions; no mocks needed.</li></ul><p>The price is boilerplate. That trade-off <em>is</em> the answer to \"why NgRx?\" — say both halves.</p><h4>Actions are events, not commands</h4><pre><code>// ✘ command — a caller telling the store what to do\naddUserToCart({ user })\n\n// ✔ event — a fact about what happened\n'[Product Page] Add To Cart Clicked'</code></pre><p>Model actions as <em>unique events from a source</em>, not as setters. One event can drive several reducers and effects; a command implies exactly one handler and quietly recreates tight coupling.</p><h4>Where beginners get it wrong</h4><ul><li>Calling the API in the reducer — reducers are pure and sync; that's what effects are for.</li><li>Reusing one action across many places to \"save code\" — you lose traceability, which was the entire point.</li><li>Putting derived data in the store — derive it in a selector instead, or it goes stale.</li></ul><h4>How to say it in an interview</h4><p>“A component dispatches an action; the reducer folds it into new state purely and synchronously, and effects react to the same action for anything async like HTTP, dispatching a success or failure action that flows back through a reducer. Components read via memoised selectors. The whole point is that state only changes through a serialisable action, which is what gives you the DevTools log and time-travel debugging — and the cost is the boilerplate, which is why I wouldn't use it on a small app.”</p>"
+  },
+  {
+    "id": "ngrx-when-not",
+    "category": "ngrx",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "architecture",
+      "tradeoffs",
+      "real-world"
+    ],
+    "question": "When would you NOT use NgRx?",
+    "answer": "<p>NgRx adds boilerplate. Skip it for small apps or local state — a simple <strong>service with a BehaviorSubject</strong> (or Signals) is enough. Reach for NgRx when state is <strong>large, shared across many features, and needs traceability / undo / debugging</strong>.</p>",
+    "tip": "The senior answer is 'right tool for the size of the app', not 'always use NgRx'.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>The honest answer: most of the time</h4><p>This question is a <strong>judgement test</strong>. Candidates who answer \"always use NgRx, it's best practice\" fail it. NgRx is a specialised tool with a real cost, and knowing when to decline it is the seniority signal.</p><h4>Don't use NgRx when…</h4><ul><li><strong>The state is local.</strong> Dialog open, selected tab, form value — that's component state. Putting it in a global store is a global variable with ceremony.</li><li><strong>You're just caching HTTP.</strong> If the \"state\" is really server data you fetch and display, a service with <code class=\"inline\">shareReplay(1)</code> — or TanStack Query — does it in 5 lines. NgRx is not a caching library.</li><li><strong>It's a small/medium app or a small team.</strong> The conventions pay off across many features and many developers. Below that, they're just typing.</li><li><strong>Only one feature uses it.</strong> If nothing else reads it, it isn't global state.</li></ul><h4>Do use NgRx when…</h4><ul><li>State is <strong>shared across many features</strong> and updated from several places.</li><li>You need <strong>traceability</strong> — an audit log of what changed and why (DevTools, time-travel).</li><li>Complex <strong>async coordination</strong> — racing, cancelling, retrying, sequencing across features.</li><li>A <strong>large team</strong> that benefits from one enforced way of doing things.</li><li>Undo/redo, or optimistic updates with rollback.</li></ul><h4>The ladder — the answer that lands</h4><table><thead><tr><th>Need</th><th>Reach for</th></tr></thead><tbody><tr><td>Local UI state</td><td><code class=\"inline\">signal()</code> / a component field</td></tr><tr><td>Shared across a few components</td><td>service + <code class=\"inline\">signal</code> / <code class=\"inline\">BehaviorSubject</code></td></tr><tr><td>Server cache</td><td><code class=\"inline\">shareReplay(1)</code> in a service</td></tr><tr><td>Feature-scoped complex state</td><td><strong>NgRx SignalStore</strong> / ComponentStore</td></tr><tr><td>Large shared app state + traceability</td><td>full <strong>NgRx Store</strong></td></tr></tbody></table><p>Naming <strong>SignalStore</strong> matters in 2026 — it's the modern middle ground: most of NgRx's structure with a fraction of the boilerplate, and no actions/reducers unless you want them. A candidate who only knows classic Store sounds a few years out of date.</p><h4>The cost, concretely</h4><p>One API call in classic NgRx = 3 actions + a reducer case + an effect + a selector, across 4 files. That's the tax. It buys structure and traceability; it doesn't buy correctness or speed.</p><h4>How to say it in an interview</h4><p>“I'd skip it for local UI state or when I'm really just caching server data — a service with <code class=\"inline\">shareReplay</code> handles that. NgRx earns its boilerplate when state is genuinely shared across features, updated from multiple places, and I need the traceability and time-travel to debug it, or with a big team that benefits from one enforced pattern. In between, I'd reach for SignalStore now — most of the structure, far less ceremony.”</p>"
+  },
+  {
+    "id": "ngrx-reducer-pure",
+    "category": "ngrx",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "reducer",
+      "immutability",
+      "pure"
+    ],
+    "question": "Why must reducers be pure and immutable?",
+    "answer": "<p>Purity (same input → same output, no side effects) makes state <strong>predictable, testable, and time-travel debuggable</strong>. Immutability (return a new object, never mutate) lets the store and OnPush components detect changes by reference, keeping change detection fast.</p>",
+    "tip": "Use the spread operator or an entity adapter — never push/splice existing state.",
+    "code": "on(loadSuccess, (state, { items }) => ({ ...state, items, loading: false }))",
+    "lang": "ts",
+    "deep": "<h4>Pure = same input, same output, no side effects</h4><pre><code>// ✘ NOT pure — I/O, and a different result each call\non(load, (state) =&gt; {\n  this.http.get('/users').subscribe();   // side effect!\n  return { ...state, at: Date.now() };   // non-deterministic!\n});\n\n// ✔ pure — a value in, a value out\non(loadSuccess, (state, { users }) =&gt; ({ ...state, users, loading: false }));</code></pre><p>Banned in a reducer: HTTP, routing, <code class=\"inline\">localStorage</code>, <code class=\"inline\">Date.now()</code>, <code class=\"inline\">Math.random()</code>, <code class=\"inline\">console.log</code>. All of it belongs in an effect.</p><h4>Why purity buys you time-travel</h4><p>DevTools replays <code class=\"inline\">state₀ + [action₁, action₂, …]</code> to reconstruct any point in time. That only works if replaying an action always produces the identical state. One <code class=\"inline\">Date.now()</code> and the replay diverges from what actually happened — the feature silently breaks.</p><h4>Why immutability is about change detection</h4><pre><code>// ✘ mutation — the reference is UNCHANGED\non(addUser, (state, { user }) =&gt; {\n  state.users.push(user);   // same array object\n  return state;             // same state object\n});\n// OnPush sees oldRef === newRef -&gt; \"nothing changed\" -&gt; NO re-render.\n// The data updated. The screen didn't. Classic \"why isn't my UI updating?\"\n\n// ✔ new references all the way up\non(addUser, (state, { user }) =&gt; ({ ...state, users: [...state.users, user] }));</code></pre><p>NgRx selectors, <code class=\"inline\">distinctUntilChanged</code>, and <code class=\"inline\">OnPush</code> all compare by <strong>reference</strong> (<code class=\"inline\">===</code>). Mutation defeats every one of them at once. That's the whole reason the rule exists — it's not dogma, it's what makes the fast path work.</p><h4>Spread is shallow — the trap</h4><pre><code>// ✘ looks immutable, isn't — the nested object is still shared\n{ ...state, user: { ...state.user } }   // state.user.address is the SAME object\n\n// ✔ every level you change needs a new reference\n{ ...state, user: { ...state.user, address: { ...state.user.address, city } } }</code></pre><p>This is exactly why deep state trees are painful and why <strong>@ngrx/entity</strong> (flat, normalised) exists.</p><h4>Let the framework catch you</h4><pre><code>StoreModule.forRoot(reducers, {\n  runtimeChecks: {\n    strictStateImmutability: true,   // throws if you mutate state\n    strictActionImmutability: true\n  }\n});</code></pre><p>These freeze state in dev, so a mutation throws immediately instead of becoming a \"why won't my list refresh?\" mystery. On by default in modern NgRx.</p><h4>How to say it in an interview</h4><p>“Purity is what makes time-travel work — DevTools replays actions from the initial state, so a <code class=\"inline\">Date.now()</code> or an HTTP call in a reducer makes the replay diverge. Immutability is about change detection: selectors and OnPush compare by reference, so mutating an array means the reference is unchanged and the UI never re-renders even though the data did. Spread is shallow, which is the usual trap — and I turn on <code class=\"inline\">strictStateImmutability</code> so it throws instead of failing silently.”</p>"
+  },
+  {
+    "id": "ngrx-selectors",
+    "category": "ngrx",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "selector",
+      "memoization",
+      "performance"
+    ],
+    "question": "What are selectors and why are they memoised?",
+    "answer": "<p>Selectors are pure functions that read and derive data from the store. <code class=\"inline\">createSelector</code> <strong>memoises</strong> the result — it recomputes only when its inputs change, avoiding needless recalculation and re-renders.</p>",
+    "tip": "Compose selectors from smaller ones for reuse and better memoization.",
+    "code": "export const selectActiveUsers = createSelector(\n  selectUsers,\n  users => users.filter(u => u.active)\n);",
+    "lang": "ts",
+    "deep": "<h4>What memoisation actually does</h4><pre><code>export const selectActiveUsers = createSelector(\n  selectUsers,                          // input selector\n  (users) =&gt; users.filter(u =&gt; u.active) // projector — the expensive bit\n);</code></pre><p><code class=\"inline\">createSelector</code> caches the <strong>last</strong> input references and the last result. On each store emission it compares the new inputs by <code class=\"inline\">===</code>:</p><ul><li>Inputs unchanged → return the <strong>cached result object</strong>, skip the projector entirely.</li><li>Any input changed → re-run the projector, cache the new result.</li></ul><p>Two payoffs. The projector doesn't re-run (saves CPU on filter/sort/map), and — more importantly — the returned <strong>reference is stable</strong>, so <code class=\"inline\">OnPush</code> components don't re-render.</p><h4>Why the reference matters more than the CPU</h4><pre><code>// ✘ no selector — a NEW array every single store emission\nusers$ = this.store.select(s =&gt; s.users.filter(u =&gt; u.active));\n// Any unrelated state change (a toast, a spinner) creates a new array ref\n// -&gt; every OnPush component using it re-renders. Death by a thousand cuts.</code></pre><p>Memoisation cache size is <strong>1</strong>. That's enough because the store emits sequentially, but it's why alternating inputs thrash the cache.</p><h4>Compose — don't write fat selectors</h4><pre><code>const selectUserState = createFeatureSelector&lt;UserState&gt;('users');\nconst selectUsers     = createSelector(selectUserState, s =&gt; s.users);\nconst selectFilter    = createSelector(selectUserState, s =&gt; s.filter);\n\n// each layer memoises independently\nexport const selectVisibleUsers = createSelector(\n  selectUsers, selectFilter,\n  (users, filter) =&gt; users.filter(u =&gt; u.name.includes(filter))\n);</code></pre><p>If <code class=\"inline\">filter</code> changes but <code class=\"inline\">users</code> doesn't, only the final projector re-runs — the upstream ones return cached values.</p><h4>Parameterised selectors — the known trap</h4><pre><code>// ✘ factory called per component -&gt; a NEW selector each time -&gt; NO shared cache\nexport const selectUserById = (id: string) =&gt;\n  createSelector(selectUsers, users =&gt; users.find(u =&gt; u.id === id));\n\n// ✔ props-style — one selector instance, cache preserved\nexport const selectUserById = createSelector(\n  selectUsers,\n  (users: User[], props: { id: string }) =&gt; users.find(u =&gt; u.id === props.id)\n);\nthis.store.select(selectUserById, { id });</code></pre><p>Even the props form only caches the <em>last</em> id — two components with different ids thrash it. For per-id lookups, <strong>@ngrx/entity</strong>'s <code class=\"inline\">entities[id]</code> dictionary is the right answer: O(1), no cache thrash.</p><h4>Derive, never store</h4><p>Don't put <code class=\"inline\">activeUserCount</code> in state and update it in three reducers — it will go stale. Store the minimum; derive the rest in selectors. \"Can I compute this from what's already in the store?\" → then it's a selector.</p><h4>How to say it in an interview</h4><p>“Selectors are pure queries, and <code class=\"inline\">createSelector</code> memoises on its input references — if they're unchanged it skips the projector and returns the <em>same</em> result reference, which is what stops OnPush components re-rendering on unrelated state changes. I compose small selectors so each layer memoises independently, and I keep derived data out of state entirely. The trap is parameterised selectors — a factory per component gets you a fresh cache each time, so for by-id lookups I'd use @ngrx/entity's dictionary.”</p>"
+  },
+  {
+    "id": "ngrx-effects",
+    "category": "ngrx",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "effects",
+      "side-effects",
+      "rxjs"
+    ],
+    "question": "What are Effects and why not call APIs in reducers?",
+    "answer": "<p><strong>Effects</strong> isolate side effects (HTTP, routing, storage) from reducers. An effect listens to an action stream, runs async work, and maps it to a new action. Reducers must stay pure, so any I/O belongs in effects.</p>",
+    "tip": "Use switchMap in effects for cancel-on-new (loads) and concatMap for ordered writes.",
+    "code": "load$ = createEffect(() => this.actions$.pipe(\n  ofType(load),\n  switchMap(() => this.api.get().pipe(\n    map(items => loadSuccess({ items })),\n    catchError(err => of(loadFailure({ err })))\n  ))\n));",
+    "lang": "ts",
+    "deep": "<h4>What an effect is</h4><p>An effect is <strong>an observable of actions, in and out</strong>. It listens to the global action stream, filters with <code class=\"inline\">ofType</code>, does something impure, and (usually) maps the result to a new action that a reducer can fold in.</p><pre><code>loadUsers$ = createEffect(() =&gt; this.actions$.pipe(\n  ofType(loadUsers),                       // 1. filter the stream\n  switchMap(() =&gt; this.api.getUsers().pipe( // 2. side effect\n    map(users =&gt; loadUsersSuccess({ users })),      // 3. success action\n    catchError(err =&gt; of(loadUsersFailure({ err }))) // 4. failure action\n  ))\n));</code></pre><p><code class=\"inline\">this.actions$</code> is a <em>hot</em> stream of <strong>every</strong> action dispatched anywhere in the app. Effects and reducers both receive each action — reducers first (sync), then effects.</p><h4>Why not call the API in a reducer?</h4><p>Reducers must be pure so DevTools can replay actions to reconstruct state. An HTTP call in a reducer would fire again on every replay, and would return different data each time — time-travel breaks, tests need mocks, and the reducer is no longer a function you can reason about. So <strong>all impurity is pushed to the edge</strong>: effects.</p><h4>The error rule — this is the one that bites</h4><pre><code>// ✘ BROKEN — catchError on the OUTER stream\nloadUsers$ = createEffect(() =&gt; this.actions$.pipe(\n  ofType(loadUsers),\n  switchMap(() =&gt; this.api.getUsers()),\n  map(users =&gt; loadUsersSuccess({ users })),\n  catchError(err =&gt; of(loadUsersFailure({ err })))   // outer!\n));</code></pre><p>One failed request errors the outer stream. <code class=\"inline\">catchError</code> handles it — and then the outer observable <strong>completes</strong>. The effect is now <strong>dead for the rest of the app's lifetime</strong>: dispatch <code class=\"inline\">loadUsers</code> again and nothing happens, with no error in the console. Fix: <code class=\"inline\">catchError</code> <em>inside</em> the inner pipe, so the outer action stream never sees an error. This is the single most common NgRx bug.</p><h4>Choosing the flattening operator matters here</h4><p><code class=\"inline\">switchMap</code> for loads/search (cancel stale), <code class=\"inline\">concatMap</code> for ordered writes, <code class=\"inline\">exhaustMap</code> for login/submit (ignore double-clicks), <code class=\"inline\">mergeMap</code> for independent parallel work. Using <code class=\"inline\">switchMap</code> on a save is a real bug — a second save cancels the first, and the user silently loses data.</p><h4>Effects that dispatch nothing</h4><pre><code>navigate$ = createEffect(() =&gt; this.actions$.pipe(\n  ofType(loginSuccess),\n  tap(() =&gt; this.router.navigate(['/dashboard']))\n), { dispatch: false });   // required — or NgRx re-dispatches the action -&gt; infinite loop</code></pre><h4>Modern: functional effects</h4><pre><code>export const loadUsers$ = createEffect(\n  (actions$ = inject(Actions), api = inject(ApiService)) =&gt;\n    actions$.pipe(ofType(loadUsers), switchMap(() =&gt; ...)),\n  { functional: true }\n);</code></pre><h4>How to say it in an interview</h4><p>“An effect takes actions in and returns actions out — it's where everything impure lives, because reducers have to stay pure for replay and testing. The critical detail is <code class=\"inline\">catchError</code> placement: on the outer stream it handles the first error and then the effect completes permanently, so the feature silently stops working. It goes inside the inner observable, returning a failure action. And the flattening operator is a real decision — <code class=\"inline\">switchMap</code> on a save would cancel an in-flight write.”</p>"
+  },
+  {
+    "id": "ngrx-vs-service",
+    "category": "ngrx",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "service",
+      "behaviorsubject",
+      "comparison",
+      "architecture"
+    ],
+    "question": "NgRx store vs a service with BehaviorSubject.",
+    "answer": "<p>A <strong>service + BehaviorSubject</strong> is simple shared state — great for small/medium apps. <strong>NgRx</strong> adds structure: strict unidirectional flow, DevTools time-travel, effects, and clear conventions that scale to large teams — at the cost of boilerplate.</p>",
+    "tip": "Signals-based stores (NgRx SignalStore, or a plain signal service) are the modern lightweight middle ground.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>A BehaviorSubject service is a store</h4><pre><code>@Injectable({ providedIn: 'root' })\nexport class CartService {\n  private state$ = new BehaviorSubject&lt;CartState&gt;(initial);\n\n  readonly items$ = this.state$.pipe(map(s =&gt; s.items), distinctUntilChanged());\n\n  add(item: Item) {\n    const s = this.state$.value;\n    this.state$.next({ ...s, items: [...s.items, item] });   // immutable update\n  }\n}</code></pre><p>That's ~10 lines and it covers a large share of what people use NgRx for. Being able to write it is what makes “when would you not use NgRx?” credible.</p><h4>What NgRx adds — and it's not features</h4><table><thead><tr><th></th><th>Service + BehaviorSubject</th><th>NgRx Store</th></tr></thead><tbody><tr><td>Boilerplate</td><td>minimal</td><td>3 actions + reducer + effect + selector</td></tr><tr><td>Who can change state</td><td><strong>anyone who injects it</strong></td><td>only via a dispatched action</td></tr><tr><td>DevTools / time-travel</td><td>no</td><td><strong>yes</strong></td></tr><tr><td>Change audit trail</td><td>no</td><td><strong>every action logged</strong></td></tr><tr><td>Memoised derivation</td><td>hand-rolled</td><td><code class=\"inline\">createSelector</code></td></tr><tr><td>Async patterns</td><td>ad hoc per service</td><td>effects, one convention</td></tr><tr><td>Learning curve</td><td>low</td><td>real</td></tr></tbody></table><p>The row that matters is <strong>\"who can change state\"</strong>. In a service, any component can call <code class=\"inline\">.next()</code> or even <code class=\"inline\">state$.value</code> and mutate. With 5 teams, state changes from 40 places and nobody can answer \"why did this become null?\". NgRx's constraint — <em>the only way to change state is to dispatch a serialisable action</em> — is the actual product. Everything else follows from it.</p><h4>Where the service approach breaks down</h4><ul><li><strong>Debuggability at scale</strong> — no log of what changed and why.</li><li><strong>Discipline drift</strong> — someone exposes the Subject publicly, or mutates <code class=\"inline\">.value</code> directly, and the invariant is gone with no lint to catch it.</li><li><strong>Convention drift</strong> — 10 services, 10 different shapes. New joiners learn each one.</li></ul><p>Note the first bullet is fixable: you can wire up your own devtools. The second and third are <em>social</em> problems — which is precisely why NgRx pays off with team size, not app size.</p><h4>The modern middle ground: SignalStore</h4><pre><code>export const CartStore = signalStore(\n  { providedIn: 'root' },\n  withState(initial),\n  withComputed(({ items }) =&gt; ({ total: computed(() =&gt; items().length) })),\n  withMethods((store, api = inject(ApiService)) =&gt; ({\n    add(item: Item) { patchState(store, s =&gt; ({ items: [...s.items, item] })); }\n  }))\n);</code></pre><p>Structure and conventions of NgRx, no actions/reducers/effects boilerplate, signals-native. In 2026 this is often the right default — mention it.</p><h4>How to say it in an interview</h4><p>“A BehaviorSubject service <em>is</em> a store — I can write one in ten lines, and for most apps it's enough. What NgRx really adds isn't features, it's a <strong>constraint</strong>: state can only change by dispatching a serialisable action. That's what gives you the DevTools log and time-travel, and it's what stops forty call sites mutating state directly once you have several teams. So the deciding factor is team size and debuggability, not app size. These days I'd look at SignalStore first — most of the structure, far less ceremony.”</p>"
+  },
+  {
+    "id": "ngrx-entity",
+    "category": "ngrx",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "entity",
+      "adapter",
+      "normalization",
+      "performance"
+    ],
+    "question": "What is @ngrx/entity?",
+    "answer": "<p>A helper that stores collections in a normalised <code class=\"inline\">{ ids: [], entities: {} }</code> shape and provides an <strong>adapter</strong> with CRUD helpers (<code class=\"inline\">addOne</code>, <code class=\"inline\">updateOne</code>, <code class=\"inline\">removeOne</code>) plus ready-made selectors — removing hand-written immutable array logic.</p>",
+    "tip": "Normalising by id makes lookups O(1) and updates immutable-friendly.",
+    "code": "const adapter = createEntityAdapter<User>();\nconst initialState = adapter.getInitialState();",
+    "lang": "ts",
+    "deep": "<h4>The problem it solves</h4><pre><code>// Array state — every update is a hand-written immutable crawl\non(updateUser, (state, { user }) =&gt; ({\n  ...state,\n  users: state.users.map(u =&gt; u.id === user.id ? { ...u, ...user } : u)  // O(n)\n}));\non(removeUser, (state, { id }) =&gt; ({\n  ...state,\n  users: state.users.filter(u =&gt; u.id !== id)   // O(n), easy to get wrong\n}));</code></pre><p>Every collection reducer becomes a map/filter/findIndex puzzle. Lookups are O(n). And <code class=\"inline\">map</code> returns a <strong>new array reference</strong> even when nothing matched — so every OnPush list re-renders on a no-op update.</p><h4>The normalised shape</h4><pre><code>{\n  ids: ['u1', 'u3', 'u2'],           // order lives here\n  entities: {                        // lookup lives here — O(1)\n    u1: { id: 'u1', name: 'Ann' },\n    u2: { id: 'u2', name: 'Bob' },\n    u3: { id: 'u3', name: 'Cat' }\n  }\n}</code></pre><p>This is the same idea as a database index: separate <strong>identity</strong> from <strong>ordering</strong>. It's the standard Redux normalisation pattern, and <code class=\"inline\">@ngrx/entity</code> just implements it for you.</p><h4>The adapter</h4><pre><code>export const adapter = createEntityAdapter&lt;User&gt;({\n  selectId: (u) =&gt; u.userId,                       // if not 'id'\n  sortComparer: (a, b) =&gt; a.name.localeCompare(b.name)  // keeps ids[] sorted\n});\n\nexport const initialState = adapter.getInitialState({ loading: false });\n\nexport const reducer = createReducer(\n  initialState,\n  on(loadSuccess, (state, { users }) =&gt; adapter.setAll(users, state)),\n  on(addUser,     (state, { user })  =&gt; adapter.addOne(user, state)),\n  on(updateUser,  (state, { user })  =&gt; adapter.updateOne({ id: user.id, changes: user }, state)),\n  on(removeUser,  (state, { id })    =&gt; adapter.removeOne(id, state))\n);</code></pre><p>Each helper returns a correctly-updated immutable state — no spread gymnastics.</p><h4>Free selectors</h4><pre><code>const { selectAll, selectEntities, selectIds, selectTotal } = adapter.getSelectors();\n\nexport const selectUserState = createFeatureSelector&lt;State&gt;('users');\nexport const selectAllUsers  = createSelector(selectUserState, selectAll);      // User[]\nexport const selectUserMap   = createSelector(selectUserState, selectEntities); // dictionary\nexport const selectUserCount = createSelector(selectUserState, selectTotal);</code></pre><p><code class=\"inline\">selectEntities</code> is the good answer to parameterised selectors: <code class=\"inline\">selectUserMap()[id]</code> is an O(1) lookup with no memoisation cache to thrash.</p><h4>setAll vs addMany vs upsertMany</h4><table><thead><tr><th>Method</th><th>Behaviour</th></tr></thead><tbody><tr><td><code class=\"inline\">setAll</code></td><td><strong>replaces</strong> the whole collection</td></tr><tr><td><code class=\"inline\">addMany</code></td><td>adds; <strong>ignores</strong> existing ids</td></tr><tr><td><code class=\"inline\">upsertMany</code></td><td>adds new, updates existing ← usually what you want for paging</td></tr><tr><td><code class=\"inline\">updateOne</code></td><td>partial <code class=\"inline\">changes</code>; no-op if id missing</td></tr></tbody></table><p><code class=\"inline\">addOne</code> silently doing nothing when the id already exists is a classic \"why isn't my item updating?\" — use <code class=\"inline\">upsertOne</code>.</p><h4>How to say it in an interview</h4><p>“It normalises a collection into <code class=\"inline\">ids</code> plus an <code class=\"inline\">entities</code> dictionary, so lookups are O(1) instead of a <code class=\"inline\">find</code>, and the adapter gives you immutable CRUD helpers so reducers aren't hand-written map/filter chains. You also get <code class=\"inline\">selectAll</code>/<code class=\"inline\">selectEntities</code> for free — and <code class=\"inline\">selectEntities</code> is how I do by-id lookups without thrashing a memoised selector's cache. The gotcha is <code class=\"inline\">addOne</code> silently ignoring an existing id; <code class=\"inline\">upsertOne</code> is usually what you actually want.”</p>"
+  },
+  {
+    "id": "ngrx-devtools",
+    "category": "ngrx",
+    "difficulty": "beginner",
+    "tags": [
+      "devtools",
+      "debugging"
+    ],
+    "question": "What do the Redux DevTools give you with NgRx?",
+    "answer": "<p>A visual log of every action, the state before/after, and <strong>time-travel debugging</strong> — you can replay actions and jump to any past state. This traceability is a core reason to adopt NgRx on large apps.</p>",
+    "tip": "Mention time-travel debugging — it's the standout benefit interviewers look for.",
+    "code": "StoreDevtoolsModule.instrument({ maxAge: 25 })",
+    "lang": "ts"
+  },
+  {
+    "id": "ngrx-action-hygiene",
+    "category": "ngrx",
+    "difficulty": "intermediate",
+    "tags": [
+      "actions",
+      "best-practices"
+    ],
+    "question": "What's a good convention for naming actions?",
+    "answer": "<p>Use the pattern <code class=\"inline\">[Source] Event</code> — describe <em>what happened</em>, not what to do. Group by feature and event (e.g. <code class=\"inline\">[Auth API] Login Success</code>). Prefer many specific, descriptive actions over a few generic setters.</p>",
+    "tip": "Actions are events, not commands — name them in the past tense.",
+    "code": "export const loginSuccess = createAction(\n  '[Auth API] Login Success',\n  props<{ user: User }>()\n);",
+    "lang": "ts"
+  },
+  {
+    "id": "ngrx-actions-createaction",
+    "category": "ngrx",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "actions",
+      "createAction",
+      "props"
+    ],
+    "question": "What are Actions in NgRx? How do you create them using createAction()?",
+    "answer": "<p><strong>Actions</strong> are plain objects that describe <strong>what happened</strong> in the application. They are the only way to change the store's state. Modern NgRx uses <code class=\"inline\">createAction()</code> to define actions, optionally with <code class=\"inline\">props()</code> to carry data.</p>",
+    "tip": "Remember: Actions describe events, not commands. Use names like <code class=\"inline\">[User API] Load Success</code> instead of <code class=\"inline\">SetUsers</code>.",
+    "code": "export const loadUsers = createAction('[Users Page] Load Users');\n\nexport const loadUsersSuccess = createAction(\n  '[Users API] Load Success',\n  props<{ users: User[] }>()\n);",
+    "lang": "ts"
+  },
+  {
+    "id": "ngrx-props",
+    "category": "ngrx",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "actions",
+      "props",
+      "payload"
+    ],
+    "question": "What is props() in NgRx?",
+    "answer": "<p><code class=\"inline\">props()</code> defines the payload carried by an action. Instead of manually creating an object, it provides strongly typed data that reducers and effects can safely access.</p>",
+    "tip": "Think of <code class=\"inline\">props()</code> as the parameters passed along with an action.",
+    "code": "export const updateUser = createAction(\n  '[User Page] Update User',\n  props<{ id: number; name: string }>()\n);\n\nthis.store.dispatch(updateUser({\n  id: 1,\n  name: 'John'\n}));",
+    "lang": "ts"
+  },
+  {
+    "id": "ngrx-createreducer-vs-switch",
+    "category": "ngrx",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "reducers",
+      "createReducer",
+      "switch"
+    ],
+    "question": "Why is createReducer() preferred over the old switch statement?",
+    "answer": "<p><code class=\"inline\">createReducer()</code> is more readable, type-safe and easier to maintain. It avoids long switch statements and works seamlessly with <code class=\"inline\">on()</code> handlers. It also provides better TypeScript support and cleaner code.</p>",
+    "tip": "Modern NgRx applications should always prefer <code class=\"inline\">createReducer()</code>.",
+    "code": "export const userReducer = createReducer(\n  initialState,\n  on(loadUsersSuccess, (state, { users }) => ({\n    ...state,\n    users\n  }))\n);",
+    "lang": "ts"
+  },
+  {
+    "id": "ngrx-on-function",
+    "category": "ngrx",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "reducers",
+      "on",
+      "createReducer"
+    ],
+    "question": "What is the on() function inside createReducer()?",
+    "answer": "<p><code class=\"inline\">on()</code> connects one or more actions to a reducer function. Whenever one of those actions is dispatched, the reducer executes and returns a new immutable state.</p>",
+    "tip": "Think of <code class=\"inline\">on()</code> as the replacement for each <code class=\"inline\">case</code> inside a switch statement.",
+    "code": "export const reducer = createReducer(\n  initialState,\n  on(loadUsersSuccess, (state, { users }) => ({\n    ...state,\n    users,\n    loading: false\n  }))\n);",
+    "lang": "ts"
+  },
+  {
+    "id": "ngrx-effect-mapping-operators",
+    "category": "ngrx",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "effects",
+      "rxjs",
+      "switchMap",
+      "mergeMap",
+      "concatMap",
+      "exhaustMap"
+    ],
+    "question": "When should you use switchMap(), mergeMap(), concatMap() and exhaustMap() inside NgRx Effects?",
+    "answer": "<p>Each RxJS mapping operator has a different behavior:</p><ul><li><strong>switchMap()</strong> — Cancels the previous request and keeps only the latest one. Best for Search or Auto Complete.</li><li><strong>mergeMap()</strong> — Runs all requests in parallel. Best when every request must complete independently.</li><li><strong>concatMap()</strong> — Executes requests one after another in order. Best for sequential updates.</li><li><strong>exhaustMap()</strong> — Ignores new requests while one is already running. Best for Login or Submit buttons to prevent duplicate requests.</li></ul>",
+    "tip": "Interviewers almost always ask which operator you'd use for Search, Login and Save APIs.",
+    "code": "// Search API\nswitchMap(() => this.api.search())\n\n// Multiple parallel uploads\nmergeMap(() => this.api.upload())\n\n// Save records sequentially\nconcatMap(() => this.api.save())\n\n// Prevent double login click\nexhaustMap(() => this.api.login())",
+    "lang": "ts",
+    "deep": "<h4>The decision is about concurrency</h4><p>All four take an action and return an inner observable. They differ <strong>only</strong> in what happens when a new action arrives while an inner request is still in flight.</p><table><thead><tr><th>Operator</th><th>New action arrives mid-flight</th><th>Use for</th><th>Wrong choice costs you</th></tr></thead><tbody><tr><td><code class=\"inline\">switchMap</code></td><td><strong>cancels</strong> the previous</td><td>search, autocomplete, load</td><td>cancels a save → data loss</td></tr><tr><td><code class=\"inline\">mergeMap</code></td><td>runs <strong>both</strong> in parallel</td><td>independent work (uploads)</td><td>out-of-order results</td></tr><tr><td><code class=\"inline\">concatMap</code></td><td><strong>queues</strong> it, in order</td><td>ordered writes, sequential saves</td><td>slow if requests are long</td></tr><tr><td><code class=\"inline\">exhaustMap</code></td><td><strong>ignores</strong> it</td><td>login, submit</td><td>drops legitimate retries</td></tr></tbody></table><h4>The three the interviewer will name</h4><pre><code>// SEARCH -&gt; switchMap. Stale results must never overwrite fresh ones.\nsearch$ = createEffect(() =&gt; this.actions$.pipe(\n  ofType(search),\n  switchMap(({ term }) =&gt; this.api.search(term).pipe(\n    map(r =&gt; searchSuccess({ r })),\n    catchError(e =&gt; of(searchFailure({ e })))\n  ))\n));\n\n// LOGIN -&gt; exhaustMap. User double-clicks; ignore the second click entirely.\nlogin$ = createEffect(() =&gt; this.actions$.pipe(\n  ofType(login),\n  exhaustMap(({ creds }) =&gt; this.api.login(creds).pipe(...))\n));\n\n// SAVE -&gt; concatMap. Every write must happen, in order.\nsave$ = createEffect(() =&gt; this.actions$.pipe(\n  ofType(save),\n  concatMap(({ item }) =&gt; this.api.save(item).pipe(...))\n));</code></pre><h4>Why switchMap on a save is a genuine bug</h4><p>The user edits row 1, hits save, immediately edits row 2 and hits save. <code class=\"inline\">switchMap</code> <strong>cancels the first request</strong> — row 1 is never persisted, and the UI happily shows success. Silent data loss that only reproduces when the user is fast. Writes want <code class=\"inline\">concatMap</code>; reads want <code class=\"inline\">switchMap</code>.</p><h4>exhaustMap vs a disabled button</h4><p>Disabling the button is UI-level and can be bypassed (double-click before the flag flips, Enter key, a script). <code class=\"inline\">exhaustMap</code> enforces it at the <em>stream</em> level: while a login is in flight, further login actions are dropped. Defence in depth — do both.</p><h4>The rule of thumb</h4><ul><li><strong>Read</strong> (GET, only latest matters) → <code class=\"inline\">switchMap</code></li><li><strong>Write</strong> (POST/PUT, all must land in order) → <code class=\"inline\">concatMap</code></li><li><strong>Idempotent + independent</strong> → <code class=\"inline\">mergeMap</code></li><li><strong>Must not double-fire</strong> → <code class=\"inline\">exhaustMap</code></li></ul><h4>The catchError placement still applies</h4><p>Whichever you pick, <code class=\"inline\">catchError</code> goes on the <strong>inner</strong> observable. On the outer, the first failure completes the effect permanently.</p><h4>How to say it in an interview</h4><p>“They're four concurrency strategies for the same shape. Search gets <code class=\"inline\">switchMap</code> so a slow stale response can't overwrite the latest. Login gets <code class=\"inline\">exhaustMap</code> so a double-click is ignored at the stream level, not just by disabling a button. Saves get <code class=\"inline\">concatMap</code> so every write lands in order — using <code class=\"inline\">switchMap</code> there would cancel an in-flight save and silently lose the user's data. <code class=\"inline\">mergeMap</code> when the requests are genuinely independent. Reads cancel, writes queue.”</p>"
+  },
+  {
+    "id": "ngrx-api-success-failure",
+    "category": "ngrx",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "effects",
+      "actions",
+      "error-handling",
+      "real-world"
+    ],
+    "question": "How do you handle API Success and Failure in NgRx?",
+    "answer": "<p>Follow a three-action pattern: <strong>Load</strong>, <strong>Load Success</strong>, and <strong>Load Failure</strong>. The component dispatches the Load action, the Effect calls the API, then dispatches either Success or Failure. The Reducer updates the store accordingly.</p>",
+    "tip": "Almost every API call in NgRx follows the pattern: Request → Success → Failure.",
+    "code": "export const loadUsers = createAction('[Users] Load');\n\nexport const loadUsersSuccess = createAction(\n  '[Users API] Load Success',\n  props<{ users: User[] }>()\n);\n\nexport const loadUsersFailure = createAction(\n  '[Users API] Load Failure',\n  props<{ error: any }>()\n);",
+    "lang": "ts",
+    "deep": "<h4>Why three actions, not one</h4><p>An async call has <strong>three distinct moments</strong>, and each needs different state:</p><pre><code>loadUsers        -&gt; loading: true,  error: null\nloadUsersSuccess -&gt; loading: false, users: [...]\nloadUsersFailure -&gt; loading: false, error: '...'</code></pre><p>Squashing them into one action means you can't render a spinner or an error — the reducer has no way to know which phase you're in. The triplet is why the pattern is universal.</p><h4>The full slice</h4><pre><code>// actions — note the SOURCE in the name\nexport const loadUsers        = createAction('[Users Page] Load');\nexport const loadUsersSuccess = createAction('[Users API] Load Success',\n  props&lt;{ users: User[] }&gt;());\nexport const loadUsersFailure = createAction('[Users API] Load Failure',\n  props&lt;{ error: string }&gt;());\n\n// reducer — all three phases\nexport const reducer = createReducer(\n  initialState,\n  on(loadUsers,        (s) =&gt; ({ ...s, loading: true, error: null })),\n  on(loadUsersSuccess, (s, { users }) =&gt; ({ ...s, loading: false, users })),\n  on(loadUsersFailure, (s, { error }) =&gt; ({ ...s, loading: false, error }))\n);\n\n// effect — catchError INSIDE\nloadUsers$ = createEffect(() =&gt; this.actions$.pipe(\n  ofType(loadUsers),\n  switchMap(() =&gt; this.api.getUsers().pipe(\n    map(users =&gt; loadUsersSuccess({ users })),\n    catchError(err =&gt; of(loadUsersFailure({ error: err.message })))\n  ))\n));</code></pre><h4>Naming: '[Source] Event', not '[Feature] Command'</h4><p>Note <code class=\"inline\">[Users Page]</code> vs <code class=\"inline\">[Users API]</code> — the <em>source</em> differs. That's deliberate: in DevTools you instantly see whether a load came from the page, a resolver, or a refresh poll. Reusing one <code class=\"inline\">'[Users] Load'</code> for all three destroys that. Actions are cheap; be specific.</p><h4>Why failure must be an action, not a thrown error</h4><ul><li>It's <strong>serialisable</strong> — DevTools logs it and time-travel replays it.</li><li>The reducer can render an error state.</li><li><em>Other</em> effects can react to it (log to Sentry, show a toast) without coupling.</li></ul><h4>The bug this pattern hides</h4><pre><code>// ✘ catchError outside — first failure kills the effect FOREVER\nswitchMap(() =&gt; this.api.getUsers()),\nmap(users =&gt; loadUsersSuccess({ users })),\ncatchError(err =&gt; of(loadUsersFailure({ error: err })))</code></pre><p>The error propagates to the outer <code class=\"inline\">actions$</code> stream, <code class=\"inline\">catchError</code> handles it once, and the outer observable <strong>completes</strong>. Retry the load and nothing happens — no console error, no clue. Inner placement is non-negotiable.</p><h4>Storing the error</h4><p>Store a <em>string</em> or a small serialisable object, never the raw <code class=\"inline\">HttpErrorResponse</code> — it's a class instance and trips <code class=\"inline\">strictStateSerializability</code>, and it can't be replayed.</p><h4>How to say it in an interview</h4><p>“Request/Success/Failure, because the three phases need different state — loading, data, error — and one action can't express that. The effect maps the API result to a success or failure action, always with <code class=\"inline\">catchError</code> <em>inside</em> the inner pipe: outside, the first failure completes the effect permanently and the feature silently stops responding. I name actions by source — <code class=\"inline\">[Users Page] Load</code> vs <code class=\"inline\">[Users API] Load Success</code> — so DevTools tells me where it came from, and I store a serialisable error string rather than the HttpErrorResponse.”</p>"
+  },
+  {
+    "id": "ngrx-feature-store",
+    "category": "ngrx",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "store",
+      "feature-store",
+      "architecture",
+      "lazy-loading"
+    ],
+    "question": "What is the difference between the Root Store and a Feature Store?",
+    "answer": "<p>The <strong>Root Store</strong> contains global application state (authentication, user, settings). A <strong>Feature Store</strong> contains state for a specific feature or module (Products, Orders, Dashboard). Feature stores are registered independently and keep the application modular.</p>",
+    "tip": "Global state belongs in the Root Store. Feature-specific state belongs in a Feature Store.",
+    "code": "StoreModule.forRoot({ auth: authReducer });\n\nStoreModule.forFeature('products', productReducer);",
+    "lang": "ts",
+    "deep": "<h4>Root vs feature</h4><table><thead><tr><th></th><th>Root Store</th><th>Feature Store</th></tr></thead><tbody><tr><td>Registered with</td><td><code class=\"inline\">provideStore()</code> / <code class=\"inline\">forRoot()</code></td><td><code class=\"inline\">provideState()</code> / <code class=\"inline\">forFeature()</code></td></tr><tr><td>Registered</td><td>once, at bootstrap</td><td>per feature, often lazily</td></tr><tr><td>Holds</td><td>auth, current user, settings</td><td>products, orders, dashboard</td></tr><tr><td>Lives</td><td>whole app lifetime</td><td>from first load onward</td></tr></tbody></table><pre><code>// root\nbootstrapApplication(App, {\n  providers: [provideStore({ auth: authReducer }), provideEffects([AuthEffects])]\n});\n\n// lazy feature route — registered when the route is first visited\n{\n  path: 'orders',\n  providers: [provideState(ordersFeature), provideEffects([OrdersEffects])],\n  loadChildren: () =&gt; import('./orders/routes')\n}</code></pre><h4>The bit that surprises people: features are dynamic</h4><p>The store's state tree <strong>changes shape at runtime</strong>. Before you visit <code class=\"inline\">/orders</code>:</p><pre><code>{ auth: {...} }\n// after visiting /orders:\n{ auth: {...}, orders: {...} }</code></pre><p>This has three real consequences:</p><ul><li>A root-level selector reading <code class=\"inline\">state.orders</code> gets <code class=\"inline\">undefined</code> until the feature loads — hence <code class=\"inline\">createFeatureSelector</code>, which is written to tolerate it.</li><li>A feature's reducer <strong>never sees actions dispatched before it registered</strong>. Dispatch <code class=\"inline\">loadOrders</code> from a root component before <code class=\"inline\">/orders</code> is loaded and nothing happens.</li><li>Feature state is <strong>not removed</strong> when you navigate away — it stays in the tree. It's lazily <em>added</em>, not scoped.</li></ul><h4>createFeature — the modern way</h4><pre><code>export const ordersFeature = createFeature({\n  name: 'orders',\n  reducer: createReducer(initialState, on(...)),\n});\n// gives you selectOrdersState + a selector per state property, for free\nexport const { selectOrdersState, selectItems, selectLoading } = ordersFeature;</code></pre><p>This removes most hand-written <code class=\"inline\">createFeatureSelector</code>/<code class=\"inline\">createSelector</code> boilerplate. Mentioning it signals you're current.</p><h4>Cross-feature access</h4><p>Feature A <em>can</em> select from feature B's state — but it couples them, and it breaks if B hasn't loaded. Prefer: put genuinely shared state in root, or have A react to B's <em>actions</em> in an effect rather than reading its state.</p><h4>The naming trap</h4><pre><code>createFeatureSelector&lt;OrderState&gt;('orders')   // string must match forFeature('orders')</code></pre><p>A typo compiles fine and yields <code class=\"inline\">undefined</code> at runtime. <code class=\"inline\">createFeature</code> removes the stringly-typed link entirely.</p><h4>How to say it in an interview</h4><p>“Root state is registered at bootstrap and holds global things like auth; feature state is registered per feature, usually in a lazy route, so it's added to the state tree only when that feature loads. The consequence worth knowing is that the tree's shape is dynamic — a feature reducer doesn't exist yet, so it won't see actions dispatched before it registers, and feature state isn't torn down when you navigate away. I use <code class=\"inline\">createFeature</code> now, which generates the selectors and kills the stringly-typed <code class=\"inline\">createFeatureSelector</code> name.”</p>"
+  },
+  {
+    "id": "ngrx-lazy-loaded-store",
+    "category": "ngrx",
+    "difficulty": "advanced",
+    "tags": [
+      "lazy-loading",
+      "feature-store",
+      "architecture"
+    ],
+    "question": "How does NgRx work with Lazy Loaded Modules?",
+    "answer": "<p>Each lazy-loaded module can register its own reducer and effects using <code class=\"inline\">StoreModule.forFeature()</code> and <code class=\"inline\">EffectsModule.forFeature()</code>. The feature state is loaded only when the module is visited, improving startup performance.</p>",
+    "tip": "Use forFeature() inside lazy modules instead of forRoot().",
+    "code": "@NgModule({\n  imports: [\n    StoreModule.forFeature('orders', orderReducer),\n    EffectsModule.forFeature([OrderEffects])\n  ]\n})\nexport class OrdersModule {}",
+    "lang": "ts"
+  },
+  {
+    "id": "ngrx-create-feature-selector",
+    "category": "ngrx",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "selector",
+      "feature-selector"
+    ],
+    "question": "What is createFeatureSelector() and why is it used?",
+    "answer": "<p><code class=\"inline\">createFeatureSelector()</code> selects an entire feature state from the store. Other selectors are then composed from it using <code class=\"inline\">createSelector()</code>. This improves code organization and reusability.</p>",
+    "tip": "Always create one Feature Selector first, then derive all other selectors from it.",
+    "code": "export const selectUserState = createFeatureSelector<UserState>('users');\n\nexport const selectUsers = createSelector(\n  selectUserState,\n  state => state.users\n);",
+    "lang": "ts"
+  },
+  {
+    "id": "ngrx-selector-vs-feature-selector",
+    "category": "ngrx",
+    "difficulty": "intermediate",
+    "tags": [
+      "selector",
+      "feature-selector",
+      "comparison"
+    ],
+    "question": "What is the difference between createFeatureSelector() and createSelector()?",
+    "answer": "<p><strong>createFeatureSelector()</strong> selects an entire feature slice from the store. <strong>createSelector()</strong> derives or computes smaller pieces of data from one or more selectors. In practice, you usually create one feature selector first, then build multiple selectors on top of it.</p>",
+    "tip": "Feature Selector gets the feature. Selector gets the data inside the feature.",
+    "code": "const selectProductState = createFeatureSelector<ProductState>('products');\n\nconst selectProducts = createSelector(\n  selectProductState,\n  state => state.products\n);\n\nconst selectProductCount = createSelector(\n  selectProducts,\n  products => products.length\n);",
+    "lang": "ts"
+  },
+  {
+    "id": "ngrx-reset-state-logout",
+    "category": "ngrx",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "logout",
+      "store",
+      "reset"
+    ],
+    "question": "How do you reset the NgRx Store when a user logs out?",
+    "answer": "<p>Dispatch a <code class=\"inline\">logout</code> action and reset the state inside the root reducer (or a meta reducer) by returning the <code class=\"inline\">initialState</code>. This clears all user-specific data from the store.</p>",
+    "tip": "Clearing the store on logout prevents the next user from seeing stale data.",
+    "code": "export const logout = createAction('[Auth] Logout');\n\nexport const reducer = createReducer(\n  initialState,\n  on(logout, () => initialState)\n);",
+    "lang": "ts"
+  },
+  {
+    "id": "ngrx-persist-state",
+    "category": "ngrx",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "localstorage",
+      "meta-reducer",
+      "persistence",
+      "real-world"
+    ],
+    "question": "How do you persist the NgRx Store after a page refresh?",
+    "answer": "<p>NgRx Store lives in memory, so refreshing the page clears it. To persist state, save selected store slices to <strong>localStorage</strong> (or sessionStorage) using a <strong>Meta Reducer</strong> or libraries like <code class=\"inline\">ngrx-store-localstorage</code>, then restore them when the application starts.</p>",
+    "tip": "Persist only required data like user preferences or auth information—not the entire store.",
+    "code": "StoreModule.forRoot(reducers, {\n  metaReducers: [localStorageSyncReducer]\n});",
+    "lang": "ts",
+    "deep": "<h4>Why it's needed</h4><p>The store is <strong>in memory</strong>. F5 and it's gone — back to <code class=\"inline\">initialState</code>. Persistence means writing chosen slices out and rehydrating them at startup.</p><h4>The meta-reducer approach</h4><pre><code>export function persistState(reducer: ActionReducer&lt;State&gt;): ActionReducer&lt;State&gt; {\n  return (state, action) =&gt; {\n    // rehydrate once, on init\n    if (action.type === INIT || action.type === UPDATE) {\n      const saved = localStorage.getItem('app-state');\n      if (saved) {\n        try { return { ...reducer(state, action), ...JSON.parse(saved) }; }\n        catch { localStorage.removeItem('app-state'); }   // corrupt -&gt; drop it\n      }\n    }\n    const next = reducer(state, action);\n    // persist only what you need\n    localStorage.setItem('app-state', JSON.stringify({ prefs: next.prefs }));\n    return next;\n  };\n}</code></pre><p>Or use <code class=\"inline\">ngrx-store-localstorage</code>, which is this with the edge cases handled.</p><h4>Persist a whitelist, never the whole store</h4><table><thead><tr><th>Persist</th><th>Never persist</th></tr></thead><tbody><tr><td>UI prefs (theme, language)</td><td><strong>Auth tokens</strong> — XSS reads localStorage</td></tr><tr><td>Draft form content</td><td><strong>Cached server data</strong> — goes stale instantly</td></tr><tr><td>Cart (sometimes)</td><td><code class=\"inline\">loading</code> / <code class=\"inline\">error</code> flags</td></tr><tr><td>Onboarding progress</td><td>Anything sensitive/PII</td></tr></tbody></table><p><strong>Two answers that earn credit:</strong></p><ul><li><strong>Tokens don't belong in localStorage</strong> — any XSS can read it. Prefer an httpOnly cookie. If asked \"how do you persist auth?\", say this.</li><li><strong>Persisting <code class=\"inline\">loading: true</code></strong> is the classic self-inflicted bug: the user refreshes mid-request and the app rehydrates into a permanent spinner, because no request is in flight to ever set it false.</li></ul><h4>The migration problem nobody thinks about</h4><pre><code>// v1 shipped:  { user: { name } }\n// v2 expects:  { user: { firstName, lastName } }\n// A returning user rehydrates v1 data into v2 code -&gt; undefined everywhere.</code></pre><p>Persisted state is <strong>data you now have to version</strong>, exactly like a database schema. Store a version number and either migrate or discard on mismatch. Wrap rehydration in try/catch — hand-edited or corrupt JSON must not brick the app.</p><h4>Performance</h4><p><code class=\"inline\">localStorage</code> is <strong>synchronous</strong> and blocks the main thread; <code class=\"inline\">JSON.stringify</code> of a large tree on <em>every</em> action is a real jank source. Persist a narrow slice, and debounce if it's hot.</p><h4>How to say it in an interview</h4><p>“A meta reducer that rehydrates on INIT and writes selected slices back after each action — or <code class=\"inline\">ngrx-store-localstorage</code>. The important part is <em>what</em> you persist: a whitelist like theme or a draft, never the whole store. Not cached server data, because it's stale on arrival; not <code class=\"inline\">loading</code>, or a refresh mid-request rehydrates into a permanent spinner; and not auth tokens, because any XSS can read localStorage — that's an httpOnly cookie. And persisted state needs versioning, since old shapes will rehydrate into new code.”</p>"
+  },
+  {
+    "id": "ngrx-meta-reducers",
+    "category": "ngrx",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "meta-reducer",
+      "middleware",
+      "architecture"
+    ],
+    "question": "What are Meta Reducers in NgRx?",
+    "answer": "<p>Meta Reducers are higher-order reducers that wrap normal reducers. They execute before or after every reducer call and are commonly used for logging, state persistence, resetting state, or debugging.</p>",
+    "tip": "Think of Meta Reducers as middleware for reducers.",
+    "code": "export function logger(reducer: ActionReducer<any>): ActionReducer<any> {\n  return (state, action) => {\n    console.log(action.type);\n    return reducer(state, action);\n  };\n}",
+    "lang": "ts",
+    "deep": "<h4>What they are</h4><p>A meta reducer is a <strong>higher-order reducer</strong>: it takes a reducer and returns a reducer. That lets it wrap <em>every</em> action for <em>every</em> slice — Redux middleware, in NgRx terms.</p><pre><code>export function logger(reducer: ActionReducer&lt;State&gt;): ActionReducer&lt;State&gt; {\n  return (state, action) =&gt; {\n    const next = reducer(state, action);   // run the real reducer\n    console.groupCollapsed(action.type);\n    console.log('prev', state); console.log('next', next);\n    console.groupEnd();\n    return next;\n  };\n}\n\nprovideStore(reducers, { metaReducers: [logger] });</code></pre><p>You can act <strong>before</strong> the inner reducer (inspect/replace the action or state) or <strong>after</strong> (inspect/transform the result) — the position of your code around the <code class=\"inline\">reducer(state, action)</code> call is the hook.</p><h4>The killer use: reset state on logout</h4><pre><code>export function clearState(reducer: ActionReducer&lt;State&gt;): ActionReducer&lt;State&gt; {\n  return (state, action) =&gt; {\n    if (action.type === logout.type) {\n      state = undefined;          // every reducer re-initialises\n    }\n    return reducer(state, action);\n  };\n}</code></pre><p>Passing <code class=\"inline\">undefined</code> makes every reducer fall back to its <code class=\"inline\">initialState</code> — <strong>one function wipes the entire tree</strong>. The alternative is an <code class=\"inline\">on(logout, () =&gt; initialState)</code> in all 20 reducers, and you <em>will</em> forget one, leaking the previous user's data into the next session. This is the answer that makes the concept click.</p><h4>Other real uses</h4><ul><li><strong>Persistence</strong> — rehydrate from <code class=\"inline\">localStorage</code> on <code class=\"inline\">INIT</code>, write back after each action (this is how <code class=\"inline\">ngrx-store-localstorage</code> works).</li><li><strong>Freeze</strong> — throw on mutation in dev (NgRx's own <code class=\"inline\">strictStateImmutability</code> runtime check is a built-in meta reducer).</li><li><strong>Undo/redo</strong> — keep a stack of past states.</li><li><strong>Telemetry</strong> — ship action types to analytics.</li></ul><h4>Order matters</h4><pre><code>metaReducers: [logger, clearState]\n// composed right-to-left: logger(clearState(reducer))\n// -&gt; clearState runs closest to the real reducer; logger sees the final result</code></pre><h4>Keep them pure — mostly</h4><p>A meta reducer sits in the reducer path, so the purity rules apply: no HTTP, no routing. Logging and <code class=\"inline\">localStorage</code> writes are the pragmatic exceptions everyone makes (and are technically impure) — anything more, and it belongs in an effect.</p><h4>Dev-only</h4><pre><code>export const metaReducers: MetaReducer&lt;State&gt;[] = isDevMode() ? [logger] : [];</code></pre><h4>How to say it in an interview</h4><p>“They're higher-order reducers — reducer in, reducer out — so they intercept every action across every slice, which is basically Redux middleware. The case I always reach for is logout: a meta reducer that sets state to <code class=\"inline\">undefined</code> on the logout action makes every reducer fall back to its initial state, so one function clears the whole tree instead of adding a reset handler to twenty reducers and forgetting one. They also power persistence and NgRx's own immutability runtime checks.”</p>"
+  },
+  {
+    "id": "ngrx-runtime-checks",
+    "category": "ngrx",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "runtime-checks",
+      "immutability",
+      "best-practices"
+    ],
+    "question": "What are Runtime Checks in NgRx?",
+    "answer": "<p>Runtime Checks help detect common mistakes such as mutating state, mutating actions, or storing non-serializable objects. They improve application reliability during development by throwing errors when NgRx best practices are violated.</p>",
+    "tip": "Enable Runtime Checks in development to catch accidental state mutations early.",
+    "code": "StoreModule.forRoot(reducers, {\n  runtimeChecks: {\n    strictStateImmutability: true,\n    strictActionImmutability: true,\n    strictStateSerializability: true,\n    strictActionSerializability: true\n  }\n});",
+    "lang": "ts"
+  },
+  {
+    "id": "ngrx-facade-pattern",
+    "category": "ngrx",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "facade",
+      "architecture",
+      "best-practices"
+    ],
+    "question": "What is the Facade Pattern in NgRx and why is it used?",
+    "answer": "<p>A Facade is an Angular service that hides NgRx implementation details from components. Components interact only with the Facade instead of directly dispatching actions or selecting state. This reduces coupling, simplifies testing, and makes it easier to replace NgRx later if needed.</p>",
+    "tip": "Components should know about business operations, not NgRx APIs.",
+    "code": "@Injectable({ providedIn: 'root' })\nexport class UserFacade {\n  users$ = this.store.select(selectUsers);\n\n  constructor(private store: Store) {}\n\n  loadUsers() {\n    this.store.dispatch(loadUsers());\n  }\n}",
+    "lang": "ts",
+    "deep": "<h4>What it looks like</h4><pre><code>@Injectable({ providedIn: 'root' })\nexport class UserFacade {\n  private store = inject(Store);\n\n  // state — components see plain streams, not selectors\n  readonly users$   = this.store.select(selectUsers);\n  readonly loading$ = this.store.select(selectLoading);\n\n  // intent — components call business operations, not dispatch()\n  loadUsers()            { this.store.dispatch(loadUsers()); }\n  addUser(user: User)    { this.store.dispatch(addUser({ user })); }\n}</code></pre><pre><code>// component — no NgRx imports at all\nexport class UserListComponent {\n  private facade = inject(UserFacade);\n  users$ = this.facade.users$;\n  ngOnInit() { this.facade.loadUsers(); }\n}</code></pre><h4>What you gain</h4><ul><li><strong>Decoupling</strong> — components import zero NgRx. Swapping NgRx for SignalStore, or a plain service, touches the facade only.</li><li><strong>Testing</strong> — mock one facade instead of <code class=\"inline\">provideMockStore</code> plus selectors plus action assertions.</li><li><strong>Discoverability</strong> — <code class=\"inline\">UserFacade</code> is a readable API surface for the feature. New joiners don't need to grep actions.</li><li><strong>Intent over mechanics</strong> — <code class=\"inline\">facade.addUser(u)</code> reads better than <code class=\"inline\">store.dispatch(addUser({ user: u }))</code>.</li></ul><h4>The criticism — and you should voice it</h4><p>This is <strong>contested</strong>, and knowing that is the senior signal. The NgRx maintainers have argued against blanket facades. The objections:</p><ul><li><strong>It hides the flow.</strong> NgRx's value is explicit, traceable data flow; a facade re-introduces an opaque indirection layer over it.</li><li><strong>It's another layer to maintain</strong> — often a mechanical 1:1 passthrough that just adds a file.</li><li><strong>It can become a god object.</strong> One <code class=\"inline\">AppFacade</code> with 40 methods is worse than the thing it wrapped.</li><li><strong>It encourages calling several methods in sequence</strong>, which recreates imperative orchestration in components — the exact thing actions were meant to prevent.</li></ul><p>The \"swap NgRx out later\" argument is also mostly theoretical — almost nobody does.</p><h4>The balanced position</h4><p>Use a facade when it <em>adds</em> something: a large feature with many selectors/actions, a library boundary where you don't want to leak NgRx, or a team that benefits from the smaller API surface. Skip it when it's a passthrough — <code class=\"inline\">store.select()</code> in the component is fine and more honest.</p><h4>How to say it in an interview</h4><p>“A facade is a service that hides Store, actions and selectors behind a feature-level API, so components call <code class=\"inline\">facade.loadUsers()</code> and never import NgRx. It's nice for testing and for keeping NgRx out of a library's public surface. But it's genuinely debated — the maintainers push back, because it adds an indirection layer over a pattern whose main selling point is explicit traceable flow, and it often ends up a 1:1 passthrough or a god object. I'd use one on a big feature or at a library boundary, not reflexively.”</p>"
+  },
+  {
+    "id": "ngrx-component-store-access",
+    "category": "ngrx",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "store",
+      "components",
+      "best-practices"
+    ],
+    "question": "Should Angular components access the Store directly?",
+    "answer": "<p>Yes, but only for simple applications. In medium or large projects, components should communicate through a <strong>Facade Service</strong> instead of directly using the Store. This reduces coupling, improves testability, and makes it easier to change the state management implementation later.</p>",
+    "tip": "Large enterprise applications usually place a Facade between the Component and the Store.",
+    "code": "export class UserComponent {\n  users$ = this.userFacade.users$;\n\n  constructor(private userFacade: UserFacade) {}\n\n  ngOnInit() {\n    this.userFacade.loadUsers();\n  }\n}",
+    "lang": "ts"
+  },
+  {
+    "id": "ngrx-multiple-actions",
+    "category": "ngrx",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "effects",
+      "actions",
+      "best-practices"
+    ],
+    "question": "Should a component dispatch multiple NgRx actions?",
+    "answer": "<p>Generally no. Components should dispatch a single business action such as <code class=\"inline\">loadUsers()</code>. If multiple actions are needed, they should be dispatched from an Effect. This keeps components simple and business logic centralized.</p>",
+    "tip": "Keep components 'dumb' and move orchestration into Effects.",
+    "code": "// Component\nthis.store.dispatch(loadUsers());\n\n// Effect\nloadUsers$ = createEffect(() =>\n  this.actions$.pipe(\n    ofType(loadUsers),\n    switchMap(() => this.api.getUsers().pipe(\n      map(users => loadUsersSuccess({ users }))\n    ))\n  )\n);",
+    "lang": "ts"
+  },
+  {
+    "id": "ngrx-smart-vs-dumb-components",
+    "category": "ngrx",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "components",
+      "architecture"
+    ],
+    "question": "What is the difference between Smart and Dumb Components in NgRx?",
+    "answer": "<p><strong>Smart Components</strong> interact with the Store (or Facade), dispatch actions, and manage business logic. <strong>Dumb Components</strong> receive data through <code class=\"inline\">@Input()</code> and emit events using <code class=\"inline\">@Output()</code>. They contain little or no business logic and are highly reusable.</p>",
+    "tip": "Keep presentation components reusable by avoiding Store dependencies.",
+    "code": "// Smart Component\n<app-user-list\n  [users]=\"users$ | async\"\n  (delete)=\"deleteUser($event)\">\n</app-user-list>",
+    "lang": "html"
+  },
+  {
+    "id": "ngrx-store-vs-component-state",
+    "category": "ngrx",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "store",
+      "component-state",
+      "comparison",
+      "architecture"
+    ],
+    "question": "When should you use NgRx Store instead of Component State?",
+    "answer": "<p>Use <strong>Component State</strong> for local UI state like dialog visibility, selected tab, or input values. Use the <strong>NgRx Store</strong> for shared, long-lived application state such as logged-in user, products, orders, or shopping cart data.</p>",
+    "tip": "Ask yourself: 'Does another feature need this data?' If yes, it probably belongs in the Store.",
+    "code": "// Component State\nisDialogOpen = false;\nselectedTab = 1;\n\n// Store State\nusers$ = this.store.select(selectUsers);",
+    "lang": "ts",
+    "deep": "<h4>The test</h4><p>Ask two questions:</p><ol><li><strong>Does anything outside this component need it?</strong> No → component state.</li><li><strong>Should it survive this component being destroyed?</strong> No → component state.</li></ol><p>If both are no, putting it in the store is strictly worse: more code, more indirection, and a global variable pretending to be architecture.</p><h4>Where things belong</h4><table><thead><tr><th>State</th><th>Home</th><th>Why</th></tr></thead><tbody><tr><td>Dialog open, active tab, hover</td><td>component</td><td>nothing else cares</td></tr><tr><td>Form input while typing</td><td>component / form</td><td>store dispatch per keystroke is madness</td></tr><tr><td>Table sort/page <em>(not shared)</em></td><td>component</td><td>dies with the view</td></tr><tr><td>Table sort/page <em>(shareable URL)</em></td><td><strong>URL</strong></td><td>see below</td></tr><tr><td>Logged-in user, permissions</td><td>store</td><td>everything reads it</td></tr><tr><td>Shopping cart</td><td>store</td><td>header badge + cart page + checkout</td></tr><tr><td>Cached server list</td><td>store <em>or</em> a service</td><td>depends on sharing</td></tr></tbody></table><h4>The third option nobody mentions: the URL</h4><pre><code>/orders?page=2&amp;sort=date&amp;filter=open</code></pre><p>Filters, pagination, selected tab, search terms — these are often <strong>router state</strong>, not store state. Put them in the URL and you get shareable links, working back/forward, and refresh-survival for free. Volunteering this is a strong signal, because it shows you don't reach for the store reflexively.</p><h4>Symptoms of over-storing</h4><ul><li><code class=\"inline\">setDialogOpen</code> / <code class=\"inline\">setActiveTab</code> actions cluttering the DevTools log so the real events are unfindable.</li><li>State that must be reset on every component destroy — you've built a leak, and now you need cleanup actions.</li><li>Two instances of the same component fighting over one store slice (a modal opened twice, a list rendered in two panels).</li></ul><p>That last one is the killer argument: global state <strong>can't be instantiated twice</strong>. Component state naturally can.</p><h4>The middle rung: ComponentStore / SignalStore</h4><pre><code>// feature-scoped, dies with the component — provided at component level\n@Component({ providers: [ProductsStore] })</code></pre><p>For state that's too complex for a field but shouldn't be global — a multi-step wizard, a complex filter panel — <code class=\"inline\">ComponentStore</code> or a component-provided <code class=\"inline\">SignalStore</code> gives you structure with the right lifetime. That's the answer to \"what if it's complex but local?\"</p><h4>How to say it in an interview</h4><p>“I ask whether anything outside the component needs it, and whether it should outlive the component. Both no — it's component state; <code class=\"inline\">isDialogOpen</code> in the global store is just a global variable with extra steps, and it breaks the moment the component renders twice. The option people forget is the URL: filters and pagination usually belong there, so links are shareable and refresh works. If it's complex but still local, I'd use a component-provided SignalStore rather than promoting it to global.”</p>"
+  },
+  {
+    "id": "ngrx-multiple-reducers",
+    "category": "ngrx",
+    "difficulty": "intermediate",
+    "tags": [
+      "reducers",
+      "feature-store",
+      "architecture"
+    ],
+    "question": "How do multiple Reducers work in an NgRx application?",
+    "answer": "<p>Each feature has its own reducer responsible for managing only its own slice of state. NgRx combines all reducers into a single Root Store. This keeps features independent, modular, and easier to maintain.</p>",
+    "tip": "Think of each reducer as managing one feature, not the whole application.",
+    "code": "StoreModule.forRoot({\n  auth: authReducer,\n  users: userReducer,\n  products: productReducer,\n  orders: orderReducer\n});",
+    "lang": "ts"
+  },
+  {
+    "id": "ngrx-optimistic-vs-pessimistic",
+    "category": "ngrx",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "effects",
+      "optimistic-update",
+      "pessimistic-update",
+      "real-world"
+    ],
+    "question": "What is the difference between Optimistic Updates and Pessimistic Updates in NgRx?",
+    "answer": "<p><strong>Optimistic Update</strong> updates the UI immediately before the API responds, assuming success. If the API fails, the state is rolled back. <strong>Pessimistic Update</strong> waits for the API response before updating the Store, ensuring consistency but with a slower UI experience.</p>",
+    "tip": "Optimistic = Faster UI. Pessimistic = Safer data.",
+    "code": "// Optimistic\nthis.store.dispatch(updateUser({ user }));\n\n// API call happens in Effect\n// Rollback on failure\n\n// Pessimistic\n// Wait for API success\n// Then dispatch updateSuccess()",
+    "lang": "ts",
+    "deep": "<h4>The two flows</h4><pre><code>PESSIMISTIC  (safe, slower)\ndispatch(save) -&gt; effect -&gt; API ---wait--- 200 -&gt; dispatch(saveSuccess) -&gt; reducer -&gt; UI\n                                       \\--- 500 -&gt; dispatch(saveFailure) -&gt; show error\n\nOPTIMISTIC   (fast, riskier)\ndispatch(save) -&gt; reducer updates UI IMMEDIATELY\n              \\-&gt; effect -&gt; API ---- 200 -&gt; (nothing to do)\n                                 \\--- 500 -&gt; dispatch(saveRollback) -&gt; undo it</code></pre><h4>Optimistic in practice — you must keep the old value</h4><pre><code>// reducer — apply immediately, stash the previous for rollback\non(toggleLike, (state, { id }) =&gt; adapter.updateOne(\n  { id, changes: { liked: true } }, state\n));\non(toggleLikeFailure, (state, { id, previous }) =&gt; adapter.updateOne(\n  { id, changes: { liked: previous } }, state          // roll back\n));\n\n// effect — fire and forget, but map failure to a rollback carrying the old value\ntoggleLike$ = createEffect(() =&gt; this.actions$.pipe(\n  ofType(toggleLike),\n  concatLatestFrom(({ id }) =&gt; this.store.select(selectLiked(id))),\n  mergeMap(([{ id }, previous]) =&gt; this.api.like(id).pipe(\n    map(() =&gt; toggleLikeSuccess({ id })),\n    catchError(() =&gt; of(toggleLikeFailure({ id, previous })))   // carry it back\n  ))\n));</code></pre><p>The rollback action <strong>must carry the previous value</strong>. That's the part candidates miss — \"roll back\" isn't magic; you need the old state, captured before the change.</p><h4>When to use which</h4><table><thead><tr><th>Optimistic</th><th>Pessimistic</th></tr></thead><tbody><tr><td>High success rate</td><td>Failure is likely/costly</td></tr><tr><td>Cheap to undo</td><td>Server assigns data (id, total)</td></tr><tr><td>Reversible &amp; low-stakes</td><td>Money, orders, legal records</td></tr><tr><td>Like, star, reorder, mark-read, delete-with-undo</td><td>Checkout, payment, submit form</td></tr></tbody></table><p>The test: <strong>if this fails and we silently undo it, how bad is that?</strong> A like flicking back is fine. A bank transfer appearing then vanishing is not.</p><h4>Why optimistic is tempting and dangerous</h4><ul><li>UI feels instant — no spinner, no latency. That's the whole point.</li><li>But rollback is <strong>confusing UX</strong> if the user already moved on — the list reorders itself 3 seconds later.</li><li><strong>Concurrent edits</strong> make it much harder: two optimistic updates in flight, one fails — rolling back to \"previous\" can clobber the other's result.</li><li>Server-generated values can't be faked: you don't know the real <code class=\"inline\">id</code> or <code class=\"inline\">createdAt</code>, so a temp id needs reconciling on success.</li></ul><h4>Note the operator</h4><p>Optimistic updates usually want <code class=\"inline\">mergeMap</code> or <code class=\"inline\">concatMap</code>, <strong>not</strong> <code class=\"inline\">switchMap</code> — cancelling the request would leave the UI showing a change that was never persisted.</p><h4>How to say it in an interview</h4><p>“Pessimistic waits for the API and only then updates the store — safe, but the user stares at a spinner. Optimistic updates state immediately and rolls back on failure, so it feels instant. The implementation detail people miss is that the failure action has to carry the <em>previous</em> value, since you need it to undo. I use optimistic for cheap reversible things like a like or a reorder, and pessimistic for anything where a silent undo would be alarming — payments, orders. And not <code class=\"inline\">switchMap</code>, or you'd cancel the write and leave the UI lying.”</p>"
+  },
+  {
+    "id": "ngrx-router-store",
+    "category": "ngrx",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "router-store",
+      "routing"
+    ],
+    "question": "What is @ngrx/router-store and why is it used?",
+    "answer": "<p><strong>@ngrx/router-store</strong> synchronizes Angular Router state with the NgRx Store. It allows selectors, reducers, and effects to access the current route, query parameters, and navigation events without directly injecting the Router.</p>",
+    "tip": "Router state becomes just another slice of your Store.",
+    "code": "StoreRouterConnectingModule.forRoot();\n\nthis.store.select(selectRouteParams);",
+    "lang": "ts"
+  },
+  {
+    "id": "ngrx-entity-crud",
+    "category": "ngrx",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "entity",
+      "adapter",
+      "crud"
+    ],
+    "question": "What CRUD methods does the NgRx Entity Adapter provide?",
+    "answer": "<p>The Entity Adapter provides helper methods like <code class=\"inline\">addOne()</code>, <code class=\"inline\">addMany()</code>, <code class=\"inline\">setAll()</code>, <code class=\"inline\">updateOne()</code>, <code class=\"inline\">upsertOne()</code>, <code class=\"inline\">removeOne()</code>, and <code class=\"inline\">removeMany()</code>. These methods perform immutable updates automatically.</p>",
+    "tip": "Using Entity Adapter removes the need to manually update arrays immutably.",
+    "code": "export const reducer = createReducer(\n  initialState,\n  on(loadUsersSuccess, (state, { users }) =>\n    adapter.setAll(users, state)\n  ),\n  on(addUserSuccess, (state, { user }) =>\n    adapter.addOne(user, state)\n  )\n);",
+    "lang": "ts"
+  },
+  {
+    "id": "ngrx-withlatestfrom-vs-combinelatest",
+    "category": "ngrx",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "rxjs",
+      "effects",
+      "withLatestFrom",
+      "combineLatest"
+    ],
+    "question": "What is the difference between withLatestFrom() and combineLatest() inside NgRx Effects?",
+    "answer": "<p><code class=\"inline\">withLatestFrom()</code> emits only when the source Observable emits, combining it with the latest values from other Observables. <code class=\"inline\">combineLatest()</code> emits whenever any input Observable emits after all have emitted once. In Effects, <code class=\"inline\">withLatestFrom()</code> is usually preferred to combine an Action with Store data.</p>",
+    "tip": "Effects usually start from an Action, so withLatestFrom() is the better choice.",
+    "code": "loadUsers$ = createEffect(() =>\n  this.actions$.pipe(\n    ofType(loadUsers),\n    withLatestFrom(this.store.select(selectFilters)),\n    switchMap(([action, filters]) =>\n      this.api.getUsers(filters)\n    )\n  )\n);",
+    "lang": "ts"
+  },
+  {
+    "id": "ngrx-dispatch-false",
+    "category": "ngrx",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "effects",
+      "dispatch-false",
+      "side-effects"
+    ],
+    "question": "What is dispatch: false in NgRx Effects and when should you use it?",
+    "answer": "<p>By default, every Effect dispatches a new Action. Setting <code class=\"inline\">dispatch: false</code> tells NgRx that the Effect performs only a side effect (such as navigation, logging, or showing a toast) and should not dispatch another Action.</p>",
+    "tip": "Use <code class=\"inline\">dispatch: false</code> only when you don't need to update the Store.",
+    "code": "navigateAfterLogin$ = createEffect(() =>\n  this.actions$.pipe(\n    ofType(loginSuccess),\n    tap(() => this.router.navigate(['/dashboard']))\n  ),\n  { dispatch: false }\n);",
+    "lang": "ts"
+  }
+]

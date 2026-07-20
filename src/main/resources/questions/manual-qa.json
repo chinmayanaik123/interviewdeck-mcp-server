@@ -1,0 +1,322 @@
+[
+  {
+    "id": "mqa-test-case",
+    "category": "manual-qa",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "test-case",
+      "documentation"
+    ],
+    "question": "What is a test case? What makes a good one?",
+    "answer": "<p>A <strong>test case</strong> is a documented set of steps, data, and expected results used to verify a specific behaviour.</p><p>A good test case is clear, reusable, and independent. It usually includes: ID, title, preconditions, steps, test data, expected result, and sometimes priority/severity.</p>",
+    "tip": "Another tester should be able to execute it without asking you what you meant.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Minimal template</h4><table><thead><tr><th>Field</th><th>Example</th></tr></thead><tbody><tr><td>Title</td><td>Login with valid credentials</td></tr><tr><td>Preconditions</td><td>User exists; app is on login page</td></tr><tr><td>Steps</td><td>1) Enter email 2) Enter password 3) Click Login</td></tr><tr><td>Test data</td><td>user@test.com / Valid@123</td></tr><tr><td>Expected</td><td>User lands on Home; session cookie set</td></tr></tbody></table><h4>What \"good\" looks like</h4><ul><li><strong>One main behaviour</strong> per case (don’t mix login + checkout).</li><li><strong>Observable expected result</strong> (UI message, DB row, API status).</li><li><strong>Traceable</strong> to a requirement/story ID when possible.</li></ul><h4>How to say it in an interview</h4><p>“A test case is a repeatable recipe: preconditions, steps, data, and expected result. I write it so anyone on the team can run it and know pass/fail without guessing.”</p>"
+  },
+  {
+    "id": "mqa-bug-lifecycle",
+    "category": "manual-qa",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "defect",
+      "jira",
+      "lifecycle"
+    ],
+    "question": "Explain the defect / bug life cycle.",
+    "answer": "<p>Typical flow: <strong>New → Assigned → Open/In Progress → Fixed → Retest → Verified/Closed</strong>. Branches: <strong>Rejected</strong> (not a bug), <strong>Deferred</strong> (fix later), <strong>Reopened</strong> (fix failed), <strong>Duplicate</strong>.</p><p>Tools like Jira track status, owner, and history so triage stays organised.</p>",
+    "tip": "Always retest after fix — and check nearby areas for regression.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Statuses in plain language</h4><ul><li><strong>New</strong>: logged, not yet reviewed.</li><li><strong>Assigned / Open</strong>: developer owns it.</li><li><strong>Fixed / Ready for QA</strong>: developer believes it is done.</li><li><strong>Retest</strong>: QA verifies the fix.</li><li><strong>Closed</strong>: confirmed fixed (or accepted as not a defect).</li><li><strong>Reopened</strong>: fix did not work or bug returned.</li></ul><h4>What a good bug report needs</h4><ul><li>Clear title, environment, build/version.</li><li>Steps to reproduce, actual vs expected.</li><li>Severity/priority, screenshots/logs, evidence.</li></ul><h4>How to say it in an interview</h4><p>“I log defects with clear repro steps, triage severity/priority, track them through fix and retest, and reopen if the issue persists. The lifecycle exists so nothing is lost between QA, dev, and release.”</p>"
+  },
+  {
+    "id": "mqa-severity-priority",
+    "category": "manual-qa",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "severity",
+      "priority",
+      "triage"
+    ],
+    "question": "Severity vs Priority — what’s the difference?",
+    "answer": "<p><strong>Severity</strong> = how badly the defect impacts the system (technical impact). <strong>Priority</strong> = how soon it should be fixed (business urgency).</p><p>Example: a typo on the homepage can be <em>low severity</em> but <em>high priority</em> before a marketing launch. A crash in a rarely used admin screen can be <em>high severity</em> but <em>low priority</em>.</p>",
+    "tip": "QA usually proposes severity; product/lead often sets priority.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Common severity scale</h4><ul><li><strong>Critical/Blocker</strong>: system down, data loss, no workaround.</li><li><strong>Major</strong>: major feature broken, workaround may exist.</li><li><strong>Minor</strong>: limited impact, UI/functional nuisance.</li><li><strong>Trivial</strong>: cosmetic.</li></ul><h4>Interview trap</h4><p>People treat them as the same. Show you can give a mismatched example — that proves you understand triage, not just definitions.</p><h4>How to say it in an interview</h4><p>“Severity is impact on the product; priority is order of fixing for the business. I classify severity from evidence, then align priority with stakeholders during defect triage.”</p>"
+  },
+  {
+    "id": "mqa-smoke-sanity-regression",
+    "category": "manual-qa",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "smoke",
+      "sanity",
+      "regression"
+    ],
+    "question": "Smoke vs Sanity vs Regression testing?",
+    "answer": "<ul><li><strong>Smoke</strong> — shallow, wide check that the build is testable (app launches, main pages open). Fail smoke → reject build.</li><li><strong>Sanity</strong> — narrow, deeper check of a specific fix/area after a small change.</li><li><strong>Regression</strong> — broader suite to ensure old features still work after changes.</li></ul>",
+    "tip": "Smoke = build stability; Sanity = fix confidence; Regression = no side effects.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>When you run each</h4><table><thead><tr><th>Type</th><th>When</th><th>Scope</th></tr></thead><tbody><tr><td>Smoke</td><td>New build arrives</td><td>Critical paths only, quick</td></tr><tr><td>Sanity</td><td>After a bug fix / small patch</td><td>Affected feature</td></tr><tr><td>Regression</td><td>Before release / after larger changes</td><td>Existing features</td></tr></tbody></table><h4>SDET angle</h4><p>Smoke and regression are prime automation candidates in CI. Sanity is often a short manual or targeted automated pack around the ticket.</p><h4>How to say it in an interview</h4><p>“Smoke decides if the build is worth testing. Sanity checks the specific change. Regression protects existing behaviour. I automate smoke/regression where possible and keep sanity focused on the ticket.”</p>"
+  },
+  {
+    "id": "mqa-uat",
+    "category": "manual-qa",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "uat",
+      "acceptance"
+    ],
+    "question": "What is UAT (User Acceptance Testing)? How is it different from system testing?",
+    "answer": "<p><strong>UAT</strong> is acceptance testing by business users/clients to confirm the system meets real-world needs and is ready for production.</p><p><strong>System testing</strong> is usually done by QA against requirements in a test environment. <strong>UAT</strong> focuses on business workflows, real data scenarios, and sign-off — not every low-level validation.</p>",
+    "tip": "UAT success = business acceptance, not just 'QA passed'.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>What SDETs/QA do in UAT</h4><ul><li>Prepare UAT scenarios and data with stakeholders.</li><li>Support users, capture defects, clarify expected business behaviour.</li><li>Track sign-off criteria and open risks.</li></ul><h4>Difference that matters</h4><p>QA may verify \"order status updates to Shipped\". UAT users ask \"Can our operations team process Friday’s peak orders the way they work today?\" — process fit, not only functional correctness.</p><h4>How to say it in an interview</h4><p>“System testing validates requirements from a QA lens. UAT validates business readiness with real users. I’ve led UAT by preparing scenarios, guiding stakeholders, and driving defect triage to sign-off.”</p>"
+  },
+  {
+    "id": "mqa-ep-bva",
+    "category": "manual-qa",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "equivalence-partitioning",
+      "boundary-value",
+      "test-design"
+    ],
+    "question": "What are Equivalence Partitioning and Boundary Value Analysis?",
+    "answer": "<p><strong>Equivalence Partitioning (EP)</strong> groups inputs that should behave the same, then tests one value from each group (valid/invalid partitions).</p><p><strong>Boundary Value Analysis (BVA)</strong> tests the edges of those groups — bugs often live at min/max limits (e.g. 0, 1, 100, 101 for a 1–100 range).</p>",
+    "tip": "EP reduces cases; BVA catches off-by-one defects.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Example: age field allowed 18–60</h4><ul><li><strong>EP valid</strong>: 18–60 → pick 30.</li><li><strong>EP invalid</strong>: &lt;18, &gt;60, non-numeric → pick 17, 61, \"abc\".</li><li><strong>BVA</strong>: 17, 18, 19 and 59, 60, 61.</li></ul><h4>Why interviewers ask</h4><p>It shows you design tests systematically instead of randomly clicking. Mention combining EP + BVA for efficient coverage.</p><h4>How to say it in an interview</h4><p>“I use equivalence partitioning to avoid redundant cases, then boundary value analysis on the edges because off-by-one defects are common. Together they give strong coverage with fewer tests.”</p>"
+  },
+  {
+    "id": "mqa-bug-report",
+    "category": "manual-qa",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "bug-report",
+      "jira"
+    ],
+    "question": "What should a good bug report contain?",
+    "answer": "<p>A good bug report lets someone reproduce and fix without guessing: clear title, environment/build, preconditions, steps, test data, actual vs expected result, severity/priority, evidence (screenshots/logs/API response), and optionally related story/module.</p>",
+    "tip": "If the developer can’t reproduce from your report, the report failed.",
+    "code": "Title: Checkout total ignores 10% coupon CODE10 on QA\nEnv: QA v24.6.1, Chrome 126\nSteps: ...\nActual: Total remains 100\nExpected: Total becomes 90\nEvidence: screenshot + network response",
+    "lang": "text",
+    "deep": "<h4>Weak vs strong title</h4><ul><li>Weak: \"Checkout bug\"</li><li>Strong: \"Coupon CODE10 not applied to order total on QA Chrome\"</li></ul><h4>How to say it in an interview</h4><p>“I write defects for reproducibility — exact build, steps, data, actual vs expected, and evidence. That speeds triage and fix verification.”</p>"
+  },
+  {
+    "id": "mqa-test-scenario-vs-case",
+    "category": "manual-qa",
+    "difficulty": "beginner",
+    "tags": [
+      "test-scenario",
+      "test-case"
+    ],
+    "question": "Test scenario vs test case?",
+    "answer": "<p>A <strong>test scenario</strong> is a high-level what-to-test statement (\"Verify user can reset password\"). A <strong>test case</strong> is the detailed how — steps, data, expected results for that scenario.</p>",
+    "tip": "One scenario often expands into multiple cases (valid email, expired token, etc.).",
+    "code": "Scenario: User resets password\nCases: valid reset, expired link, mismatched confirm password",
+    "lang": "text",
+    "deep": "<h4>How to say it in an interview</h4><p>“Scenarios define coverage themes. Cases make them executable and measurable with clear expected results.”</p>"
+  },
+  {
+    "id": "mqa-decision-table",
+    "category": "manual-qa",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "decision-table",
+      "test-design"
+    ],
+    "question": "What is decision table testing? Give an example.",
+    "answer": "<p>Decision tables map combinations of conditions to actions/outcomes. Useful when business rules have multiple inputs (role + order status + payment state → allowed actions).</p>",
+    "tip": "Great for complex business rules in telecom/BSS/order systems.",
+    "code": "VIP=Y, Order=OPEN, Paid=Y → Allow cancel with refund\nVIP=N, Order=SHIPPED, Paid=Y → Cancel blocked",
+    "lang": "text",
+    "deep": "<h4>Beginner walkthrough</h4><p>List conditions as columns, each row a combination, and expected system action. Then create one test case per important row (or pairwise if combinations explode).</p><h4>How to say it in an interview</h4><p>“When rules depend on multiple conditions, I use a decision table so we don’t miss an allowed/denied combination — common in order management and entitlement flows.”</p>"
+  },
+  {
+    "id": "mqa-state-transition",
+    "category": "manual-qa",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "state-transition",
+      "test-design"
+    ],
+    "question": "What is state transition testing?",
+    "answer": "<p>State transition testing validates that an entity moves between allowed states with valid events, and rejects invalid transitions. Example order states: CREATED → PAID → SHIPPED → DELIVERED; cannot jump CREATED → DELIVERED.</p>",
+    "tip": "Draw the state diagram, then test valid paths and illegal transitions.",
+    "code": "CREATED --pay--> PAID --ship--> SHIPPED\nCREATED --ship--> ✘ rejected",
+    "lang": "text",
+    "deep": "<h4>What to test</h4><ul><li>Happy path transitions.</li><li>Invalid transition attempts (API/UI).</li><li>Terminal states (CANCELLED/DELIVERED) don’t accept further illegal updates.</li></ul><h4>How to say it in an interview</h4><p>“For order lifecycle I model states and events, then verify both allowed transitions and that illegal ones are blocked with clear errors.”</p>"
+  },
+  {
+    "id": "mqa-use-case",
+    "category": "manual-qa",
+    "difficulty": "beginner",
+    "tags": [
+      "use-case",
+      "acceptance"
+    ],
+    "question": "How do you derive tests from a use case / user story?",
+    "answer": "<p>From the main success path, alternate paths, and exceptions. Convert acceptance criteria into scenarios, then into cases with data. Include negative and boundary conditions the story implies.</p>",
+    "tip": "Ask: happy path, failure path, and authorization path for every story.",
+    "code": "Story: Cancel order within 1 hour\n- Success within 60 min\n- Reject after 61 min\n- Unauthorized user cannot cancel",
+    "lang": "text",
+    "deep": "<h4>How to say it in an interview</h4><p>“I turn acceptance criteria into positive, negative, and permission cases, then add data/DB checks for side effects like refunds.”</p>"
+  },
+  {
+    "id": "mqa-test-data",
+    "category": "manual-qa",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "test-data",
+      "preparation"
+    ],
+    "question": "How do you design and manage test data?",
+    "answer": "<p>Identify data needed per scenario (users, orders, products), keep it reusable and unique where collisions matter, document setup/cleanup, and avoid depending on fragile production-like leftovers. Prefer dedicated QA accounts and factories/scripts for repeatable data.</p>",
+    "tip": "Flaky manual and automated tests often mean shared mutable data.",
+    "code": "qa.order.user+<timestamp>@test.com\nseed order in CREATED status for cancel tests",
+    "lang": "text",
+    "deep": "<h4>Good practices</h4><ul><li>Unique emails/IDs per run.</li><li>Known fixtures for each state you need.</li><li>Cleanup or isolated tenants.</li><li>Never use real customer PII in shared docs.</li></ul><h4>How to say it in an interview</h4><p>“I design data for independence — each scenario gets known preconditions. That makes defects reproducible and automation stable.”</p>"
+  },
+  {
+    "id": "mqa-blocker",
+    "category": "manual-qa",
+    "difficulty": "intermediate",
+    "tags": [
+      "blocker",
+      "triage",
+      "release"
+    ],
+    "question": "What is a blocker defect? How do you handle it in a release?",
+    "answer": "<p>A <strong>blocker</strong> prevents major testing or a critical user journey (can’t login, can’t place order). You escalate immediately, pause dependent testing if needed, and treat it as release-stopping unless a formal waiver exists.</p>",
+    "tip": "Communicate impact clearly: who is blocked and which exit criteria fail.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Handling steps</h4><ol><li>Confirm reproducibility + severity.</li><li>Escalate in triage with business impact.</li><li>Retest ASAP after fix.</li><li>Run focused regression around the area.</li></ol><h4>How to say it in an interview</h4><p>“Blockers stop critical flows or testing progress. I escalate with evidence, track fix urgently, and retest plus nearby regression before continuing release sign-off.”</p>"
+  },
+  {
+    "id": "mqa-adhoc",
+    "category": "manual-qa",
+    "difficulty": "beginner",
+    "tags": [
+      "ad-hoc",
+      "exploratory"
+    ],
+    "question": "What is ad-hoc testing? How is it different from exploratory testing?",
+    "answer": "<p><strong>Ad-hoc</strong> is informal, unstructured testing without documented design. <strong>Exploratory</strong> is also unscripted but more disciplined — time-boxed charters, notes, and follow-up cases. Exploratory is preferred professionally.</p>",
+    "tip": "Don’t rely on pure ad-hoc for release evidence.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>How to say it in an interview</h4><p>“Ad-hoc is freeform clicking. Exploratory is structured investigation with a mission and notes I can convert into reusable tests.”</p>"
+  },
+  {
+    "id": "mqa-alpha-beta",
+    "category": "manual-qa",
+    "difficulty": "beginner",
+    "tags": [
+      "alpha",
+      "beta",
+      "release"
+    ],
+    "question": "Alpha testing vs Beta testing?",
+    "answer": "<p><strong>Alpha</strong> is performed in-house (internal users/QA) before external release. <strong>Beta</strong> is performed by limited external real users in a production-like setting to gather feedback before full launch.</p>",
+    "tip": "Alpha = internal; Beta = external real users.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>How to say it in an interview</h4><p>“Alpha validates readiness internally. Beta validates real-world usage and feedback before broad release.”</p>"
+  },
+  {
+    "id": "mqa-test-execution",
+    "category": "manual-qa",
+    "difficulty": "beginner",
+    "tags": [
+      "execution",
+      "status",
+      "reporting"
+    ],
+    "question": "How do you track test execution status?",
+    "answer": "<p>Track each case as Pass/Fail/Blocked/Not Run (and sometimes Skipped). Summarise by module/priority, link failures to defects, and report progress against exit criteria daily during release testing.</p>",
+    "tip": "Blocked ≠ Failed — blocked means can’t run due to dependency/environment.",
+    "code": "High priority: 40 Pass / 2 Fail / 1 Blocked / 7 Not Run",
+    "lang": "text",
+    "deep": "<h4>How to say it in an interview</h4><p>“I report execution with clear statuses and defect links so stakeholders see risk, not just a percentage complete.”</p>"
+  },
+  {
+    "id": "mqa-defect-triage",
+    "category": "manual-qa",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "triage",
+      "defect"
+    ],
+    "question": "What happens in a defect triage meeting?",
+    "answer": "<p>Triage reviews new/open defects with QA, dev, and often product: confirm validity, set/adjust severity & priority, assign owners, target fix version, and decide defer/reject/duplicate. Goal is a clear, prioritised backlog.</p>",
+    "tip": "Come prepared with repro evidence and business impact.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Your role as SDET/QA</h4><ul><li>Explain impact with evidence.</li><li>Suggest severity from technical impact.</li><li>Accept priority from business when appropriate.</li><li>Call out release risks if blockers remain.</li></ul><h4>How to say it in an interview</h4><p>“In triage I present reproducible defects with impact, help classify severity/priority, and ensure critical issues get owners and fix targets before release.”</p>"
+  },
+  {
+    "id": "mqa-error-guessing",
+    "category": "manual-qa",
+    "difficulty": "intermediate",
+    "tags": [
+      "error-guessing",
+      "experience-based"
+    ],
+    "question": "What is error guessing?",
+    "answer": "<p>Error guessing uses experience to invent likely failure cases that formal techniques may miss — double-submit, empty optional-but-used fields, copy-paste whitespace, timezone boundaries, concurrent edits.</p>",
+    "tip": "Pair error guessing with EP/BVA — experience fills gaps in models.",
+    "code": "Double-click Place Order → two orders?\nPaste email with trailing space → login fails?",
+    "lang": "text",
+    "deep": "<h4>How to say it in an interview</h4><p>“I use error guessing based on past defects — especially concurrency, bad input formatting, and partial failures in multi-step order flows.”</p>"
+  },
+  {
+    "id": "mqa-build-accept",
+    "category": "manual-qa",
+    "difficulty": "intermediate",
+    "tags": [
+      "build-acceptance",
+      "smoke",
+      "bvt"
+    ],
+    "question": "What is build acceptance / BVT testing?",
+    "answer": "<p><strong>Build Verification Testing (BVT)</strong> / build acceptance is a short smoke pack that decides if a new build is stable enough for deeper testing. If BVT fails, the build is rejected.</p>",
+    "tip": "BVT should be fast, automated when possible, and cover only critical paths.",
+    "code": "BVT: login, open dashboard, create order draft, logout",
+    "lang": "text",
+    "deep": "<h4>How to say it in an interview</h4><p>“I run a small BVT/smoke first. If core journeys fail, I reject the build instead of wasting a day on full regression.”</p>"
+  },
+  {
+    "id": "mqa-test-closure",
+    "category": "manual-qa",
+    "difficulty": "intermediate",
+    "tags": [
+      "closure",
+      "report",
+      "sign-off"
+    ],
+    "question": "What is included in a test closure / summary report?",
+    "answer": "<p>A closure report summarises scope tested, execution results, open defects (by severity), risks/waivers, environment/build, and recommendation (go/no-go). It is the evidence behind sign-off.</p>",
+    "tip": "Leaders need risk clarity more than raw case counts.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Useful sections</h4><ul><li>What was in scope / out of scope.</li><li>Pass-fail summary by priority.</li><li>Open Sev-1/2 list with impact.</li><li>Known limitations and residual risk.</li><li>Sign-off recommendation.</li></ul><h4>How to say it in an interview</h4><p>“At closure I report coverage, open risks, and a clear go/no-go recommendation tied to exit criteria — not just ‘testing completed’.”</p>"
+  }
+]

@@ -1,0 +1,324 @@
+[
+  {
+    "id": "cicd-what-why",
+    "category": "cicd-testing",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "ci",
+      "cd",
+      "basics"
+    ],
+    "question": "What is CI/CD? Why should a tester/SDET care?",
+    "answer": "<p><strong>CI (Continuous Integration)</strong> automatically builds and tests every code change. <strong>CD (Continuous Delivery/Deployment)</strong> automates releasing that change to environments/production with quality gates.</p><p>SDETs care because automated tests are quality gates in the pipeline — they catch regressions early on every commit/PR, not only at the end of a sprint.</p>",
+    "tip": "Your Selenium/API suite only pays off when it runs reliably in CI.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Beginner picture</h4><pre><code>Developer push → CI build → Run tests → Pass: deploy to QA / Fail: block merge</code></pre><h4>What \"quality gate\" means</h4><p>If smoke API/UI tests fail, the pipeline fails and the broken change does not quietly reach QA/prod.</p><h4>How to say it in an interview</h4><p>“CI/CD is how we get fast feedback. I design automated suites that can run in Jenkins on every build so defects are caught at commit time, not during late UAT.”</p>"
+  },
+  {
+    "id": "cicd-jenkins-basics",
+    "category": "cicd-testing",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "jenkins",
+      "pipeline"
+    ],
+    "question": "How is Jenkins used in test automation?",
+    "answer": "<p><strong>Jenkins</strong> is a CI server that runs jobs/pipelines. For testing, a job typically: pulls code from Git, installs dependencies (Maven), runs TestNG/API suites, publishes reports/artifacts, and marks the build pass/fail.</p>",
+    "tip": "Be ready to explain a simple pipeline stage list even if you are not a DevOps specialist.",
+    "code": "stages:\n  - checkout git repo\n  - mvn clean test -Dsuite=smoke\n  - publish test report\n  - fail build if tests fail",
+    "lang": "text",
+    "deep": "<h4>What interviewers expect</h4><ul><li>Job triggered by commit, schedule, or manually.</li><li>Parameters for environment (QA/Stage) and suite (smoke/regression).</li><li>Archived surefire/HTML reports and screenshots on failure.</li><li>Notifications when the build fails.</li></ul><h4>Freestyle vs Pipeline</h4><p>Older setups use freestyle jobs; modern teams use Jenkinsfile pipelines as code — same idea, more repeatable.</p><h4>How to say it in an interview</h4><p>“In Jenkins I run Maven TestNG suites as pipeline stages, parameterise environment/suite type, publish reports, and fail the build on test failures so bad changes don’t move forward.”</p>"
+  },
+  {
+    "id": "cicd-tests-in-pipeline",
+    "category": "cicd-testing",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "strategy",
+      "smoke",
+      "regression"
+    ],
+    "question": "Where should different test types run in a CI/CD pipeline?",
+    "answer": "<ul><li><strong>On every PR/commit</strong>: fast unit tests + critical API smoke (minutes).</li><li><strong>After merge / nightly</strong>: broader API + UI regression.</li><li><strong>Before release</strong>: full regression + UAT support checks.</li></ul><p>Put the fastest, most reliable tests earliest so feedback is cheap.</p>",
+    "tip": "Don’t run a 2-hour UI suite on every commit — stage your packs.",
+    "code": "PR pipeline     → unit + API smoke\nNightly         → API regression + UI critical paths\nRelease pipeline→ full regression pack",
+    "lang": "text",
+    "deep": "<h4>Why staging matters</h4><p>If every commit waits for full UI regression, developers stop trusting CI or bypass it. Split suites by speed and criticality.</p><h4>SDET ownership</h4><ul><li>Keep smoke green and stable.</li><li>Tag tests (<code class=\"inline\">smoke</code>, <code class=\"inline\">regression</code>) in TestNG groups.</li><li>Fail fast on blockers; quarantine flakes with a ticket.</li></ul><h4>How to say it in an interview</h4><p>“I map tests to pipeline stages by speed and risk: smoke on every build, broader regression nightly/pre-release. That keeps feedback fast without sacrificing coverage.”</p>"
+  },
+  {
+    "id": "cicd-git-for-sdet",
+    "category": "cicd-testing",
+    "difficulty": "beginner",
+    "tags": [
+      "git",
+      "collaboration",
+      "branching"
+    ],
+    "question": "What Git skills should an SDET have for day-to-day work?",
+    "answer": "<p>SDETs use Git to version test automation code: clone/pull, create feature branches, commit tests, open merge requests/PRs, and sync with main.</p><p>You should understand branch workflow, reviewing diffs, resolving simple conflicts in test code, and never committing secrets (tokens, passwords).</p>",
+    "tip": "Automation code is product code — treat branches/PRs with the same discipline.",
+    "code": "git checkout -b feature/add-order-smoke\n# add tests\ngit add .\ngit commit -m \"Add order smoke API tests\"\ngit push -u origin HEAD",
+    "lang": "bash",
+    "deep": "<h4>Daily loop</h4><ol><li>Pull latest main/develop.</li><li>Branch for your test work.</li><li>Commit small, reviewable changes.</li><li>PR → CI runs → address review comments → merge.</li></ol><h4>How to say it in an interview</h4><p>“I keep test automation in Git with feature branches and PRs. CI runs the suite on my branch, and I avoid storing credentials in the repo — they belong in Jenkins credentials or environment config.”</p>"
+  },
+  {
+    "id": "cicd-failed-build",
+    "category": "cicd-testing",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "debugging",
+      "ci",
+      "triage"
+    ],
+    "question": "A Jenkins build failed because of automated tests — what do you do?",
+    "answer": "<ol><li>Open the failed job logs/report and identify which tests failed.</li><li>Check whether it’s a product bug, test bug, or environment issue.</li><li>Re-run locally/on QA if needed with the same build.</li><li>File a defect or fix the test; don’t blindly re-run until green.</li><li>Communicate impact (block merge/release or not).</li></ol>",
+    "tip": "Stabilize signal first — a red build must mean something real.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Triage questions</h4><ul><li>Did only one test fail or many?</li><li>Is it new after a specific commit?</li><li>Does it fail locally too?</li><li>Is the environment down / test data missing?</li><li>Is the locator/wait flaky?</li></ul><h4>Outcomes</h4><ul><li><strong>Product bug</strong> → defect + keep failing until fixed (or agreed waive).</li><li><strong>Test bug</strong> → fix automation ASAP.</li><li><strong>Env issue</strong> → infra/data fix; mark build unstable with reason.</li></ul><h4>How to say it in an interview</h4><p>“I triage CI failures by report and recent changes, reproduce, then classify product vs test vs environment. I avoid ‘rerun until green’ because that destroys trust in the pipeline.”</p>"
+  },
+  {
+    "id": "cicd-reports-artifacts",
+    "category": "cicd-testing",
+    "difficulty": "intermediate",
+    "tags": [
+      "reports",
+      "artifacts",
+      "jenkins"
+    ],
+    "question": "What reports/artifacts should a test pipeline publish?",
+    "answer": "<p>Useful CI outputs: TestNG/Surefire reports, pass/fail counts, failed test names, logs, screenshots/videos for UI failures, and optionally Allure/HTML dashboards.</p><p>Artifacts help developers understand failures without rerunning blindly on their machine.</p>",
+    "tip": "A failure without evidence slows everyone — always attach logs/screenshots for UI.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Minimum useful set</h4><ul><li>JUnit/TestNG XML + HTML report.</li><li>Console log excerpt for the failing assertion.</li><li>Screenshot on UI failure + page URL.</li><li>Build number + environment name.</li></ul><h4>How to say it in an interview</h4><p>“I configure Jenkins to publish test reports and archive screenshots/logs on failure so anyone can diagnose quickly. Good artifacts turn a red build into an actionable defect.”</p>"
+  },
+  {
+    "id": "cicd-ci-vs-cd",
+    "category": "cicd-testing",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "ci",
+      "cd",
+      "definitions"
+    ],
+    "question": "Continuous Integration vs Continuous Delivery vs Continuous Deployment?",
+    "answer": "<ul><li><strong>CI</strong> — integrate code frequently with automated build/test feedback.</li><li><strong>Continuous Delivery</strong> — every change is releasable; deploy to prod is a business decision (button).</li><li><strong>Continuous Deployment</strong> — every green change auto-deploys to production.</li></ul>",
+    "tip": "Most enterprises do CI + Continuous Delivery; auto-prod deploy is less common.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Tester impact</h4><p>Stronger CI means your automated smoke must be trustworthy. Continuous Delivery means release candidates are always flowing through QA gates.</p><h4>How to say it in an interview</h4><p>“CI gives fast test feedback on every change. Delivery keeps releases ready. Deployment automates production — only if quality gates are solid.”</p>"
+  },
+  {
+    "id": "cicd-pipeline-stages",
+    "category": "cicd-testing",
+    "difficulty": "beginner",
+    "tags": [
+      "pipeline",
+      "stages",
+      "jenkins"
+    ],
+    "question": "What are typical stages in a CI pipeline that include testing?",
+    "answer": "<p>Common stages: Checkout → Build/Compile → Unit tests → Package → Deploy to QA → API/UI smoke → (optional) broader regression → Publish reports → Notify.</p>",
+    "tip": "Fail fast: cheap tests early, expensive UI later.",
+    "code": "checkout → mvn package → deploy qa → api smoke → ui smoke → report",
+    "lang": "text",
+    "deep": "<h4>How to say it in an interview</h4><p>“I design pipelines to fail fast — unit/API smoke before heavier UI packs — and always publish artifacts for triage.”</p>"
+  },
+  {
+    "id": "cicd-quality-gates",
+    "category": "cicd-testing",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "quality-gate",
+      "release"
+    ],
+    "question": "What is a quality gate in CI/CD?",
+    "answer": "<p>A <strong>quality gate</strong> is an automated rule that blocks promotion if criteria fail — e.g. smoke tests must pass, no open Sev-1, coverage threshold on new code, critical lint/security checks green.</p>",
+    "tip": "Gates only work if the suite is stable and meaningful.",
+    "code": "IF smoke == FAIL → block deploy to STAGE",
+    "lang": "text",
+    "deep": "<h4>Examples</h4><ul><li>PR cannot merge if API smoke fails.</li><li>Release job stops if UI critical pack fails.</li><li>Waivers require explicit approval.</li></ul><h4>How to say it in an interview</h4><p>“Quality gates enforce exit criteria automatically. I keep smoke packs reliable so a red gate means real risk, not noise.”</p>"
+  },
+  {
+    "id": "cicd-jenkinsfile",
+    "category": "cicd-testing",
+    "difficulty": "intermediate",
+    "tags": [
+      "jenkinsfile",
+      "pipeline-as-code"
+    ],
+    "question": "What is a Jenkinsfile / pipeline as code?",
+    "answer": "<p>A <strong>Jenkinsfile</strong> defines pipeline stages in source control so CI is versioned with the app/tests. Changes to how tests run go through PR review instead of clicking around the Jenkins UI only.</p>",
+    "tip": "Pipeline-as-code = reproducible CI across branches.",
+    "code": "pipeline {\n  stages {\n    stage('Smoke') { steps { sh 'mvn test -Dsuite=smoke' } }\n  }\n}",
+    "lang": "groovy",
+    "deep": "<h4>How to say it in an interview</h4><p>“I prefer pipeline-as-code so test execution steps are reviewed and repeatable. The Jenkinsfile documents how smoke/regression run for every branch.”</p>"
+  },
+  {
+    "id": "cicd-parameters",
+    "category": "cicd-testing",
+    "difficulty": "intermediate",
+    "tags": [
+      "parameters",
+      "environment",
+      "suite"
+    ],
+    "question": "What Jenkins job parameters are useful for test runs?",
+    "answer": "<p>Useful parameters: environment (QA/Stage), suite type (smoke/regression), browser, branch/build number, and feature flags. Parameters let one job run many controlled variants without duplicating pipelines.</p>",
+    "tip": "Default parameters should be safe (QA + smoke).",
+    "code": "ENV=QA\nSUITE=smoke\nBROWSER=chrome",
+    "lang": "text",
+    "deep": "<h4>How to say it in an interview</h4><p>“I parameterise env and suite so the same Jenkins job can run smoke on QA or full regression on Stage without maintaining five copies of the pipeline.”</p>"
+  },
+  {
+    "id": "cicd-secrets",
+    "category": "cicd-testing",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "secrets",
+      "security"
+    ],
+    "question": "How should test credentials/secrets be handled in CI?",
+    "answer": "<p>Store secrets in Jenkins credentials/secret managers, inject at runtime as env vars, and never commit passwords/tokens into Git or Postman exports. Rotate credentials and use least-privilege test accounts.</p>",
+    "tip": "Leaked QA credentials in repos are a common audit finding.",
+    "code": "export API_TOKEN=${JENKINS_SECRET_TOKEN}\nmvn test",
+    "lang": "bash",
+    "deep": "<h4>How to say it in an interview</h4><p>“I keep secrets out of source control. CI injects tokens from Jenkins credentials, and tests read them from environment variables.”</p>"
+  },
+  {
+    "id": "cicd-flake-policy",
+    "category": "cicd-testing",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "flaky",
+      "policy"
+    ],
+    "question": "How should a team handle flaky tests in CI?",
+    "answer": "<p>Track flakes, quarantine with a ticket if needed, fix root cause quickly, and avoid endless reruns as the default. Optional single retry can reduce noise temporarily, but repeated retries hide real instability.</p>",
+    "tip": "A flaky critical smoke test is a production risk amplifier.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Practical policy</h4><ul><li>Annotate known flakes.</li><li>Owner + due date to fix.</li><li>Don’t let quarantined tests grow forever.</li><li>Prefer fixing waits/data over rerun hacks.</li></ul><h4>How to say it in an interview</h4><p>“I treat flakes as defects. Short-term quarantine is fine with ownership, but the goal is root-cause fixes so CI remains trustworthy.”</p>"
+  },
+  {
+    "id": "cicd-artifacts-retention",
+    "category": "cicd-testing",
+    "difficulty": "beginner",
+    "tags": [
+      "artifacts",
+      "reports",
+      "retention"
+    ],
+    "question": "Why archive test reports and screenshots in CI?",
+    "answer": "<p>Archived artifacts let anyone diagnose a failed build later without re-running. Keep HTML/XML reports, logs, and UI screenshots for a reasonable retention period tied to release needs.</p>",
+    "tip": "No artifacts = slow blame games after a red build.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>How to say it in an interview</h4><p>“I archive reports and failure screenshots so developers can debug from the Jenkins build itself. That shortens MTTR on CI failures.”</p>"
+  },
+  {
+    "id": "cicd-branching-ci",
+    "category": "cicd-testing",
+    "difficulty": "intermediate",
+    "tags": [
+      "branching",
+      "pr",
+      "gitflow"
+    ],
+    "question": "How should tests run for feature branches vs main?",
+    "answer": "<p>Feature/PR branches: fast smoke (unit + critical API/UI). Main/release branches: broader regression and release gates. This balances developer feedback speed with release confidence.</p>",
+    "tip": "Don’t punish every PR with a 2-hour suite.",
+    "code": "PR → smoke\nmain nightly → regression\nrelease tag → full gate",
+    "lang": "text",
+    "deep": "<h4>How to say it in an interview</h4><p>“PRs get fast smoke for quick feedback. Broader regression runs on main/nightly and before release so we don’t slow everyday development.”</p>"
+  },
+  {
+    "id": "cicd-environment-promotion",
+    "category": "cicd-testing",
+    "difficulty": "intermediate",
+    "tags": [
+      "promotion",
+      "dev-qa-stage-prod"
+    ],
+    "question": "What is environment promotion, and where do tests fit?",
+    "answer": "<p>Promotion moves a build through Dev → QA → Stage → Prod. Each stage has entry gates: deploy success + required test packs green. Testers validate in QA/Stage; prod relies on prior gates plus monitoring/canaries.</p>",
+    "tip": "Same build artifact should move through environments — avoid “works on my rebuilt package”.",
+    "code": "Build #1245 → QA smoke pass → Stage regression pass → Prod approve",
+    "lang": "text",
+    "deep": "<h4>How to say it in an interview</h4><p>“I validate the same build as it promotes. QA smoke unlocks Stage; Stage regression supports prod go/no-go.”</p>"
+  },
+  {
+    "id": "cicd-scheduling",
+    "category": "cicd-testing",
+    "difficulty": "beginner",
+    "tags": [
+      "cron",
+      "nightly",
+      "schedule"
+    ],
+    "question": "Why run nightly scheduled test jobs?",
+    "answer": "<p>Nightly jobs run broader regression that is too slow for every commit. They catch environment drift and integration issues overnight so the team sees failures in the morning before release activities.</p>",
+    "tip": "Nightly suites still need triage ownership — ignored red nightlies are useless.",
+    "code": "0 2 * * *  jenkins regression job",
+    "lang": "text",
+    "deep": "<h4>How to say it in an interview</h4><p>“I schedule full regression nightly and keep commit pipelines thin. Morning triage of nightly failures prevents surprise blockers during release day.”</p>"
+  },
+  {
+    "id": "cicd-test-reliability",
+    "category": "cicd-testing",
+    "difficulty": "advanced",
+    "tags": [
+      "reliability",
+      "observability",
+      "stability"
+    ],
+    "question": "How do you make automated tests CI-reliable?",
+    "answer": "<p>Use deterministic data, explicit waits, isolated environments, retries only with caution, good logging, and quarantine process. Prefer API checks for rules and keep UI thin. Measure flake rate and act on it.</p>",
+    "tip": "Reliability is a feature of the suite — treat it like product quality.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Checklist</h4><ul><li>No shared mutable users.</li><li>Config via env vars.</li><li>Stable locators.</li><li>Clear failure messages.</li><li>Health check before suite starts.</li></ul><h4>How to say it in an interview</h4><p>“CI reliability comes from deterministic data, stable sync, and thin UI coverage. I track flake rate because an unreliable suite slowly loses the team’s trust.”</p>"
+  },
+  {
+    "id": "cicd-notifications",
+    "category": "cicd-testing",
+    "difficulty": "beginner",
+    "tags": [
+      "notifications",
+      "slack",
+      "email"
+    ],
+    "question": "How should CI notify the team about test failures?",
+    "answer": "<p>Notify the right channel/people with build link, failed suite name, and quick summary. Avoid spamming every success to everyone. Critical release gates may email/Slack commit authors + QA leads.</p>",
+    "tip": "Actionable notifications beat noisy ones.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>How to say it in an interview</h4><p>“I configure failure notifications with a direct Jenkins link and failed test names so owners can act immediately without digging blindly.”</p>"
+  },
+  {
+    "id": "cicd-sdet-ownership",
+    "category": "cicd-testing",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "ownership",
+      "collaboration"
+    ],
+    "question": "What is an SDET’s ownership in CI/CD vs DevOps?",
+    "answer": "<p>SDETs own the <strong>test content and quality gates</strong> — suites, stability, reports, pass/fail meaning. DevOps often owns infrastructure agents, cluster permissions, and pipeline scaffolding. Best teams collaborate: SDET defines what must run; DevOps helps make it run scalably.</p>",
+    "tip": "Don’t say “Jenkins is not my job” — know enough to partner effectively.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Ownership split example</h4><ul><li><strong>SDET</strong>: TestNG suites, smoke tags, assertions, flake fixes.</li><li><strong>DevOps</strong>: agents, credentials store, cluster deploy steps.</li><li><strong>Shared</strong>: Jenkinsfile stages, notifications, retention.</li></ul><h4>How to say it in an interview</h4><p>“I own making tests a trustworthy gate. I partner with DevOps on pipeline plumbing, but I’m accountable for what the suite means when it’s red or green.”</p>"
+  }
+]
