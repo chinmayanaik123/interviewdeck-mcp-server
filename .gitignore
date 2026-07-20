@@ -4,5 +4,5 @@ target/
 *.log
 .idea/
 *.iml
-.mvn/wrapper/
+.mvn/wrapper/maven-wrapper.jar
 config/firebase-service-account.json
