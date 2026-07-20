@@ -27,7 +27,7 @@ public class FirebaseUserService {
             UserRecord user = FirebaseAuth.getInstance().getUserByEmail(userIdOrEmail);
             return user.getUid();
         } catch (Exception e) {
-            log.error("Could not resolve email {} to UID", userIdOrEmail, e);
+            log.error("Could not resolve email {} to UID ", userIdOrEmail, e);
             return null;
         }
     }
