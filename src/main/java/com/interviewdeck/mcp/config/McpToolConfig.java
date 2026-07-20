@@ -50,7 +50,7 @@ public class McpToolConfig {
                         getNotesTool(userService),
                         getIncompleteQuestionsTool(questionService, userService),
                         getCompletedQuestionsTool(questionService, userService),
-                        markQuestionCompleteTool(userService),
+                        markQuestionCompleteTool(questionService, userService),
                         addNoteTool(questionService, userService)
                 )
                 .build();
@@ -368,30 +368,46 @@ public class McpToolConfig {
                 .build();
     }
 
-    private SyncToolSpecification markQuestionCompleteTool(FirebaseUserService us) {
+    private SyncToolSpecification markQuestionCompleteTool(QuestionService qs, FirebaseUserService us) {
         return SyncToolSpecification.builder()
                 .tool(Tool.builder()
                         .name("markQuestionComplete")
-                        .description("Mark one or more questions as completed for the user. Updates the user's progress on interviewdeck.in. Pass a single questionId or multiple comma-separated IDs.")
+                        .description("Mark one or more questions as completed for the user. Updates the user's progress on interviewdeck.in. You can pass question IDs directly, OR pass a search keyword/question text and the server will find the matching question automatically.")
                         .inputSchema(schema(Map.of(
                                 "userId", Map.of("type", "string", "description", "Firebase UID or email address"),
-                                "questionId", Map.of("type", "string", "description", "Question ID(s) to mark complete, comma-separated for multiple e.g. angular-lifecycle,angular-di")
-                        ), List.of("userId", "questionId")))
+                                "questionId", Map.of("type", "string", "description", "Question ID(s) comma-separated e.g. angular-lifecycle,angular-di. Leave empty if using searchText."),
+                                "searchText", Map.of("type", "string", "description", "Search keyword or question text to find and mark complete. Use this when the user refers to a question by its text instead of ID.")
+                        ), List.of("userId")))
                         .build())
                 .callHandler((exchange, request) -> {
                     var args = request.arguments();
                     String uid = resolveOrError(us, (String) args.get("userId"));
                     if (uid == null) return new CallToolResult("Could not find user. Check the email or UID.", true);
+
+                    List<String> ids = new ArrayList<>();
                     String raw = (String) args.get("questionId");
-                    List<String> ids = Arrays.stream(raw.split(",")).map(String::trim).filter(s -> !s.isEmpty()).toList();
-                    if (ids.isEmpty()) return new CallToolResult("No question IDs provided.", true);
+                    if (raw != null && !raw.isBlank())
+                        ids.addAll(Arrays.stream(raw.split(",")).map(String::trim).filter(s -> !s.isEmpty()).toList());
+
+                    String searchText = (String) args.get("searchText");
+                    if (ids.isEmpty() && searchText != null && !searchText.isBlank()) {
+                        Optional<Question> found = qs.findByText(searchText);
+                        if (found.isEmpty()) return new CallToolResult("Could not find a question matching: " + searchText, true);
+                        ids.add(found.get().id());
+                    }
+
+                    if (ids.isEmpty()) return new CallToolResult("Provide questionId or searchText.", true);
 
                     boolean ok = ids.size() == 1
                             ? us.markQuestionComplete(uid, ids.get(0))
                             : us.markQuestionsComplete(uid, ids);
 
-                    if (ok)
-                        return new CallToolResult("Marked %d question(s) as complete: %s\nThis is now synced to your InterviewDeck account.".formatted(ids.size(), String.join(", ", ids)), false);
+                    if (ok) {
+                        List<String> names = ids.stream()
+                                .map(id -> qs.getQuestion(id).map(q -> "\"%s\" (%s)".formatted(q.question(), id)).orElse(id))
+                                .toList();
+                        return new CallToolResult("Marked %d question(s) as complete:\n%s\nSynced to your InterviewDeck account.".formatted(ids.size(), String.join("\n", names)), false);
+                    }
                     return new CallToolResult("Failed to update progress. Please try again.", true);
                 })
                 .build();
@@ -401,26 +417,39 @@ public class McpToolConfig {
         return SyncToolSpecification.builder()
                 .tool(Tool.builder()
                         .name("addNote")
-                        .description("Add or update a study note for a specific question. The note is saved to the user's InterviewDeck account and visible in the app. Use this when the user wants to save an explanation, example, or insight for a question.")
+                        .description("Add or update a study note for a question. The note is saved to the user's InterviewDeck account. You can pass questionId directly OR pass searchText to find the question by its text/keyword. Use this when the user says 'save this as a note' or 'add this to my notes'.")
                         .inputSchema(schema(Map.of(
                                 "userId", Map.of("type", "string", "description", "Firebase UID or email address"),
-                                "questionId", Map.of("type", "string", "description", "The question ID to attach the note to"),
+                                "questionId", Map.of("type", "string", "description", "The question ID. Leave empty if using searchText."),
+                                "searchText", Map.of("type", "string", "description", "Search keyword or question text to find the question. Use when the user refers to a question by its content."),
                                 "note", Map.of("type", "string", "description", "The note content to save")
-                        ), List.of("userId", "questionId", "note")))
+                        ), List.of("userId", "note")))
                         .build())
                 .callHandler((exchange, request) -> {
                     var args = request.arguments();
                     String uid = resolveOrError(us, (String) args.get("userId"));
                     if (uid == null) return new CallToolResult("Could not find user. Check the email or UID.", true);
-                    String qid = (String) args.get("questionId");
                     String note = (String) args.get("note");
 
-                    Optional<Question> q = qs.getQuestion(qid);
-                    if (q.isEmpty()) return new CallToolResult("Question not found: " + qid, true);
+                    String qid = (String) args.get("questionId");
+                    String searchText = (String) args.get("searchText");
 
-                    boolean ok = us.addNote(uid, qid, note);
+                    Question matched;
+                    if (qid != null && !qid.isBlank()) {
+                        Optional<Question> q = qs.getQuestion(qid);
+                        if (q.isEmpty()) return new CallToolResult("Question not found: " + qid, true);
+                        matched = q.get();
+                    } else if (searchText != null && !searchText.isBlank()) {
+                        Optional<Question> q = qs.findByText(searchText);
+                        if (q.isEmpty()) return new CallToolResult("Could not find a question matching: " + searchText, true);
+                        matched = q.get();
+                    } else {
+                        return new CallToolResult("Provide questionId or searchText to identify the question.", true);
+                    }
+
+                    boolean ok = us.addNote(uid, matched.id(), note);
                     if (ok)
-                        return new CallToolResult("Note saved for \"%s\" (%s).\nThis is now synced to your InterviewDeck account.".formatted(q.get().question(), qid), false);
+                        return new CallToolResult("Note saved for \"%s\" (%s).\nSynced to your InterviewDeck account.".formatted(matched.question(), matched.id()), false);
                     return new CallToolResult("Failed to save note. Please try again.", true);
                 })
                 .build();

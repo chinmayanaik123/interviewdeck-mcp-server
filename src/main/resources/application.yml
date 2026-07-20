@@ -6,6 +6,6 @@ spring:
     name: interviewdeck-mcp-server
 
 interviewdeck:
-  questions-path: classpath:questions/
+  questions-base-url: https://raw.githubusercontent.com/chinmayanaik123/interview-helper-question-bank/main/
   firebase:
     credentials-path: ${FIREBASE_CREDENTIALS_PATH:config/firebase-service-account.json}

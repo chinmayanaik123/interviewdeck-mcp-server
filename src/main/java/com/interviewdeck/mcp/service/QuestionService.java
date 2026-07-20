@@ -8,12 +8,11 @@ import com.interviewdeck.mcp.model.Question;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -23,37 +22,46 @@ public class QuestionService {
 
     private static final Logger log = LoggerFactory.getLogger(QuestionService.class);
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final RestTemplate restTemplate = new RestTemplate();
+
+    @Value("${interviewdeck.questions-base-url:https://raw.githubusercontent.com/chinmayanaik123/interview-helper-question-bank/main/}")
+    private String baseUrl;
 
     private final List<Question> allQuestions = new ArrayList<>();
     private final Map<String, List<Question>> byCategory = new HashMap<>();
     private final List<CategoryInfo> categories = new ArrayList<>();
 
     @PostConstruct
-    public void loadQuestions() throws IOException {
-        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-        Resource manifestResource = resolver.getResource("classpath:questions/manifest.json");
+    public void loadQuestions() {
+        try {
+            String manifestJson = restTemplate.getForObject(baseUrl + "manifest.json", String.class);
+            JsonNode manifest = objectMapper.readTree(manifestJson);
+            JsonNode cats = manifest.get("categories");
 
-        JsonNode manifest = objectMapper.readTree(manifestResource.getInputStream());
-        JsonNode cats = manifest.get("categories");
+            for (JsonNode cat : cats) {
+                String id = cat.get("id").asText();
+                String file = cat.get("file").asText();
+                String label = cat.get("label").asText();
+                String group = cat.get("group").asText();
+                int count = cat.get("count").asInt();
 
-        for (JsonNode cat : cats) {
-            String id = cat.get("id").asText();
-            String file = cat.get("file").asText();
-            String label = cat.get("label").asText();
-            String group = cat.get("group").asText();
-            int count = cat.get("count").asInt();
+                categories.add(new CategoryInfo(id, label, group, count));
 
-            categories.add(new CategoryInfo(id, label, group, count));
-
-            Resource questionFile = resolver.getResource("classpath:questions/" + file);
-            try (InputStream is = questionFile.getInputStream()) {
-                List<Question> questions = objectMapper.readValue(is, new TypeReference<>() {});
-                allQuestions.addAll(questions);
-                byCategory.put(id, questions);
+                try {
+                    String questionsJson = restTemplate.getForObject(baseUrl + file, String.class);
+                    List<Question> questions = objectMapper.readValue(questionsJson, new TypeReference<>() {});
+                    allQuestions.addAll(questions);
+                    byCategory.put(id, questions);
+                } catch (Exception e) {
+                    log.warn("Failed to load questions from {}: {}", file, e.getMessage());
+                }
             }
-        }
 
-        log.info("Loaded {} questions across {} categories", allQuestions.size(), categories.size());
+            log.info("Loaded {} questions across {} categories from GitHub", allQuestions.size(), categories.size());
+        } catch (Exception e) {
+            log.error("Failed to load manifest from GitHub: {}", e.getMessage(), e);
+            throw new RuntimeException("Could not load questions from GitHub", e);
+        }
     }
 
     public List<CategoryInfo> getCategories() {
@@ -96,5 +104,14 @@ public class QuestionService {
         return allQuestions.stream()
                 .filter(q -> idSet.contains(q.id()))
                 .toList();
+    }
+
+    public Optional<Question> findByText(String text) {
+        String lower = text.toLowerCase();
+        return allQuestions.stream()
+                .filter(q -> q.question().toLowerCase().contains(lower)
+                        || lower.contains(q.question().toLowerCase())
+                        || (q.tags() != null && q.tags().stream().anyMatch(t -> t.toLowerCase().contains(lower))))
+                .findFirst();
     }
 }
