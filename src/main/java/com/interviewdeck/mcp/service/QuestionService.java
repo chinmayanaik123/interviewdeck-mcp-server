@@ -24,7 +24,7 @@ public class QuestionService {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final RestTemplate restTemplate = new RestTemplate();
 
-    @Value("${interviewdeck.questions-base-url:https://raw.githubusercontent.com/chinmayanaik123/interview-helper-question-bank/main/}")
+    @Value("${interviewdeck.questions-base-url:https://raw.githubusercontent.com/chinmayannaik/interview-deck-questions/main/}")
     private String baseUrl;
 
     private final List<Question> allQuestions = new ArrayList<>();
